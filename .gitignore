@@ -5,3 +5,5 @@ dist/
 .env
 .env.local
 logos/logo-*.png
+dev.log
+preview.log
