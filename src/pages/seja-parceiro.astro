@@ -1,0 +1,170 @@
+---
+import Base from "../layouts/Base.astro";
+import LeadForm from "../components/LeadForm.astro";
+import Faq from "../components/Faq.astro";
+import { PARCEIRO } from "../data/solucoes";
+import { EMPRESA } from "../consts";
+
+const perguntas = [
+  {
+    p: "Preciso investir alguma coisa para começar?",
+    r: "Não. Sem investimento inicial, sem compra de estoque, sem taxa de credenciamento e sem obrigação de montar equipe. O que você precisa é de rede de contatos e disposição para o treinamento.",
+  },
+  {
+    p: "Como e quando eu recebo?",
+    r: "Por indicação validada — ou seja, quando o cliente que você trouxe efetivamente contrata. O valor e o prazo variam por frente, e são informados antes do credenciamento, não depois.",
+  },
+  {
+    p: "Preciso entender de seguro ou de energia?",
+    r: "Não para começar. Você indica; quem faz a cotação, a análise técnica e o fechamento é o consultor da Autogestor. O treinamento cobre o suficiente para você explicar o benefício e identificar quem se encaixa.",
+  },
+  {
+    p: "Dá para conciliar com outro trabalho?",
+    r: "Sim, é o caso mais comum. A operação é remota, com plataforma online de atendimento, e o horário é seu. Boa parte dos parceiros começa indicando dentro da própria rede de contatos.",
+  },
+  {
+    p: "Posso trabalhar com uma frente só?",
+    r: "Pode. Muita gente começa só com energia, que é o produto de adesão mais simples e maior procura, e depois abre para seguro e financiamento conforme ganha repertório.",
+  },
+  {
+    p: "Atende fora de Goiânia?",
+    r: "Sim. Estamos selecionando parceiros em várias cidades. A restrição geográfica existe só na energia da Coopluz, que depende da área de concessão da Equatorial Goiás.",
+  },
+];
+
+const schema = [
+  {
+    "@type": "FAQPage",
+    "@id": "https://autogestor.roilabs.com.br/seja-parceiro#faq",
+    mainEntity: perguntas.map((q) => ({
+      "@type": "Question",
+      name: q.p,
+      acceptedAnswer: { "@type": "Answer", text: q.r },
+    })),
+  },
+];
+---
+
+<Base
+  titulo="Seja parceiro Autogestor: renda extra por indicação em Goiás"
+  descricao="Ganhe renda extra indicando clientes para energia, seguro, viagens, financiamento, consórcio e repasse. Sem investimento inicial, sem estoque e sem equipe própria."
+  schema={schema}
+  trilha={[
+    { nome: "Início", href: "/" },
+    { nome: "Seja parceiro", href: "/seja-parceiro" },
+  ]}
+>
+  <section class="topo">
+    <div class="container topo__grade">
+      <div>
+        <span class="olho">Programa de parceiros</span>
+        <h1>Transforme sua rede de contatos em renda mensal</h1>
+        <p class="chamada">
+          Você indica, a Autogestor cota, fecha e cuida do pós-venda. Você recebe por indicação validada. Sem
+          investir, sem estocar nada e sem montar equipe — porque a estrutura já existe há {new Date().getFullYear() - 2004} anos.
+        </p>
+        <ul class="lista-check destaques">
+          <li>Sem investimento inicial e sem estoque</li>
+          <li>Operação remota, com plataforma online de atendimento</li>
+          <li>Pagamento por indicação validada</li>
+        </ul>
+      </div>
+      <div class="topo__form">
+        <LeadForm solucao={PARCEIRO} titulo="Quero saber como funciona" instancia="topo" />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Por onde a maioria começa</span>
+      <h2>Energia é o produto de entrada — e o de maior procura</h2>
+      <p class="chamada">
+        Milhares de pessoas em Goiás pagam caro na conta de luz sem saber que dá para economizar 20% sem obra e sem
+        placa. É um benefício real, de adesão simples, que a pessoa entende em uma frase. Por isso é o produto com
+        que quase todo parceiro novo faz a primeira indicação.
+      </p>
+      <div class="grade grade--2">
+        <div class="cartao">
+          <h3>O que torna fácil de indicar</h3>
+          <ul class="lista-check">
+            <li>Benefício imediato e mensurável na fatura do cliente</li>
+            <li>Sem taxa de adesão e sem multa de cancelamento</li>
+            <li>Nada é instalado no imóvel de quem adere</li>
+            <li>Mercado ativo em todo o estado de Goiás</li>
+          </ul>
+        </div>
+        <div class="cartao">
+          <h3>O que você recebe da Autogestor</h3>
+          <ul class="lista-check">
+            <li>Treinamento e material pronto para apresentar</li>
+            <li>Consultor que assume a partir da indicação</li>
+            <li>Acompanhamento do status de cada cliente indicado</li>
+            <li>Suporte para as outras cinco frentes quando quiser abrir</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">Perfil</span>
+      <h2>Quem costuma dar certo aqui</h2>
+      <div class="grade grade--3 perfil">
+        <div>
+          <h3>Tem rede ativa</h3>
+          <p>Redes sociais em uso, grupo de bairro, condomínio, igreja, clientes de outro serviço. Indicação nasce de relação, não de anúncio.</p>
+        </div>
+        <div>
+          <h3>Já atendeu cliente</h3>
+          <p>Experiência comercial ou de atendimento ajuda muito. Saber ouvir antes de oferecer é o que separa indicação de spam.</p>
+        </div>
+        <div>
+          <h3>Tem horário flexível</h3>
+          <p>Disponibilidade para o treinamento inicial e para responder quem demonstra interesse. Não precisa ser tempo integral.</p>
+        </div>
+      </div>
+      <p class="aviso">
+        Programa de indicação, não vínculo empregatício. Valores e condições de remuneração constam do termo de
+        credenciamento, apresentado antes de qualquer adesão. Não cobramos nada para você se tornar parceiro.
+      </p>
+    </div>
+  </section>
+
+  <section class="secao secao--suave">
+    <div class="container">
+      <Faq perguntas={perguntas} />
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container fechamento">
+      <div>
+        <span class="olho">Próximo passo</span>
+        <h2>Comece pela conversa, não pelo contrato</h2>
+        <p class="chamada">
+          Deixe seu WhatsApp e a frente que mais combina com você. Um consultor explica remuneração, treinamento e
+          como funciona na prática — sem compromisso e sem custo. Autogestor, Goiânia, desde {EMPRESA.fundacao}.
+        </p>
+      </div>
+      <LeadForm solucao={PARCEIRO} titulo="Quero saber como funciona" destaque instancia="fim" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .topo { background: var(--superficie); padding-block: var(--e-12) var(--e-16); }
+  .topo__grade { display: grid; gap: var(--e-8); align-items: start; }
+  @media (min-width: 900px) {
+    .topo__grade { grid-template-columns: 1fr minmax(360px, 420px); gap: var(--e-12); }
+    .topo__form { position: sticky; top: 140px; }
+  }
+  .topo .chamada { font-size: var(--t-lg); }
+  .destaques { margin-top: var(--e-6); font-weight: 600; }
+  .perfil { margin-top: var(--e-8); gap: var(--e-8); }
+  .perfil p { color: #c8d6e6; font-size: var(--t-sm); }
+  .aviso { margin-top: var(--e-12); font-size: var(--t-sm); color: #9fb4cb; max-width: 78ch; }
+  .fechamento { display: grid; gap: var(--e-8); align-items: center; }
+  @media (min-width: 900px) { .fechamento { grid-template-columns: 1fr minmax(360px, 440px); } }
+</style>

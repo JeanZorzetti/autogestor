@@ -1,0 +1,36 @@
+---
+import Base from "../layouts/Base.astro";
+import SolucaoCard from "../components/SolucaoCard.astro";
+import { SOLUCOES } from "../data/solucoes";
+import { whatsapp } from "../consts";
+---
+
+<Base
+  titulo="Página não encontrada | Autogestor"
+  descricao="Esta página não existe no site da Autogestor. Veja as seis soluções do hub."
+  noindex
+>
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Erro 404</span>
+      <h1>Esta página não existe</h1>
+      <p class="chamada">
+        O endereço pode ter mudado ou o link estar quebrado. Todas as seis soluções da Autogestor estão logo abaixo.
+      </p>
+      <p class="acoes">
+        <a class="btn btn--contorno" href="/">Ir para o início</a>
+        <a class="btn btn--primario" href={whatsapp("Olá! Não encontrei o que procurava no site.")}>
+          Perguntar no WhatsApp
+        </a>
+      </p>
+      <ul class="grade grade--3 lista-limpa cards">
+        {SOLUCOES.map((s) => <SolucaoCard solucao={s} />)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .acoes { display: flex; flex-wrap: wrap; gap: var(--e-3); margin-block: var(--e-8); }
+  .cards { margin-top: var(--e-12); }
+</style>

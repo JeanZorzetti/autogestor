@@ -1,0 +1,139 @@
+---
+import Vertical from "../layouts/Vertical.astro";
+import { porSlug } from "../data/solucoes";
+
+const solucao = porSlug("repasse");
+
+const patios = [
+  { cidade: "Goiânia", uf: "GO", nota: "Pátio principal, com o maior giro de oferta." },
+  { cidade: "Contagem", uf: "MG", nota: "Atende a região metropolitana de Belo Horizonte." },
+  { cidade: "Brasília", uf: "DF", nota: "Opção para quem compra no Centro-Oeste." },
+];
+
+const perguntas = [
+  {
+    p: "É leilão?",
+    r: "Não. Leilão vende veículo sinistrado, recuperado de seguradora ou apreendido, com laudo de avaria. Aqui é compra direta de frota desmobilizada de locadora: carros que rodaram em locação, com manutenção em concessionária e histórico rastreável.",
+  },
+  {
+    p: "Carro de locadora não é carro judiado?",
+    r: "É carro que rodou bastante, e o preço reflete isso. Em compensação, frota de locadora segue plano de manutenção obrigatório em rede autorizada, com revisão em dia e histórico documentado — o oposto do usado de particular que pulou revisões.",
+  },
+  {
+    p: "Precisa pagar à vista?",
+    r: "Sim. A operação de repasse trabalha com pagamento à vista, e é justamente isso que sustenta o preço abaixo da FIPE. Se você precisa financiar, o caminho é a nossa página de financiamento.",
+  },
+  {
+    p: "Quanto fica abaixo da tabela FIPE?",
+    r: "Varia por modelo, ano, quilometragem e pressa da locadora em girar a frota. O desconto real aparece na lista do dia — e a gente manda a lista com o valor FIPE ao lado, para você comparar sem intermediário.",
+  },
+  {
+    p: "Qual é a taxa de vocês?",
+    r: "Cobramos uma taxa de operação pela intermediação, informada antes de qualquer sinal. Ela entra na conta que enviamos, junto do preço do veículo, para você avaliar o custo total contra a FIPE.",
+  },
+  {
+    p: "Dá para comprar mais de um veículo?",
+    r: "Sim, e é comum. Boa parte dos compradores é de lojista e investidor montando estoque. Volume costuma melhorar a condição.",
+  },
+  {
+    p: "Preciso ir até o pátio?",
+    r: "É recomendável vistoriar antes de fechar, presencialmente ou por vistoriador de sua confiança. Fotos, laudo e histórico são enviados antes, mas a decisão final com o carro na frente é sempre a mais segura.",
+  },
+];
+---
+
+<Vertical
+  solucao={solucao}
+  h1="Seminovo de locadora abaixo da FIPE, sem leilão e sem histórico de sinistro"
+  chamada="A Autogestor intermedeia a compra direta de veículos desmobilizados das maiores locadoras do Brasil. Manutenção feita em rede autorizada, documentação limpa e pagamento à vista — com pátios em Goiânia, Contagem e Brasília."
+  perguntas={perguntas}
+>
+  <ul class="lista-check destaques" slot="hero">
+    <li>Frota desmobilizada, não veículo de leilão</li>
+    <li>Histórico de manutenção em rede autorizada</li>
+    <li>Pagamento à vista, com taxa de operação informada antes</li>
+  </ul>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">A diferença que muda o preço</span>
+      <h2>Repasse de locadora não é leilão — e isso importa</h2>
+      <div class="grade grade--2">
+        <div class="cartao">
+          <h3>Repasse de frota</h3>
+          <ul class="lista-check">
+            <li>Veículo saiu de operação de locação, não de sinistro</li>
+            <li>Revisões feitas em concessionária, dentro do plano do fabricante</li>
+            <li>Documentação regular, sem registro de recuperação</li>
+            <li>Quilometragem alta e preço abaixo da FIPE por causa dela</li>
+          </ul>
+        </div>
+        <div class="cartao">
+          <h3>Leilão</h3>
+          <ul class="lista-limpa fora">
+            <li>Costuma vir de sinistro, apreensão ou recuperação de seguradora</li>
+            <li>Laudo de avaria e, em muitos casos, registro no documento</li>
+            <li>Venda no estado, sem garantia e sem histórico completo</li>
+            <li>Revenda e seguro depois ficam mais difíceis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">Onde retirar</span>
+      <h2>Três pátios</h2>
+      <div class="grade grade--3 patios">
+        {
+          patios.map((p) => (
+            <div>
+              <h3>
+                {p.cidade} <span class="uf">{p.uf}</span>
+              </h3>
+              <p>{p.nota}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="aviso">
+        A disponibilidade muda todo dia conforme as locadoras liberam lotes. Deixe seu WhatsApp e a faixa de
+        investimento que enviamos a lista com o valor FIPE de cada veículo ao lado.
+      </p>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Para quem é</span>
+      <h2>Comprador final e lojista compram no mesmo pátio</h2>
+      <div class="grade grade--2">
+        <div>
+          <h3>Você quer o carro para usar</h3>
+          <p>
+            Paga à vista abaixo da FIPE e leva um seminovo com manutenção documentada. Vale a conta quando a
+            quilometragem alta não te incomoda e o desconto compensa a depreciação que já aconteceu.
+          </p>
+        </div>
+        <div>
+          <h3>Você quer girar capital</h3>
+          <p>
+            Lojista e investidor montam estoque com margem já na compra. Volume melhora a condição, e a lista chega
+            antes de ir para o mercado aberto.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Vertical>
+
+<style>
+  .destaques { margin-top: var(--e-6); font-weight: 600; }
+  .fora li { padding-left: var(--e-6); position: relative; color: var(--texto-suave); }
+  .fora li::before { content: "—"; position: absolute; left: 0; color: var(--cinza-400); }
+  .patios { margin-top: var(--e-8); gap: var(--e-8); }
+  .patios p { color: #c8d6e6; font-size: var(--t-sm); }
+  .uf { font-size: var(--t-sm); color: var(--laranja-500); }
+  .aviso { margin-top: var(--e-12); font-size: var(--t-sm); color: #9fb4cb; max-width: 78ch; }
+</style>

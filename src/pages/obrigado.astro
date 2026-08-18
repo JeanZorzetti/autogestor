@@ -1,0 +1,73 @@
+---
+import Base from "../layouts/Base.astro";
+import { SOLUCOES } from "../data/solucoes";
+import { EMPRESA, whatsapp } from "../consts";
+
+// Renderizada no servidor porque precisa ler ?erro=1 do redirect do endpoint.
+// Se fosse estática, quem enviou sem JavaScript e errou o telefone leria
+// "pedido recebido" — a página mentiria para exatamente quem não foi atendido.
+export const prerender = false;
+
+const falhou = Astro.url.searchParams.has("erro");
+---
+
+<Base
+  titulo={falhou ? "Não conseguimos registrar seu pedido | Autogestor" : "Pedido recebido | Autogestor"}
+  descricao="Confirmação de envio do pedido de cotação da Autogestor."
+  noindex
+>
+  <section class="secao">
+    <div class="container recibo">
+      {
+        falhou ? (
+          <>
+            <span class="olho">Não conseguimos registrar</span>
+            <h1>Seu pedido não chegou até nós</h1>
+            <p class="chamada">
+              Alguma coisa falhou no envio — pode ter sido o WhatsApp com um dígito faltando, ou o nosso servidor
+              fora do ar. Chame no WhatsApp que a gente resolve na hora, sem formulário.
+            </p>
+          </>
+        ) : (
+          <>
+            <span class="olho">Pedido recebido</span>
+            <h1>Pronto. Agora é com a gente.</h1>
+            <p class="chamada">
+              Um consultor da Autogestor vai chamar você no WhatsApp que você informou. Se preferir adiantar, você
+              mesmo pode puxar a conversa agora.
+            </p>
+          </>
+        )
+      }
+
+      <p class="acoes">
+        <a
+          class="btn btn--primario"
+          href={whatsapp(
+            falhou
+              ? "Olá! Tentei enviar um pedido pelo site e deu erro."
+              : "Olá! Acabei de enviar um pedido pelo site da Autogestor."
+          )}
+        >
+          Chamar no WhatsApp {EMPRESA.telefoneExibicao}
+        </a>
+        <a class="btn btn--contorno" href="/">Voltar ao início</a>
+      </p>
+
+      <h2 class="mais">Enquanto isso, veja as outras frentes</h2>
+      <ul class="lista-check">
+        {SOLUCOES.map((s) => (
+          <li>
+            <a href={`/${s.slug}`}>{s.nome}</a> — {s.resumo}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .recibo { max-width: 70ch; }
+  .acoes { display: flex; flex-wrap: wrap; gap: var(--e-3); margin-block: var(--e-8) var(--e-16); }
+  .mais { font-size: var(--t-lg); }
+</style>

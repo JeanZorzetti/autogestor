@@ -1,0 +1,128 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { EMPRESA, enderecoLinha } from "../consts";
+import "../styles/global.css";
+
+interface Props {
+  titulo: string;
+  descricao: string;
+  /** Nós extras do @graph (Service, FAQPage…). Um grafo único por página: nós
+   *  soltos em <script> separados duplicam a entidade Organization. */
+  schema?: Record<string, unknown>[];
+  trilha?: { nome: string; href: string }[];
+  ogImagem?: string;
+  /** Página sem conteúdo próprio de busca (recibo, erro). Fora do índice, mas
+   *  os links continuam sendo seguidos. */
+  noindex?: boolean;
+}
+const { titulo, descricao, schema = [], trilha = [], ogImagem = "/img/og.png", noindex = false } = Astro.props;
+
+const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", site).href;
+const abs = (p: string) => new URL(p, site).href;
+
+const grafo: Record<string, unknown>[] = [
+  {
+    "@type": ["Organization", "InsuranceAgency"],
+    "@id": abs("/#organizacao"),
+    name: EMPRESA.nome,
+    legalName: EMPRESA.nomeLegal,
+    url: abs("/"),
+    logo: { "@type": "ImageObject", "@id": abs("/#logo"), url: abs("/img/icon-512.png"), width: 512, height: 512 },
+    image: { "@id": abs("/#logo") },
+    foundingDate: EMPRESA.fundacao,
+    description:
+      "Hub de soluções em energia por compensação, seguros, viagens, financiamento, consórcio e repasse de veículos, em Goiânia.",
+    telephone: EMPRESA.telefone,
+    email: EMPRESA.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: EMPRESA.endereco.rua,
+      addressLocality: EMPRESA.endereco.cidade,
+      addressRegion: EMPRESA.endereco.uf,
+      postalCode: EMPRESA.endereco.cep,
+      addressCountry: EMPRESA.endereco.pais,
+    },
+    geo: { "@type": "GeoCoordinates", latitude: EMPRESA.geo.lat, longitude: EMPRESA.geo.lon },
+    areaServed: { "@type": "State", name: "Goiás" },
+    identifier: { "@type": "PropertyValue", name: "SUSEP", value: EMPRESA.susep },
+    sameAs: [...EMPRESA.redes],
+  },
+  {
+    "@type": "WebSite",
+    "@id": abs("/#site"),
+    url: abs("/"),
+    name: `${EMPRESA.nome} — hub de soluções`,
+    inLanguage: "pt-BR",
+    publisher: { "@id": abs("/#organizacao") },
+  },
+  {
+    "@type": "WebPage",
+    "@id": `${canonical}#pagina`,
+    url: canonical,
+    name: titulo,
+    description: descricao,
+    inLanguage: "pt-BR",
+    isPartOf: { "@id": abs("/#site") },
+    about: { "@id": abs("/#organizacao") },
+    ...(trilha.length ? { breadcrumb: { "@id": `${canonical}#trilha` } } : {}),
+  },
+  ...(trilha.length
+    ? [
+        {
+          "@type": "BreadcrumbList",
+          "@id": `${canonical}#trilha`,
+          itemListElement: trilha.map((t, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: t.nome,
+            item: abs(t.href),
+          })),
+        },
+      ]
+    : []),
+  ...schema,
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#002b74" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={EMPRESA.nome} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={abs(ogImagem)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="geo.region" content="BR-GO" />
+    <meta name="geo.placename" content={EMPRESA.endereco.cidade} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": grafo })} />
+  </head>
+  <body>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+    <p class="visualmente-oculto">{enderecoLinha}</p>
+  </body>
+</html>

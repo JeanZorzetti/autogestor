@@ -1,0 +1,147 @@
+---
+import Vertical from "../layouts/Vertical.astro";
+import { porSlug } from "../data/solucoes";
+import { EXTERNOS } from "../consts";
+
+const solucao = porSlug("coopluz");
+
+const perguntas = [
+  {
+    p: "Preciso instalar placa solar no meu telhado?",
+    r: "Não. A energia é gerada em fazendas solares cooperadas à Coopluz. Você recebe os créditos dessa geração abatidos na sua fatura — nada é instalado, nada é construído no seu imóvel.",
+  },
+  {
+    p: "Vou trocar de distribuidora?",
+    r: "Não. A Equatorial Goiás continua sendo sua distribuidora, a fatura continua vindo dela e a titularidade da conta permanece no seu nome. O que muda é o valor: os créditos de compensação entram como desconto.",
+  },
+  {
+    p: "Quem pode participar?",
+    r: "Residências, comércios e pequenas indústrias atendidos pela Equatorial Goiás com consumo médio acima de R$ 250 por mês. Abaixo desse valor o desconto não compensa a operação, e a gente diz isso antes de você assinar.",
+  },
+  {
+    p: "Em quanto tempo o desconto aparece na fatura?",
+    r: "O primeiro crédito costuma aparecer em até 90 dias. O prazo depende do ciclo de leitura da distribuidora e do processo de vinculação da unidade consumidora à cooperativa.",
+  },
+  {
+    p: "Tem taxa de adesão, fidelidade ou multa para sair?",
+    r: "Não há taxa de adesão nem multa de cancelamento. Ao sair, você paga apenas o saldo residual dos créditos já utilizados e não faturados.",
+  },
+  {
+    p: "E se eu mudar de endereço?",
+    r: "A participação pode ser transferida para o novo imóvel, desde que ele fique dentro da mesma área de concessão da distribuidora.",
+  },
+  {
+    p: "Isso é legal?",
+    r: "Sim. O sistema de compensação de energia elétrica é regulado pela ANEEL e amparado pela Lei 14.300/2022, que instituiu o marco legal da microgeração e minigeração distribuída no Brasil.",
+  },
+];
+---
+
+<Vertical
+  solucao={solucao}
+  h1="Pague 20% menos na conta da Equatorial Goiás, sem obra e sem placa no telhado"
+  chamada="A Coopluz é uma cooperativa de energia por compensação. Você se associa, recebe créditos de fazendas solares cooperadas e o desconto entra direto na sua fatura. Sem instalar nada, sem trocar de distribuidora e sem taxa de adesão."
+  perguntas={perguntas}
+>
+  <ul class="lista-check destaques" slot="hero">
+    <li>20% de desconto todo mês, aplicado na própria fatura</li>
+    <li>Nenhuma obra, nenhum equipamento, nenhuma placa</li>
+    <li>Sem taxa de adesão e sem multa para cancelar</li>
+  </ul>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">O problema</span>
+      <h2>A conta de luz subiu e não tem como consumir menos</h2>
+      <p class="chamada">
+        Bandeira tarifária, reajuste anual, calor de Goiás no ar-condicionado. Em residências e comércios da região,
+        a energia virou uma das três maiores despesas fixas do mês — e cortar consumo já não resolve, porque o que
+        subiu foi o preço do kWh, não o seu uso.
+      </p>
+      <p class="chamada">
+        A saída conhecida era investir dezenas de milhares de reais em um sistema solar próprio, com obra, projeto e
+        anos de retorno. A compensação de energia resolve o mesmo problema sem o investimento: em vez de gerar no
+        seu telhado, você usa a geração de uma fazenda solar que já existe.
+      </p>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">Como funciona</span>
+      <h2>Quatro passos entre a assinatura e o desconto</h2>
+      <ol class="etapas">
+        <li>
+          <h3>Você se associa</h3>
+          <p>Cadastro digital com uma fatura recente da Equatorial em mãos. Sem visita técnica e sem análise de crédito.</p>
+        </li>
+        <li>
+          <h3>A fazenda gera</h3>
+          <p>Usinas solares cooperadas injetam energia na rede da distribuidora e geram créditos de compensação.</p>
+        </li>
+        <li>
+          <h3>Os créditos entram no seu medidor</h3>
+          <p>A Coopluz aloca os créditos para a sua unidade consumidora, proporcionalmente ao seu consumo médio.</p>
+        </li>
+        <li>
+          <h3>A fatura chega menor</h3>
+          <p>A Equatorial reconhece os créditos e a mesma conta de sempre passa a chegar com 20% de desconto.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Quem pode participar</span>
+      <h2>Consumo acima de R$ 250 por mês, em Goiás</h2>
+      <div class="grade grade--2">
+        <div class="cartao">
+          <h3>Serve para você se…</h3>
+          <ul class="lista-check">
+            <li>Seu imóvel é atendido pela Equatorial Goiás</li>
+            <li>A conta média passa de R$ 250 por mês</li>
+            <li>É residência, comércio, condomínio ou pequena indústria</li>
+            <li>Você quer economia sem imobilizar capital</li>
+          </ul>
+        </div>
+        <div class="cartao">
+          <h3>Ainda não serve se…</h3>
+          <ul class="lista-limpa fora">
+            <li>O imóvel fica fora da área da Equatorial Goiás</li>
+            <li>A conta média está abaixo de R$ 250 — o desconto não compensa a operação</li>
+            <li>Você já tem geração própria compensando 100% do consumo</li>
+          </ul>
+          <p class="nota">
+            Nesses casos a gente diz na primeira conversa, antes de qualquer assinatura. Vender associação que não
+            economiza só gera cancelamento.
+          </p>
+        </div>
+      </div>
+      <p class="nota">
+        A Coopluz é uma cooperativa independente, com sede em Goiânia, e opera em parceria com Sicoob e Secovicred.
+        A Autogestor é parceira comercial credenciada — quer conhecer a cooperativa direto?
+        <a href={EXTERNOS.coopluz} rel="noopener">Veja o site da Coopluz</a>.
+      </p>
+    </div>
+  </section>
+</Vertical>
+
+<style>
+  .destaques { margin-top: var(--e-6); font-weight: 600; }
+  .etapas {
+    display: grid;
+    gap: var(--e-6);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    margin: var(--e-8) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: etapa;
+  }
+  .etapas li { counter-increment: etapa; border-top: 3px solid var(--laranja-500); padding-top: var(--e-4); }
+  .etapas li::before { content: "0" counter(etapa); display: block; font-weight: 700; color: var(--laranja-500); margin-bottom: var(--e-2); }
+  .etapas p { color: #c8d6e6; font-size: var(--t-sm); }
+  .fora li { padding-left: var(--e-6); position: relative; color: var(--texto-suave); }
+  .fora li::before { content: "—"; position: absolute; left: 0; color: var(--cinza-400); }
+  .nota { font-size: var(--t-sm); color: var(--texto-suave); margin-top: var(--e-4); }
+</style>

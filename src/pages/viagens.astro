@@ -1,0 +1,107 @@
+---
+import Vertical from "../layouts/Vertical.astro";
+import { porSlug } from "../data/solucoes";
+import { EXTERNOS } from "../consts";
+
+const solucao = porSlug("viagens");
+
+const perguntas = [
+  {
+    p: "Por que comprar com agência se eu compro sozinho no site?",
+    r: "Pelo que acontece depois. Voo cancelado, conexão perdida, bagagem extraviada ou remarcação viram horas de chat automático quando a compra é direta. Com agência, existe um consultor com acesso ao sistema de reservas resolvendo por você.",
+  },
+  {
+    p: "As tarifas são as mesmas do site da companhia?",
+    r: "Nem sempre. Trabalhamos com tarifas de consolidador e acordos de agência, que em muitas rotas ficam abaixo do balcão público — especialmente em internacional, em datas longas e em grupos. Quando o site da companhia estiver mais barato, a gente fala.",
+  },
+  {
+    p: "Dá para parcelar?",
+    r: "Sim, em até 12x no cartão de crédito, tanto em passagem quanto em pacote e hospedagem. As condições exatas dependem da tarifa e da operadora.",
+  },
+  {
+    p: "Fazem só passagem ou a viagem inteira?",
+    r: "Passagens aéreas nacionais e internacionais, hotéis e resorts da rede parceira, e pacotes montados sob medida. Se você já tem o voo e precisa só da hospedagem, também resolvemos.",
+  },
+  {
+    p: "Preciso ir até o escritório?",
+    r: "Não. Cotação, escolha, pagamento e emissão acontecem por WhatsApp e e-mail. O escritório no Jardim Europa está aberto para quem prefere resolver presencialmente.",
+  },
+  {
+    p: "Vendem seguro viagem?",
+    r: "Sim. Como somos corretora registrada na SUSEP, o seguro viagem sai com a mesma análise que fazemos em seguro de veículo — cobertura médica, bagagem e cancelamento comparadas antes da compra.",
+  },
+];
+---
+
+<Vertical
+  solucao={solucao}
+  h1="Passagem aérea e hotel com tarifa de agência e um consultor quando o voo atrasa"
+  chamada="Agência online 24 horas para voos nacionais e internacionais, rede de hotéis e resorts com tarifa exclusiva e parcelamento em até 12x. E gente de verdade no WhatsApp quando a viagem sai do roteiro."
+  perguntas={perguntas}
+>
+  <div slot="hero">
+    <ul class="lista-check destaques">
+      <li>Voos nacionais e internacionais em até 12x no cartão</li>
+      <li>Hotéis e resorts com tarifa de agência</li>
+      <li>Remarcação e imprevisto resolvidos por consultor</li>
+    </ul>
+    <p class="atalho">
+      Quer pesquisar você mesmo primeiro?
+      <a href={EXTERNOS.agenciaViagens} rel="noopener">Abra nossa busca online 24h</a>.
+    </p>
+  </div>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Duas formas de comprar</span>
+      <h2>Busca por conta própria ou consultor montando para você</h2>
+      <div class="grade grade--2">
+        <div class="cartao">
+          <h3>Você pesquisa</h3>
+          <p>
+            Nossa plataforma fica aberta 24 horas, com o mesmo inventário de voos e hotéis que um site de busca
+            grande. Você compara, escolhe e emite sozinho, com promoções exclusivas de agência.
+          </p>
+          <p><a class="btn btn--contorno" href={EXTERNOS.agenciaViagens} rel="noopener">Abrir a busca online</a></p>
+        </div>
+        <div class="cartao">
+          <h3>A gente monta</h3>
+          <p>
+            Você diz para onde, quando e com quantas pessoas. O consultor volta com duas ou três combinações de voo
+            e hospedagem, já com o total parcelado — incluindo aquelas que não aparecem em busca automática, como
+            escala mais longa que corta o preço pela metade.
+          </p>
+          <p><a class="btn btn--primario" href="#conteudo">Pedir uma cotação</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">Onde a agência salva a viagem</span>
+      <h2>As situações em que comprar sozinho custa caro</h2>
+      <div class="grade grade--3 casos">
+        <div>
+          <h3>Voo cancelado na véspera</h3>
+          <p>Reacomodação em outra companhia depende de conhecer a regra e ter acesso ao sistema. É o que o consultor faz enquanto você ainda está no aeroporto.</p>
+        </div>
+        <div>
+          <h3>Viagem em grupo</h3>
+          <p>Família grande, formatura, viagem de empresa: tarifa de grupo raramente aparece em busca pública, e o bloqueio de assentos precisa ser negociado.</p>
+        </div>
+        <div>
+          <h3>Internacional com conexão</h3>
+          <p>Bilhete emitido em partes separadas não protege sua conexão. Emitido junto, atraso no primeiro trecho vira obrigação da companhia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Vertical>
+
+<style>
+  .destaques { margin-top: var(--e-6); font-weight: 600; }
+  .atalho { margin-top: var(--e-6); font-size: var(--t-sm); color: var(--texto-suave); }
+  .casos { margin-top: var(--e-8); gap: var(--e-8); }
+  .casos p { color: #c8d6e6; font-size: var(--t-sm); }
+</style>

@@ -1,0 +1,113 @@
+---
+import Base from "./Base.astro";
+import LeadForm from "../components/LeadForm.astro";
+import Faq from "../components/Faq.astro";
+import type { Pergunta } from "../components/Faq.astro";
+import SolucaoCard from "../components/SolucaoCard.astro";
+import { SOLUCOES, type Solucao } from "../data/solucoes";
+import { EMPRESA } from "../consts";
+
+interface Props {
+  solucao: Solucao;
+  h1: string;
+  chamada: string;
+  perguntas: readonly Pergunta[];
+  /** Tipo de nó schema.org que melhor descreve a vertical. */
+  tipoServico?: string;
+}
+const { solucao, h1, chamada, perguntas, tipoServico = "Service" } = Astro.props;
+const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
+const url = new URL(`/${solucao.slug}`, site).href;
+const outras = SOLUCOES.filter((s) => s.slug !== solucao.slug);
+
+const schema = [
+  {
+    "@type": tipoServico,
+    "@id": `${url}#servico`,
+    name: solucao.nome,
+    description: solucao.descricao,
+    url,
+    provider: { "@id": new URL("/#organizacao", site).href },
+    areaServed: { "@type": "State", name: "Goiás" },
+    audience: { "@type": "Audience", geographicArea: { "@type": "City", name: "Goiânia" } },
+  },
+  {
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    mainEntity: perguntas.map((q) => ({
+      "@type": "Question",
+      name: q.p,
+      acceptedAnswer: { "@type": "Answer", text: q.r.replace(/<[^>]+>/g, "") },
+    })),
+  },
+];
+---
+
+<Base
+  titulo={solucao.titulo}
+  descricao={solucao.descricao}
+  schema={schema}
+  trilha={[
+    { nome: "Início", href: "/" },
+    { nome: solucao.nome, href: `/${solucao.slug}` },
+  ]}
+>
+  <section class="topo">
+    <div class="container topo__grade">
+      <div class="topo__texto">
+        <span class="olho">{solucao.nome}</span>
+        <h1>{h1}</h1>
+        <p class="chamada">{chamada}</p>
+        <slot name="hero" />
+      </div>
+      <div class="topo__form">
+        <LeadForm solucao={solucao} instancia="topo" />
+      </div>
+    </div>
+  </section>
+
+  <slot />
+
+  <section class="secao secao--suave">
+    <div class="container">
+      <Faq perguntas={perguntas} />
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container fechamento">
+      <div>
+        <span class="olho">Próximo passo</span>
+        <h2>{solucao.cta.replace(/^Quero /, "Peça agora: ")}</h2>
+        <p class="chamada">
+          Um consultor da Autogestor responde no seu WhatsApp. Corretora em Goiânia desde {EMPRESA.fundacao},
+          registro SUSEP {EMPRESA.susep}.
+        </p>
+      </div>
+      <LeadForm solucao={solucao} titulo="Peça sua cotação" destaque instancia="fim" />
+    </div>
+  </section>
+
+  <section class="secao secao--suave">
+    <div class="container">
+      <span class="olho">Também resolvemos</span>
+      <h2>Outras soluções do hub</h2>
+      <ul class="grade grade--3 lista-limpa">
+        {outras.map((s) => <SolucaoCard solucao={s} />)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .topo { background: var(--superficie); padding-block: var(--e-12) var(--e-16); }
+  .topo__grade { display: grid; gap: var(--e-8); align-items: start; }
+  @media (min-width: 900px) {
+    .topo__grade { grid-template-columns: 1fr minmax(360px, 420px); gap: var(--e-12); }
+    /* O formulário acompanha a leitura da página longa em telas altas. */
+    .topo__form { position: sticky; top: 140px; }
+  }
+  .topo__texto .chamada { font-size: var(--t-lg); }
+  .fechamento { display: grid; gap: var(--e-8); align-items: center; }
+  @media (min-width: 900px) { .fechamento { grid-template-columns: 1fr minmax(360px, 440px); } }
+</style>

@@ -1,0 +1,46 @@
+---
+import type { Solucao } from "../data/solucoes";
+interface Props { solucao: Solucao }
+const { solucao } = Astro.props;
+---
+
+<li class="scard">
+  <span class="scard__icone" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={solucao.icone} />
+  </span>
+  <h3 class="scard__titulo">
+    <!-- O card inteiro é clicável pelo ::after, mas o link real é o título:
+         leitor de tela anuncia "Energia Coopluz", não "leia mais". -->
+    <a href={`/${solucao.slug}`}>{solucao.nome}</a>
+  </h3>
+  <p class="scard__resumo">{solucao.resumo}</p>
+</li>
+
+<style>
+  .scard {
+    position: relative;
+    background: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: var(--r-3);
+    padding: var(--e-6);
+    transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  }
+  .scard:hover { border-color: var(--marca); transform: translateY(-2px); box-shadow: var(--sombra-sm); }
+  .scard:has(a:focus-visible) { outline: 3px solid var(--foco); outline-offset: 2px; }
+  .scard__icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--r-2);
+    background: var(--azul-100);
+    color: var(--marca-forte);
+    margin-bottom: var(--e-4);
+  }
+  .scard__titulo { font-size: var(--t-md); margin-bottom: var(--e-2); }
+  .scard__titulo a { color: var(--texto); text-decoration: none; }
+  .scard__titulo a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+  .scard__titulo a:focus-visible { outline: none; }
+  .scard__resumo { color: var(--texto-suave); font-size: var(--t-sm); margin: 0; }
+</style>

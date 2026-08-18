@@ -1,0 +1,128 @@
+---
+import Vertical from "../layouts/Vertical.astro";
+import { porSlug } from "../data/solucoes";
+
+const solucao = porSlug("financiamento");
+
+const perguntas = [
+  {
+    p: "Vocês cobram alguma taxa para analisar minha ficha?",
+    r: "Não. Não cobramos para analisar a ficha nem para liberar o crédito aprovado pelo banco ou pela financeira. Quem pede pagamento adiantado para 'destravar' financiamento está aplicando golpe — em qualquer corretora.",
+  },
+  {
+    p: "Preciso já ter escolhido o carro?",
+    r: "Não, e é melhor não ter. Com o crédito pré-aprovado você negocia como quem paga à vista, seja com particular ou com loja, e tem base real para saber quanto pode gastar.",
+  },
+  {
+    p: "Financiam compra de particular?",
+    r: "Sim. Você não fica preso à loja parceira do banco — pode comprar de pessoa física ou de agência, o que costuma abrir margem de negociação melhor.",
+  },
+  {
+    p: "Tenho restrição no CPF. Adianta tentar?",
+    r: "Restrição ativa e score muito baixo dificultam bastante a aprovação, e não vamos prometer o contrário. Ainda assim vale a análise: entrada maior, prazo menor ou avalista mudam o resultado em parte dos casos, e a consulta não custa nada.",
+  },
+  {
+    p: "Só carro ou também moto e caminhão?",
+    r: "Carro, moto e caminhão, novos ou usados, nacionais ou importados. Cada categoria tem financeiras diferentes com apetite diferente — é isso que a comparação resolve.",
+  },
+  {
+    p: "Quanto tempo leva a aprovação?",
+    r: "A resposta da maioria das financeiras sai no mesmo dia útil, desde que a documentação esteja completa. A liberação do valor depois de aprovado costuma levar mais um a três dias úteis.",
+  },
+  {
+    p: "Financiamento ou consórcio: qual escolher?",
+    r: "Financiamento entrega o veículo agora e cobra juros por isso. Consórcio não tem juros, mas você espera a contemplação. Se você precisa do carro esta semana, é financiamento; se está juntando para daqui a um ou dois anos, o consórcio sai bem mais barato.",
+  },
+];
+---
+
+<Vertical
+  solucao={solucao}
+  h1="Crédito aprovado antes de você escolher o carro"
+  chamada="Financiamento de carro, moto e caminhão, novo ou usado, nacional ou importado. Comparamos as financeiras, aprovamos antes da compra e não cobramos nada para analisar sua ficha."
+  perguntas={perguntas}
+  tipoServico="FinancialProduct"
+>
+  <ul class="lista-check destaques" slot="hero">
+    <li>Sem taxa para analisar a ficha ou liberar o crédito</li>
+    <li>Compre de particular ou de agência, você escolhe</li>
+    <li>Carro, moto e caminhão, novos ou usados</li>
+  </ul>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">A ordem que economiza dinheiro</span>
+      <h2>Aprove primeiro, negocie depois</h2>
+      <p class="chamada">
+        A sequência mais comum é a mais cara: a pessoa escolhe o carro na loja, se apaixona, e aceita o
+        financiamento que a loja oferece — que costuma vir com a taxa que interessa à loja, não a você.
+      </p>
+      <p class="chamada">
+        Invertendo a ordem, você chega na negociação sabendo seu limite e com o dinheiro garantido. O vendedor
+        trata você como comprador à vista, e a taxa foi decidida numa comparação entre financeiras, não no balcão.
+      </p>
+      <ol class="etapas">
+        <li>
+          <h3>Análise sem custo</h3>
+          <p>Enviamos sua ficha para as financeiras parceiras. Nenhuma cobrança nesta etapa, aprovada ou não.</p>
+        </li>
+        <li>
+          <h3>Comparação das propostas</h3>
+          <p>Taxa, prazo, entrada e custo total lado a lado. O que importa é o CET, não só a parcela.</p>
+        </li>
+        <li>
+          <h3>Você escolhe o veículo</h3>
+          <p>Com crédito aprovado, comprando de particular ou de loja, com poder de barganha de pagamento à vista.</p>
+        </li>
+        <li>
+          <h3>Liberação e transferência</h3>
+          <p>Cuidamos da documentação, do gravame e da liberação do valor para o vendedor.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">O que olhar antes de assinar</span>
+      <h2>Parcela baixa não significa financiamento barato</h2>
+      <div class="grade grade--3 casos">
+        <div>
+          <h3>Compare o CET, não a parcela</h3>
+          <p>O Custo Efetivo Total inclui juros, IOF, tarifa de cadastro e seguros embutidos. É o único número que permite comparar duas propostas de verdade.</p>
+        </div>
+        <div>
+          <h3>Prazo longo custa caro</h3>
+          <p>Esticar de 36 para 60 meses derruba a parcela e pode dobrar o que você paga de juros no total. Só vale quando o fluxo de caixa exige.</p>
+        </div>
+        <div>
+          <h3>Entrada muda a taxa</h3>
+          <p>Entrada maior reduz o risco para a financeira e costuma destravar taxa melhor — às vezes vale mais que negociar o preço do carro.</p>
+        </div>
+      </div>
+      <p class="aviso">
+        Toda proposta está sujeita a análise e aprovação da instituição financeira. Condições, taxas e prazos são
+        definidos por ela e podem mudar até a assinatura do contrato.
+      </p>
+    </div>
+  </section>
+</Vertical>
+
+<style>
+  .destaques { margin-top: var(--e-6); font-weight: 600; }
+  .etapas {
+    display: grid;
+    gap: var(--e-6);
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    margin: var(--e-8) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: etapa;
+  }
+  .etapas li { counter-increment: etapa; border-top: 3px solid var(--acento); padding-top: var(--e-4); }
+  .etapas li::before { content: "0" counter(etapa); display: block; font-weight: 700; color: var(--marca); margin-bottom: var(--e-2); }
+  .etapas p { color: var(--texto-suave); font-size: var(--t-sm); }
+  .casos { margin-top: var(--e-8); gap: var(--e-8); }
+  .casos p { color: #c8d6e6; font-size: var(--t-sm); }
+  .aviso { margin-top: var(--e-12); font-size: var(--t-sm); color: #9fb4cb; max-width: 78ch; }
+</style>

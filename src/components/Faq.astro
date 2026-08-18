@@ -1,0 +1,56 @@
+---
+export type Pergunta = { p: string; r: string };
+interface Props {
+  perguntas: readonly Pergunta[];
+  titulo?: string;
+}
+const { perguntas, titulo = "Perguntas frequentes" } = Astro.props;
+---
+
+<section class="faq" aria-labelledby="faq-titulo">
+  <h2 id="faq-titulo">{titulo}</h2>
+  <!-- <details>/<summary> nativo: teclado, estado anunciado e busca do
+       navegador de graça, e o texto da resposta fica no HTML para o crawler
+       mesmo com o item fechado. Um accordion em <div> custaria isso tudo. -->
+  <div class="faq__lista">
+    {
+      perguntas.map((q) => (
+        <details class="faq__item">
+          <summary>{q.p}</summary>
+          <div class="faq__resposta" set:html={q.r} />
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .faq__lista { display: grid; gap: var(--e-2); max-width: 78ch; }
+  .faq__item {
+    border: 1px solid var(--borda);
+    border-radius: var(--r-3);
+    background: var(--fundo);
+  }
+  .faq__item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: var(--e-4);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    min-height: 48px;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after {
+    content: "+";
+    font-size: var(--t-xl);
+    line-height: 1;
+    color: var(--marca);
+    flex: none;
+  }
+  .faq__item[open] summary::after { content: "−"; }
+  .faq__item summary:hover { background: var(--superficie); }
+  .faq__resposta { padding: 0 var(--e-4) var(--e-4); color: var(--texto-suave); }
+</style>

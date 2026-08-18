@@ -1,0 +1,206 @@
+---
+import Base from "../layouts/Base.astro";
+import SolucaoCard from "../components/SolucaoCard.astro";
+import Faq from "../components/Faq.astro";
+import { SOLUCOES } from "../data/solucoes";
+import { EMPRESA, whatsapp } from "../consts";
+
+const perguntas = [
+  {
+    p: "A Autogestor é corretora ou revenda?",
+    r: "Corretora registrada na SUSEP sob o nº 202070004, atuando desde 2004. Em seguros representamos você diante da seguradora — não o contrário. Nas outras frentes (energia, viagens, crédito, consórcio e repasse) intermediamos a contratação junto a parceiros credenciados.",
+  },
+  {
+    p: "Cobram alguma coisa para cotar?",
+    r: "Não. Cotação, simulação e análise de ficha são gratuitas. Quando existe custo — taxa de administração de consórcio, taxa de operação no repasse — ele é informado antes de qualquer assinatura.",
+  },
+  {
+    p: "Atendem fora de Goiânia?",
+    r: "Seguro, financiamento, consórcio e viagens atendem todo o Brasil. O desconto de energia da Coopluz vale apenas para imóveis atendidos pela Equatorial Goiás. O repasse de veículos tem pátios em Goiânia (GO), Contagem (MG) e Brasília (DF).",
+  },
+  {
+    p: "Como funciona o atendimento?",
+    r: "Você escolhe a solução, deixa nome e WhatsApp, e um consultor responde por lá. Sem call center, sem ligação automática e sem repassar seus dados para terceiros.",
+  },
+  {
+    p: "Dá para contratar mais de uma solução?",
+    r: "Sim, e é o caso mais comum. Quem faz o seguro do carro costuma aproveitar para reduzir a conta de luz ou financiar o próximo veículo — com o mesmo consultor, sem recomeçar o cadastro.",
+  },
+];
+
+const schema = [
+  {
+    "@type": "ItemList",
+    "@id": "https://autogestor.roilabs.com.br/#solucoes",
+    name: "Soluções Autogestor",
+    itemListElement: SOLUCOES.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: s.nome,
+      url: new URL(`/${s.slug}`, Astro.site ?? "https://autogestor.roilabs.com.br").href,
+    })),
+  },
+  {
+    "@type": "FAQPage",
+    "@id": "https://autogestor.roilabs.com.br/#faq",
+    mainEntity: perguntas.map((q) => ({
+      "@type": "Question",
+      name: q.p,
+      acceptedAnswer: { "@type": "Answer", text: q.r },
+    })),
+  },
+];
+---
+
+<Base
+  titulo="Autogestor — seguro, energia, viagens, crédito e veículos em Goiânia"
+  descricao="Hub de soluções em Goiânia desde 2004: seguro de carro, moto e caminhão, 20% de desconto na conta de luz, passagens aéreas, financiamento, consórcio e repasse de veículos de locadora."
+  schema={schema}
+>
+  <section class="capa">
+    <div class="container">
+      <span class="olho">Hub de soluções em Goiânia desde {EMPRESA.fundacao}</span>
+      <h1>Seis frentes que pesam no seu mês. Um consultor só para resolver.</h1>
+      <p class="chamada capa__chamada">
+        Seguro de veículo, desconto na conta de luz, passagem aérea, financiamento, consórcio e compra de seminovo
+        direto de locadora. A Autogestor cota, compara e acompanha o contrato — você fala com uma pessoa, não com
+        seis empresas.
+      </p>
+      <div class="capa__acoes">
+        <a class="btn btn--primario" href="#solucoes">Ver as seis soluções</a>
+        <a class="btn btn--contorno" href={whatsapp("Olá! Não sei qual solução preciso, pode me orientar?")}>
+          Não sei por onde começar
+        </a>
+      </div>
+      <ul class="provas">
+        <li><strong>2004</strong><span>atendendo em Goiânia</span></li>
+        <li><strong>SUSEP {EMPRESA.susep}</strong><span>corretora registrada</span></li>
+        <li><strong>R$ 0</strong><span>para cotar e simular</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="secao" id="solucoes">
+    <div class="container">
+      <span class="olho">Escolha por onde começar</span>
+      <h2>O que a Autogestor resolve</h2>
+      <p class="chamada">Cada frente tem consultor próprio. Clique na sua e peça a cotação em três campos.</p>
+      <ul class="grade grade--3 lista-limpa solucoes">
+        {SOLUCOES.map((s) => <SolucaoCard solucao={s} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">Por que reunir tudo aqui</span>
+      <h2>Um hub existe para você não repetir seu cadastro seis vezes</h2>
+      <div class="grade grade--3 razoes">
+        <div>
+          <h3>Um consultor, várias frentes</h3>
+          <p>
+            Quem cuidou do seu seguro é quem simula seu financiamento. Seu histórico já está com a gente — não há
+            fila nova nem formulário do zero a cada produto.
+          </p>
+        </div>
+        <div>
+          <h3>Comparação, não empurra-empurra</h3>
+          <p>
+            Em seguro e crédito trabalhamos com várias companhias. Mostramos as opções lado a lado, com o que muda
+            em cobertura e em parcela — inclusive quando a resposta é "não vale a pena agora".
+          </p>
+        </div>
+        <div>
+          <h3>Gente de Goiânia, no seu WhatsApp</h3>
+          <p>
+            Escritório no Jardim Europa, atendimento por WhatsApp e o mesmo número desde sempre. Sinistro, dúvida
+            de fatura ou remarcação de voo têm para quem ligar.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Como funciona</span>
+      <h2>Três passos, sem visita e sem papelada antecipada</h2>
+      <ol class="passos">
+        <li>
+          <h3>Você escolhe a frente</h3>
+          <p>Abre a página da solução e deixa nome, WhatsApp e um dado de contexto. Leva menos de um minuto.</p>
+        </li>
+        <li>
+          <h3>A gente cota e compara</h3>
+          <p>
+            O consultor busca as opções nas empresas parceiras e volta com os números — valor, cobertura, prazo e o
+            que está fora.
+          </p>
+        </li>
+        <li>
+          <h3>Você decide com tudo na mão</h3>
+          <p>
+            Contrato assinado digitalmente e acompanhamento depois da venda. Se decidir não seguir, não há custo
+            nem cobrança de nada.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao secao--suave">
+    <div class="container">
+      <Faq perguntas={perguntas} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .capa {
+    background: linear-gradient(180deg, var(--azul-100) 0%, var(--fundo) 100%);
+    padding-block: var(--e-16) var(--e-12);
+  }
+  .capa__chamada { font-size: var(--t-lg); }
+  .capa__acoes { display: flex; flex-wrap: wrap; gap: var(--e-3); margin-top: var(--e-8); }
+  .provas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-8);
+    list-style: none;
+    margin: var(--e-12) 0 0;
+    padding: var(--e-6) 0 0;
+    border-top: 1px solid var(--borda);
+  }
+  .provas li { display: grid; }
+  .provas strong { font-size: var(--t-xl); color: var(--marca-forte); letter-spacing: -0.02em; }
+  .provas span { font-size: var(--t-sm); color: var(--texto-suave); }
+
+  .solucoes { margin-top: var(--e-8); }
+  .razoes { margin-top: var(--e-8); gap: var(--e-8); }
+  .razoes p { color: #c8d6e6; }
+
+  .passos {
+    display: grid;
+    gap: var(--e-8);
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    margin: var(--e-8) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: passo;
+  }
+  .passos li { counter-increment: passo; }
+  .passos li::before {
+    content: counter(passo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-full);
+    background: var(--acento);
+    color: var(--acento-texto);
+    font-weight: 700;
+    margin-bottom: var(--e-4);
+  }
+  .passos p { color: var(--texto-suave); }
+</style>

@@ -1,0 +1,113 @@
+---
+import { SOLUCOES } from "../data/solucoes";
+import { EMPRESA, whatsapp } from "../consts";
+
+const { pathname } = Astro.url;
+const atual = (href: string) => pathname === href || pathname === `${href}/`;
+---
+
+<header class="cabecalho">
+  <div class="container cabecalho__linha">
+    <a href="/" class="marca" aria-label={`${EMPRESA.nome} — página inicial`}>
+      <img src="/img/logo.webp" width="40" height="41" alt="" fetchpriority="high" decoding="async" />
+      <span class="marca__nome">Autogestor</span>
+    </a>
+    <a class="cabecalho__zap" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>
+      <span aria-hidden="true">💬</span> WhatsApp
+    </a>
+  </div>
+  <!-- Sem hambúrguer: 6 verticais cabem numa barra que quebra em duas linhas no
+       celular. Menu fechado esconde exatamente o que a pessoa veio procurar. -->
+  <nav class="nav" aria-label="Soluções">
+    <ul class="container nav__lista">
+      {
+        SOLUCOES.map((s) => (
+          <li>
+            <a href={`/${s.slug}`} aria-current={atual(`/${s.slug}`) ? "page" : undefined}>
+              {s.curto}
+            </a>
+          </li>
+        ))
+      }
+      <li><a href="/sobre" aria-current={atual("/sobre") ? "page" : undefined}>Sobre</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .cabecalho {
+    background: var(--fundo);
+    border-bottom: 1px solid var(--borda);
+    z-index: 20;
+  }
+  /* Sticky só a partir do desktop. No celular a barra tem 209px (o nav de 6
+     verticais quebra em 3 linhas) — grudar isso no topo custaria um quarto da
+     tela em toda rolagem, e a barra inteira já aparece na primeira dobra. */
+  @media (min-width: 900px) {
+    .cabecalho { position: sticky; top: 0; }
+  }
+  .cabecalho__linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    padding-block: var(--e-3);
+  }
+  .marca {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    gap: var(--e-2);
+    text-decoration: none;
+    color: var(--marca-forte);
+  }
+  .marca__nome {
+    font-weight: 700;
+    font-size: var(--t-lg);
+    letter-spacing: -0.02em;
+  }
+  .cabecalho__zap {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-2);
+    min-height: 44px;
+    padding-inline: var(--e-4);
+    border-radius: var(--r-full);
+    background: var(--azul-100);
+    color: var(--marca-forte);
+    font-weight: 700;
+    font-size: var(--t-sm);
+    text-decoration: none;
+  }
+  .cabecalho__zap:hover { background: var(--cinza-100); }
+
+  .nav { border-top: 1px solid var(--borda); background: var(--superficie); }
+  .nav__lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-1) var(--e-2);
+    list-style: none;
+    margin: 0;
+    padding-block: var(--e-2);
+  }
+  .nav__lista a {
+    /* flex + min-height para o alvo de toque bater 44px: com padding sozinho o
+       link ficava em 38px, e o nav é o elemento mais tocado do site no celular. */
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--e-2) var(--e-3);
+    border-radius: var(--r-2);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--texto-suave);
+    text-decoration: none;
+  }
+  .nav__lista a:hover { background: var(--cinza-100); color: var(--texto); }
+  /* Página atual marcada por peso + barra, não só por cor. */
+  .nav__lista a[aria-current="page"] {
+    color: var(--marca-forte);
+    background: var(--fundo);
+    box-shadow: inset 0 -3px 0 var(--acento);
+  }
+</style>

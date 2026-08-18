@@ -1,0 +1,84 @@
+---
+import { SOLUCOES } from "../data/solucoes";
+import { EMPRESA, enderecoLinha, whatsapp } from "../consts";
+const ano = new Date().getFullYear();
+---
+
+<footer class="rodape">
+  <div class="container rodape__grade">
+    <div>
+      <p class="rodape__marca">Autogestor</p>
+      <p class="rodape__texto">
+        Hub de soluções em energia, seguros, viagens, crédito e veículos. Em Goiânia desde {EMPRESA.fundacao}.
+      </p>
+      <p class="rodape__texto">
+        Corretora registrada na SUSEP sob o nº {EMPRESA.susep}.
+      </p>
+    </div>
+
+    <nav aria-label="Soluções (rodapé)">
+      <h2 class="rodape__titulo">Soluções</h2>
+      <ul class="rodape__links">
+        {SOLUCOES.map((s) => <li><a href={`/${s.slug}`}>{s.nome}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-label="Institucional">
+      <h2 class="rodape__titulo">Institucional</h2>
+      <ul class="rodape__links">
+        <li><a href="/sobre">Sobre a Autogestor</a></li>
+        <li><a href="/seja-parceiro">Seja um parceiro</a></li>
+        <li><a href={whatsapp("Olá! Vim pelo site da Autogestor.")}>Falar no WhatsApp</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="rodape__titulo">Atendimento</h2>
+      <address class="rodape__texto">
+        {enderecoLinha}<br />
+        <a href={`tel:${EMPRESA.telefone}`}>{EMPRESA.telefoneExibicao}</a><br />
+        <a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a>
+      </address>
+      <ul class="rodape__redes">
+        <li><a href={EMPRESA.redes[0]} rel="me noopener">Instagram</a></li>
+        <li><a href={EMPRESA.redes[1]} rel="me noopener">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container rodape__base">
+    <p>© {ano} {EMPRESA.nomeLegal}. CNPJ e condições contratuais disponíveis sob solicitação.</p>
+    <p class="rodape__aviso">
+      Seguro, consórcio e financiamento estão sujeitos a análise e à aceitação da seguradora, administradora ou
+      instituição financeira. As condições apresentadas aqui não substituem a proposta formal.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .rodape {
+    background: var(--superficie-marca);
+    color: #c8d6e6;
+    padding-block: var(--e-16) var(--e-8);
+    margin-top: var(--e-16);
+  }
+  .rodape__grade {
+    display: grid;
+    gap: var(--e-8);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .rodape__marca { color: #fff; font-size: var(--t-lg); font-weight: 700; margin-bottom: var(--e-2); }
+  .rodape__titulo { color: #fff; font-size: var(--t-sm); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--e-4); }
+  .rodape__texto { font-size: var(--t-sm); font-style: normal; line-height: 1.7; }
+  .rodape__links, .rodape__redes { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-2); font-size: var(--t-sm); }
+  .rodape__redes { margin-top: var(--e-4); grid-auto-flow: column; justify-content: start; gap: var(--e-4); }
+  .rodape a { color: #cfe1f3; }
+  .rodape a:hover { color: #fff; }
+  .rodape__base {
+    margin-top: var(--e-12);
+    padding-top: var(--e-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: var(--t-sm);
+  }
+  .rodape__aviso { color: #9fb4cb; max-width: 78ch; }
+</style>

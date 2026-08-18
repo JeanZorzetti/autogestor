@@ -1,0 +1,185 @@
+---
+import Base from "../layouts/Base.astro";
+import Faq from "../components/Faq.astro";
+import { SOLUCOES } from "../data/solucoes";
+import { EMPRESA, enderecoLinha, whatsapp } from "../consts";
+
+const perguntas = [
+  {
+    p: "Desde quando a Autogestor existe?",
+    r: "Desde 2004, em Goiânia. Começou como corretora de seguros e foi somando frentes conforme os mesmos clientes pediam: crédito, viagens, energia e veículos.",
+  },
+  {
+    p: "Vocês são uma empresa só ou várias?",
+    r: "Uma empresa com áreas de gestão própria. Cada frente tem seu consultor e seus parceiros, mas o cadastro, o atendimento e a responsabilidade são de um mesmo grupo.",
+  },
+  {
+    p: "Onde fica o escritório?",
+    r: `${enderecoLinha}. O atendimento acontece majoritariamente por WhatsApp, e a visita presencial fica disponível para quem prefere.`,
+  },
+  {
+    p: "Como confiro o registro de corretora?",
+    r: `O registro SUSEP é o nº ${EMPRESA.susep} e pode ser consultado no site da Superintendência de Seguros Privados. Ele vale para a atividade de corretagem de seguros — as demais frentes operam por credenciamento junto aos respectivos parceiros.`,
+  },
+];
+
+const schema = [
+  {
+    "@type": "AboutPage",
+    "@id": "https://autogestor.roilabs.com.br/sobre#pagina-sobre",
+    mainEntity: { "@id": "https://autogestor.roilabs.com.br/#organizacao" },
+  },
+  {
+    "@type": "FAQPage",
+    "@id": "https://autogestor.roilabs.com.br/sobre#faq",
+    mainEntity: perguntas.map((q) => ({
+      "@type": "Question",
+      name: q.p,
+      acceptedAnswer: { "@type": "Answer", text: q.r },
+    })),
+  },
+];
+---
+
+<Base
+  titulo="Sobre a Autogestor — hub de negócios em Goiânia desde 2004"
+  descricao="A Autogestor nasceu em 2004 em Goiânia como corretora de seguros e virou um hub de soluções: energia, seguros, viagens, financiamento, consórcio e repasse de veículos."
+  schema={schema}
+  trilha={[
+    { nome: "Início", href: "/" },
+    { nome: "Sobre", href: "/sobre" },
+  ]}
+>
+  <section class="topo">
+    <div class="container">
+      <span class="olho">Quem somos</span>
+      <h1>Um hub de negócios que começou como corretora de bairro</h1>
+      <p class="chamada">
+        A Autogestor nasceu em 2004 com um propósito simples: ser mais que uma empresa de serviços. Hoje conecta
+        pessoas, empresas e associações a soluções em seis frentes diferentes — sempre com o mesmo compromisso de
+        praticidade, transparência e qualidade em cada segmento onde atua.
+      </p>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Áreas de atuação</span>
+      <h2>Seis frentes, um cadastro</h2>
+      <div class="grade grade--2 areas">
+        <div class="cartao">
+          <h3>Autogestor Seguros e Proteção Veicular</h3>
+          <p>
+            Contratação e renovação de seguros e proteção veicular, assistência 24h nacional por 0800, regulação de
+            sinistro, gestão e análise de risco. Registro SUSEP {EMPRESA.susep}.
+          </p>
+        </div>
+        <div class="cartao">
+          <h3>Autogestor Financiamentos</h3>
+          <p>
+            Consultoria e assessoria em crédito e financiamento de carros, motos e caminhões, com comparação entre
+            financeiras antes da escolha do veículo.
+          </p>
+        </div>
+        <div class="cartao">
+          <h3>Autogestor Viagens</h3>
+          <p>
+            Pacotes e planos nacionais e internacionais, passagens aéreas e hotéis pela agência online 24h, com
+            condições exclusivas e suporte personalizado.
+          </p>
+        </div>
+        <div class="cartao">
+          <h3>Energia por compensação</h3>
+          <p>
+            Parceria credenciada com a Coopluz, cooperativa de energia por compensação em Goiás, que reduz em 20% a
+            conta da Equatorial sem obra e sem placa solar.
+          </p>
+        </div>
+        <div class="cartao">
+          <h3>Consórcio</h3>
+          <p>
+            Cartas de crédito de veículo e imóvel em grupos de administradoras autorizadas pelo Banco Central, para
+            quem tem prazo e prefere não pagar juros.
+          </p>
+        </div>
+        <div class="cartao">
+          <h3>Repasse de veículos</h3>
+          <p>
+            Intermediação de compra direta de frota desmobilizada das maiores locadoras do país, com pátios em
+            Goiânia, Contagem e Brasília.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">O que nos diferencia</span>
+      <h2>Três coisas que um hub entrega e seis fornecedores separados não</h2>
+      <div class="grade grade--3 dif">
+        <div>
+          <h3>Integração</h3>
+          <p>
+            Um ecossistema de soluções reunido num único lugar. Quem já é cliente não recomeça o cadastro a cada
+            produto novo.
+          </p>
+        </div>
+        <div>
+          <h3>Transparência</h3>
+          <p>
+            Cada área tem gestão própria, mas todas compartilham os mesmos valores. Quando um produto não serve para
+            o seu caso, dizemos antes da assinatura.
+          </p>
+        </div>
+        <div>
+          <h3>Rede de parcerias</h3>
+          <p>
+            Atuamos junto a grandes empresas e associações, o que é o que permite condição melhor do que a que uma
+            pessoa consegue sozinha no balcão.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container contato">
+      <div>
+        <span class="olho">Atendimento</span>
+        <h2>Onde encontrar a gente</h2>
+        <address class="endereco">
+          {enderecoLinha}<br />
+          WhatsApp <a href={`tel:${EMPRESA.telefone}`}>{EMPRESA.telefoneExibicao}</a><br />
+          <a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a>
+        </address>
+        <p>
+          <a class="btn btn--primario" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>Falar no WhatsApp</a>
+        </p>
+      </div>
+      <div>
+        <h3>Ir direto para uma solução</h3>
+        <ul class="lista-check">
+          {SOLUCOES.map((s) => <li><a href={`/${s.slug}`}>{s.nome}</a></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--suave">
+    <div class="container">
+      <Faq perguntas={perguntas} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .topo { background: var(--superficie); padding-block: var(--e-16); }
+  .topo .chamada { font-size: var(--t-lg); }
+  .areas { margin-top: var(--e-8); }
+  .areas p { color: var(--texto-suave); font-size: var(--t-sm); margin: 0; }
+  .dif { margin-top: var(--e-8); gap: var(--e-8); }
+  .dif p { color: #c8d6e6; font-size: var(--t-sm); }
+  .contato { display: grid; gap: var(--e-8); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .endereco { font-style: normal; line-height: 1.8; margin-bottom: var(--e-6); }
+</style>

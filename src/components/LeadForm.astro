@@ -1,0 +1,191 @@
+---
+import type { Solucao } from "../data/solucoes";
+import { EMPRESA, whatsapp } from "../consts";
+
+interface Props {
+  solucao: Solucao;
+  titulo?: string;
+  /** `true` no bloco final da página, onde o formulário é o próprio conteúdo. */
+  destaque?: boolean;
+  /** A página de vertical renderiza este formulário duas vezes. Com id fixo, o
+   *  <label for> do segundo apontaria para o input do PRIMEIRO — clicar no
+   *  rótulo move o foco para o formulário errado. Cada instância declara o seu. */
+  instancia?: string;
+}
+const { solucao, titulo = "Peça sua cotação", destaque = false, instancia = "1" } = Astro.props;
+const id = `lead-${solucao.slug}-${instancia}`;
+---
+
+<section class:list={["form", destaque && "form--destaque"]} aria-labelledby={`${id}-titulo`}>
+  <h2 id={`${id}-titulo`}>{titulo}</h2>
+  <p class="form__sub">
+    Três campos. Um consultor responde no seu WhatsApp — sem robô e sem ligação de telemarketing.
+  </p>
+
+  <form id={id} class="form__campos" method="post" action="/api/lead" novalidate>
+    <input type="hidden" name="solucao" value={solucao.slug} />
+    <input type="hidden" name="origem" value={`site:${solucao.slug}`} />
+    <!-- Isca para robô. Escondida do olho E do leitor de tela: pessoa nenhuma
+         deve encontrar este campo, muito menos preencher sem querer. -->
+    <p class="isca" aria-hidden="true">
+      <label for={`${id}-empresa`}>Não preencha este campo</label>
+      <input id={`${id}-empresa`} name="empresa" type="text" tabindex="-1" autocomplete="off" />
+    </p>
+
+    <p class="campo">
+      <label for={`${id}-nome`}>Seu nome</label>
+      <input id={`${id}-nome`} name="nome" type="text" autocomplete="name" required maxlength="200" />
+    </p>
+
+    <p class="campo">
+      <label for={`${id}-whatsapp`}>WhatsApp</label>
+      <input
+        id={`${id}-whatsapp`}
+        name="whatsapp"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel-national"
+        required
+        placeholder="(62) 98262-2220"
+        aria-describedby={`${id}-whatsapp-dica`}
+      />
+      <span id={`${id}-whatsapp-dica`} class="campo__dica">DDD + 9 dígitos. É por aqui que respondemos.</span>
+    </p>
+
+    <p class="campo">
+      <label for={`${id}-contexto`}>{solucao.campo.rotulo}</label>
+      {
+        solucao.campo.opcoes ? (
+          <select id={`${id}-contexto`} name="contexto">
+            {solucao.campo.opcoes.map((o) => <option value={o}>{o}</option>)}
+          </select>
+        ) : (
+          <input id={`${id}-contexto`} name="contexto" type="text" maxlength="300" placeholder={solucao.campo.exemplo} />
+        )
+      }
+    </p>
+
+    <!-- role="status" anuncia sem roubar o foco; o script move o foco para o
+         campo errado, que é o que resolve a tarefa. -->
+    <p class="form__aviso" id={`${id}-aviso`} role="status" hidden></p>
+
+    <button class="btn btn--primario btn--bloco" type="submit">{solucao.cta}</button>
+
+    <p class="form__legal">
+      Ao enviar, você autoriza o contato da Autogestor sobre {solucao.nome}. Não vendemos seus dados.
+    </p>
+  </form>
+
+  <p class="form__alternativa">
+    Prefere falar agora?
+    <a href={whatsapp(`Olá! Quero saber sobre ${solucao.nome}.`)}>Chamar no WhatsApp {EMPRESA.telefoneExibicao}</a>
+  </p>
+</section>
+
+<style>
+  .form {
+    background: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: var(--r-4);
+    padding: var(--e-6);
+    box-shadow: var(--sombra-sm);
+  }
+  .form--destaque { box-shadow: var(--sombra-md); }
+  .form h2 { font-size: var(--t-xl); margin-bottom: var(--e-2); color: var(--texto); }
+  .form__sub { font-size: var(--t-sm); color: var(--texto-suave); margin-bottom: var(--e-6); }
+  .form__campos { display: grid; gap: var(--e-4); }
+  .campo { display: grid; gap: var(--e-2); margin: 0; }
+  /* Label sempre visível acima do campo: placeholder-como-label some ao digitar
+     e destrói a revisão do formulário. */
+  .campo label { font-weight: 600; font-size: var(--t-sm); }
+  .campo input, .campo select {
+    font: inherit;
+    /* 16px é o mínimo: abaixo disso o iOS dá zoom ao focar o campo. */
+    font-size: var(--t-base);
+    min-height: 48px;
+    padding: var(--e-3);
+    border: 1px solid var(--cinza-400);
+    border-radius: var(--r-2);
+    background: var(--fundo);
+    color: var(--texto);
+    width: 100%;
+  }
+  .campo input[aria-invalid="true"], .campo select[aria-invalid="true"] {
+    border-color: #b3261e;
+    border-width: 2px;
+  }
+  .campo__dica { font-size: var(--t-sm); color: var(--texto-suave); }
+
+  .form__aviso {
+    margin: 0;
+    padding: var(--e-3);
+    border-radius: var(--r-2);
+    font-size: var(--t-sm);
+    background: #fdeceb;
+    color: #7a1c15;
+    border-left: 4px solid #b3261e;
+  }
+  .form__aviso[data-ok] { background: #e7f4ec; color: #14532d; border-left-color: #1a7f45; }
+
+  .form__legal { font-size: var(--t-sm); color: var(--texto-suave); margin: 0; }
+  .form__alternativa { margin: var(--e-6) 0 0; font-size: var(--t-sm); color: var(--texto-suave); }
+
+  .isca { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+</style>
+
+<script>
+  // Progressive enhancement: sem JS o form faz POST normal e o endpoint
+  // redireciona para /obrigado. Com JS, responde na própria página.
+  document.querySelectorAll<HTMLFormElement>('form[action="/api/lead"]').forEach((form) => {
+    const aviso = form.querySelector<HTMLElement>(".form__aviso")!;
+    const botao = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const rotulo = botao.textContent ?? "";
+
+    const mostrar = (texto: string, ok: boolean) => {
+      aviso.textContent = texto;
+      aviso.hidden = false;
+      aviso.toggleAttribute("data-ok", ok);
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      form.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
+      aviso.hidden = true;
+      botao.disabled = true;
+      botao.textContent = "Enviando…";
+
+      try {
+        const dados = Object.fromEntries(new FormData(form));
+        const r = await fetch("/api/lead", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(dados),
+        });
+        const corpo = await r.json().catch(() => ({}));
+
+        if (r.ok) {
+          form.reset();
+          mostrar("Recebemos. Um consultor chama você no WhatsApp em instantes.", true);
+          botao.disabled = true;
+          botao.textContent = "Pedido enviado";
+          return;
+        }
+
+        mostrar(corpo.erro ?? "Não conseguimos enviar agora. Chame no WhatsApp que respondemos na hora.", false);
+        // Anunciar o erro não resolve a tarefa; levar o foco ao campo errado, sim.
+        const alvo = corpo.campo ? form.querySelector<HTMLElement>(`[name="${corpo.campo}"]`) : null;
+        if (alvo) {
+          alvo.setAttribute("aria-invalid", "true");
+          alvo.focus();
+        }
+      } catch {
+        mostrar("Sem conexão com o servidor. Chame no WhatsApp que respondemos na hora.", false);
+      } finally {
+        if (botao.textContent === "Enviando…") {
+          botao.disabled = false;
+          botao.textContent = rotulo;
+        }
+      }
+    });
+  });
+</script>

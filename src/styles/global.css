@@ -1,0 +1,222 @@
+/* Tokens do Autogestor. Cores primitivas amostradas da própria logo (hexágono em
+   vórtice): azul #005CA6, azul profundo #002B74, laranja #E47A45.
+
+   Contraste é restrição de escolha, não checagem final. O laranja da marca com
+   texto BRANCO dá 2.93:1 e reprova em AA — com texto tinta dá 5.94:1 e passa.
+   Por isso o botão primário é laranja com texto escuro, e não laranja escurecido:
+   preserva a cor exata da logo sem quebrar acessibilidade. */
+
+:root {
+  /* --- primitivos: nunca usados direto em componente --- */
+  --azul-900: #002b74;
+  --azul-700: #004898;
+  --azul-600: #005ca6;
+  --azul-100: #e2ecf6;
+  --laranja-500: #e47a45;
+  --laranja-600: #d26831;
+  --laranja-100: #fceee6;
+  --tinta: #0b1b2b;
+  --cinza-50: #f5f7fa;
+  --cinza-100: #e8edf3;
+  --cinza-200: #d3dbe5;
+  --cinza-400: #9aa8b8;
+  --cinza-600: #516275;
+  --cinza-800: #263544;
+
+  /* --- semânticos: é isto que os componentes leem --- */
+  --fundo: #ffffff;
+  --superficie: var(--cinza-50);
+  --superficie-marca: var(--azul-900);
+  --borda: var(--cinza-200);
+  --texto: var(--tinta);
+  --texto-suave: var(--cinza-600);
+  --texto-invertido: #ffffff;
+  --marca: var(--azul-600);
+  --marca-forte: var(--azul-900);
+  --acento: var(--laranja-500);
+  --acento-hover: var(--laranja-600);
+  --acento-texto: var(--tinta);
+  --foco: var(--azul-700);
+
+  /* --- escala de espaço: base 4, nada entre os passos --- */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-6: 1.5rem;
+  --e-8: 2rem;
+  --e-12: 3rem;
+  --e-16: 4rem;
+  --e-24: 6rem;
+
+  /* --- tipografia --- */
+  --fonte: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-md: 1.125rem;
+  --t-lg: 1.25rem;
+  --t-xl: 1.5rem;
+  --t-2xl: 2rem;
+  --t-3xl: clamp(2rem, 1.4rem + 3vw, 2.75rem);
+
+  --r-1: 4px;
+  --r-2: 8px;
+  --r-3: 12px;
+  --r-4: 16px;
+  --r-full: 999px;
+
+  /* Sombra realista tem duas camadas: uma difusa ampla + uma curta densa. */
+  --sombra-sm: 0 1px 2px rgba(11, 27, 43, 0.06), 0 4px 12px rgba(11, 27, 43, 0.05);
+  --sombra-md: 0 2px 4px rgba(11, 27, 43, 0.08), 0 12px 28px rgba(11, 27, 43, 0.1);
+
+  --largura: 1120px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+body {
+  margin: 0;
+  font-family: var(--fonte);
+  font-size: var(--t-base);
+  line-height: 1.6;
+  color: var(--texto);
+  background: var(--fundo);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 var(--e-4); text-wrap: balance; }
+h1 { font-size: var(--t-3xl); }
+h2 { font-size: var(--t-2xl); }
+h3 { font-size: var(--t-lg); }
+p { margin: 0 0 var(--e-4); text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--azul-700); text-underline-offset: 3px; }
+a:hover { color: var(--azul-900); }
+
+img, svg { max-width: 100%; height: auto; display: block; }
+
+/* Nunca `outline: none` sem substituto. Anel com 3:1 contra fundo e elemento. */
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+  border-radius: var(--r-1);
+}
+
+.container { width: 100%; max-width: var(--largura); margin-inline: auto; padding-inline: var(--e-4); }
+
+.secao { padding-block: var(--e-16); }
+.secao--suave { background: var(--superficie); }
+.secao--marca { background: var(--superficie-marca); color: var(--texto-invertido); }
+.secao--marca h2, .secao--marca h3 { color: var(--texto-invertido); }
+.secao--marca a { color: #cfe1f3; }
+
+.olho {
+  display: block;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--marca);
+  margin-bottom: var(--e-2);
+}
+.secao--marca .olho { color: var(--laranja-500); }
+
+.chamada { font-size: var(--t-md); color: var(--texto-suave); max-width: 62ch; }
+.secao--marca .chamada { color: #c8d6e6; }
+
+/* --- botões --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-2);
+  /* 48px de alvo de toque: o tráfego é majoritariamente mobile. */
+  min-height: 48px;
+  padding: var(--e-3) var(--e-6);
+  border: 2px solid transparent;
+  border-radius: var(--r-2);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn--primario { background: var(--acento); color: var(--acento-texto); }
+.btn--primario:hover { background: var(--acento-hover); color: var(--acento-texto); }
+.btn--marca { background: var(--marca-forte); color: var(--texto-invertido); }
+.btn--marca:hover { background: var(--azul-700); color: var(--texto-invertido); }
+.btn--contorno { background: transparent; border-color: currentColor; color: var(--marca-forte); }
+.btn--contorno:hover { background: var(--azul-100); color: var(--marca-forte); }
+.secao--marca .btn--contorno { color: #ffffff; }
+.secao--marca .btn--contorno:hover { background: rgba(255, 255, 255, 0.12); color: #ffffff; }
+.btn--bloco { width: 100%; }
+
+/* --- grades --- */
+.grade { display: grid; gap: var(--e-4); }
+.grade--2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grade--3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+.cartao {
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: var(--r-3);
+  padding: var(--e-6);
+}
+
+.lista-limpa { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-3); }
+.lista-check { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-3); }
+.lista-check li { padding-left: var(--e-8); position: relative; }
+/* Marcador é decorativo: o significado está no texto do item, não no símbolo. */
+.lista-check li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 1.1rem;
+  height: 0.55rem;
+  border-left: 3px solid var(--acento);
+  border-bottom: 3px solid var(--acento);
+  transform: rotate(-45deg);
+}
+
+.selo {
+  display: inline-block;
+  padding: var(--e-1) var(--e-3);
+  border-radius: var(--r-full);
+  background: var(--laranja-100);
+  color: #8a3f14;
+  font-size: var(--t-sm);
+  font-weight: 700;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Primeiro elemento focável da página, escondido até receber foco. */
+.pular {
+  position: absolute;
+  left: var(--e-4);
+  top: -60px;
+  z-index: 100;
+  background: var(--fundo);
+  color: var(--texto);
+  padding: var(--e-3) var(--e-4);
+  border-radius: var(--r-2);
+  box-shadow: var(--sombra-md);
+  transition: top 120ms ease;
+}
+.pular:focus { top: var(--e-4); }

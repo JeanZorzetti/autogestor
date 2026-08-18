@@ -1,0 +1,137 @@
+---
+import Vertical from "../layouts/Vertical.astro";
+import { porSlug } from "../data/solucoes";
+
+const solucao = porSlug("consorcio");
+
+const perguntas = [
+  {
+    p: "Consórcio tem juros mesmo?",
+    r: "Não tem juros. O que existe é a taxa de administração, cobrada pela administradora e diluída nas parcelas, mais o fundo de reserva quando previsto em contrato. Por isso o custo total costuma ficar bem abaixo do financiamento — a contrapartida é que você não leva o bem no ato.",
+  },
+  {
+    p: "Quando eu sou contemplado?",
+    r: "Por sorteio ou por lance, nas assembleias mensais do grupo. Sorteio é aleatório desde a primeira assembleia; lance é a antecipação de parcelas que você oferece para passar na frente. Ninguém — nem a administradora, nem a gente — pode garantir data de contemplação.",
+  },
+  {
+    p: "Isso é regulamentado?",
+    r: "Sim. O sistema de consórcios é regido pela Lei 11.795/2004 e fiscalizado pelo Banco Central do Brasil. Toda administradora precisa de autorização do BC, e os recursos do grupo ficam separados do patrimônio dela.",
+  },
+  {
+    p: "Posso usar a carta de crédito em qualquer lugar?",
+    r: "Sim, dentro da categoria do grupo. Contemplado, você negocia como pagamento à vista — com particular, loja ou construtora — o que costuma render desconto que financiamento nenhum oferece.",
+  },
+  {
+    p: "E se eu quiser sair antes de ser contemplado?",
+    r: "Você pode pedir a desistência, mas a devolução dos valores segue as regras do contrato e normalmente só ocorre ao fim do grupo, com descontos previstos. Por isso consórcio só faz sentido para quem consegue manter a parcela até o fim — a gente dimensiona a parcela pensando nisso.",
+  },
+  {
+    p: "Consórcio ou financiamento?",
+    r: "Se você precisa do bem agora, é financiamento: consórcio não entrega no ato. Se o objetivo é daqui a um ou dois anos e a prioridade é pagar menos no total, o consórcio ganha com folga por não ter juros.",
+  },
+  {
+    p: "Dá para dar lance com o FGTS?",
+    r: "No consórcio de imóvel, sim, dentro das regras do FGTS para aquisição de moradia própria. Em consórcio de veículo não é permitido.",
+  },
+];
+---
+
+<Vertical
+  solucao={solucao}
+  h1="Conquiste carro, caminhão ou imóvel sem pagar juros por isso"
+  chamada="No consórcio você paga taxa de administração no lugar de juros. Sai bem mais barato no total — desde que o seu prazo permita esperar a contemplação. A gente dimensiona a parcela e explica onde está a pegadinha antes de você assinar."
+  perguntas={perguntas}
+  tipoServico="FinancialProduct"
+>
+  <ul class="lista-check destaques" slot="hero">
+    <li>Sem juros: só taxa de administração, diluída na parcela</li>
+    <li>Carro, moto, caminhão, imóvel e serviços</li>
+    <li>Contemplado, você compra como pagamento à vista</li>
+  </ul>
+
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Como funciona</span>
+      <h2>Um grupo de pessoas comprando a mesma coisa, uma por mês</h2>
+      <p class="chamada">
+        Um grupo de consorciados paga parcelas mensais para um fundo comum. Todo mês, em assembleia, uma ou mais
+        cotas são contempladas — por sorteio ou por lance — e recebem a carta de crédito para comprar o bem. O grupo
+        segue até que todos tenham sido contemplados.
+      </p>
+      <ol class="etapas">
+        <li>
+          <h3>Você entra num grupo</h3>
+          <p>Escolhe o valor da carta de crédito e o prazo. A parcela sai dessa conta, não de uma taxa de juros.</p>
+        </li>
+        <li>
+          <h3>As assembleias acontecem</h3>
+          <p>Todo mês há sorteio e abertura de lances. Você pode participar dos dois desde a primeira assembleia.</p>
+        </li>
+        <li>
+          <h3>Você é contemplado</h3>
+          <p>Recebe a carta de crédito e escolhe o bem dentro da categoria do grupo, onde quiser comprar.</p>
+        </li>
+        <li>
+          <h3>Segue pagando o restante</h3>
+          <p>Com o bem já no seu nome e alienado à administradora até a quitação das parcelas que faltam.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao secao--marca">
+    <div class="container">
+      <span class="olho">Honestidade antes da assinatura</span>
+      <h2>Consórcio é ótimo para uns e péssimo para outros</h2>
+      <div class="grade grade--2">
+        <div>
+          <h3>Faz sentido quando</h3>
+          <ul class="lista-check">
+            <li>Você tem prazo — o bem é para daqui a um ou dois anos</li>
+            <li>A prioridade é pagar menos no total, não receber antes</li>
+            <li>Você consegue manter a parcela até o fim do grupo</li>
+            <li>Você tem reserva para dar lance e antecipar</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Não faz sentido quando</h3>
+          <ul class="lista-limpa fora">
+            <li>Você precisa do bem este mês — consórcio não entrega no ato</li>
+            <li>A parcela já aperta hoje: desistir no meio devolve pouco e tarde</li>
+            <li>Alguém prometeu contemplação em data certa — isso não existe</li>
+          </ul>
+        </div>
+      </div>
+      <p class="aviso">
+        Consórcio é regido pela Lei 11.795/2004 e fiscalizado pelo Banco Central. A contemplação ocorre por sorteio
+        ou lance em assembleia e não pode ser garantida por prazo. Taxa de administração, fundo de reserva e regras
+        de desistência constam do contrato de adesão do grupo.
+      </p>
+    </div>
+  </section>
+</Vertical>
+
+<style>
+  .destaques { margin-top: var(--e-6); font-weight: 600; }
+  .etapas {
+    display: grid;
+    gap: var(--e-6);
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    margin: var(--e-8) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: etapa;
+  }
+  .etapas li { counter-increment: etapa; border-top: 3px solid var(--acento); padding-top: var(--e-4); }
+  .etapas li::before {
+    content: "0" counter(etapa);
+    display: block;
+    font-weight: 700;
+    color: var(--marca);
+    margin-bottom: var(--e-2);
+  }
+  .etapas p { color: var(--texto-suave); font-size: var(--t-sm); }
+  .fora li { padding-left: var(--e-6); position: relative; color: #c8d6e6; }
+  .fora li::before { content: "—"; position: absolute; left: 0; color: var(--laranja-500); }
+  .aviso { margin-top: var(--e-12); font-size: var(--t-sm); color: #9fb4cb; max-width: 78ch; }
+</style>
