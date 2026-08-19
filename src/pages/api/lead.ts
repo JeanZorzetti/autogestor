@@ -25,7 +25,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
   }
 
   const r = parseLead(body, SLUGS);
-  if (!r.ok) return form ? redirect(`/obrigado?erro=1`, 303) : json({ erro: r.erro, campo: r.campo }, 400);
+  if (!r.ok) return form ? redirect(`/obrigado?erro=${r.campo || "1"}`, 303) : json({ erro: r.erro, campo: r.campo }, 400);
 
   // Robô recebe 200 e vai embora achando que funcionou. Ensinar o robô qual
   // campo o denunciou só faz ele voltar sabendo contornar.

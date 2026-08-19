@@ -46,8 +46,13 @@ const { solucao, rotulo = "Pedir cotação", alvo = "pedir", mensagem = `Olá! Q
     background: var(--superficie-alta);
     border-top: 1px solid var(--borda);
     box-shadow: var(--sombra-md);
-    /* `visibility` junto do transform: só o transform deixaria os dois links
-       focáveis por trás do formulário que a barra acabou de liberar. */
+  }
+  /* Só anima depois do primeiro veredito do observer (`data-pronta`, via
+     script abaixo) — sem isso a barra nasce visível e desliza para fora no
+     primeiro carregamento, quando o CTA do herói já está na tela.
+     `visibility` junto do transform: só o transform deixaria os dois links
+     focáveis por trás do formulário que a barra acabou de liberar. */
+  .barra[data-pronta] {
     transition: transform 160ms ease, visibility 160ms;
   }
   .barra[data-oculta] {
@@ -77,6 +82,7 @@ const { solucao, rotulo = "Pedir cotação", alvo = "pedir", mensagem = `Olá! Q
     const olho = new IntersectionObserver((entradas) => {
       for (const e of entradas) (e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target));
       barra.toggleAttribute("data-oculta", visiveis.size > 0);
+      barra.setAttribute("data-pronta", "");
     });
     alvos.forEach((f) => olho.observe(f));
   }

@@ -9,6 +9,15 @@ import { EMPRESA, whatsapp } from "../consts";
 export const prerender = false;
 
 const falhou = Astro.url.searchParams.has("erro");
+const campo = Astro.url.searchParams.get("erro");
+// Mesmas mensagens de src/lib/lead.mjs — o redirect sem JS carrega só o nome
+// do campo, não a mensagem inteira.
+const MOTIVO: Record<string, string> = {
+  nome: "Faltou o seu nome.",
+  whatsapp: "O WhatsApp não chegou completo — confira o DDD e os 9 dígitos.",
+  solucao: "A solução escolhida não foi reconhecida.",
+};
+const motivo = (campo && MOTIVO[campo]) || "Pode ter sido o WhatsApp com um dígito faltando, ou o nosso servidor fora do ar.";
 ---
 
 <Base
@@ -24,8 +33,7 @@ const falhou = Astro.url.searchParams.has("erro");
             <span class="olho">Não conseguimos registrar</span>
             <h1>Seu pedido não chegou até nós</h1>
             <p class="chamada">
-              Alguma coisa falhou no envio — pode ter sido o WhatsApp com um dígito faltando, ou o nosso servidor
-              fora do ar. Chame no WhatsApp que a gente resolve na hora, sem formulário.
+              {motivo} Chame no WhatsApp que a gente resolve na hora, sem formulário.
             </p>
           </>
         ) : (

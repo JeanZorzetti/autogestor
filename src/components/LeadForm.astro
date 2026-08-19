@@ -176,7 +176,13 @@ const id = `lead-${solucao.slug}-${instancia}`;
     const mostrar = (texto: string, ok: boolean, comLink = false) => {
       aviso.toggleAttribute("data-ok", ok);
       aviso.textContent = texto ? `${texto} ` : "";
-      if (comLink && linkZap) aviso.append(Object.assign(document.createElement("a"), { href: linkZap.href, textContent: "Chamar no WhatsApp" }));
+      if (comLink && linkZap) {
+        const link = Object.assign(document.createElement("a"), { href: linkZap.href, textContent: "Chamar no WhatsApp" });
+        aviso.append(link);
+        // Erro sistêmico não tem campo para focar — o link é a única saída, e
+        // sem foco quem usa teclado precisaria voltar (Shift+Tab) para achá-la.
+        link.focus();
+      }
     };
 
     // Liga o aviso ao campo recusado: quem chega nele pelo foco ouve o rótulo e

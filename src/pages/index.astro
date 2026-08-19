@@ -75,17 +75,18 @@ const schema = [
             Não sei por onde começar
           </a>
         </div>
+        <!-- Dentro da coluna de texto, não abaixo da grade inteira: a coluna do
+             formulário é mais alta, e provas soltas depois da grade deixavam
+             ~225px de vão vazio sob os CTAs em telas ≥900px. -->
+        <ul class="provas" role="list">
+          <li><strong>2004</strong><span>atendendo em todo o Brasil</span></li>
+          <li><strong>SUSEP {EMPRESA.susep}</strong><span>corretora registrada</span></li>
+          <li><strong>R$ 0</strong><span>para cotar e simular</span></li>
+        </ul>
       </div>
       <div>
         <LeadForm solucao={GERAL} titulo="Fale com um consultor" instancia="capa" />
       </div>
-    </div>
-    <div class="container">
-      <ul class="provas" role="list">
-        <li><strong>2004</strong><span>atendendo em todo o Brasil</span></li>
-        <li><strong>SUSEP {EMPRESA.susep}</strong><span>corretora registrada</span></li>
-        <li><strong>R$ 0</strong><span>para cotar e simular</span></li>
-      </ul>
     </div>
   </section>
 

@@ -63,8 +63,9 @@ src/
 - **O laranja do CTA usa texto escuro, não branco.** O laranja da logo (`#E47A45`)
   com texto branco dá 2.93:1 e reprova em WCAG AA; com texto tinta dá 5.94:1.
   Escurecer o laranja passaria no contraste mas perderia a cor da marca.
-- **A home não tem formulário.** O trabalho dela é rotear para a vertical certa.
-  Formulário genérico na home compete com os seis específicos e gera lead sem contexto.
+- **O formulário da home usa `GERAL`, não uma vertical.** O `select` de contexto
+  pergunta qual das seis frentes a pessoa procura — o lead sai com essa resposta
+  em vez de sair sem contexto nenhum.
 - **O formulário tem 3 campos.** O site antigo pedia 6. E-mail saiu porque o canal
   de atendimento real é o WhatsApp.
 - **Barra de ação fixa só no celular.** O cabeçalho não é sticky abaixo de 900px
