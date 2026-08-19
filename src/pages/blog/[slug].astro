@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import LeadForm from "../../components/LeadForm.astro";
+import BarraAcao from "../../components/BarraAcao.astro";
 import { porSlug } from "../../data/solucoes";
 
 export async function getStaticPaths() {
@@ -22,6 +23,11 @@ const url = abs(`/blog/${post.id}`);
 const relacionados = (await getCollection("blog")).filter(
   (p) => p.data.vertical === post.data.vertical && p.id !== post.id
 );
+
+// `timeZone: "UTC"` porque a data do front matter (2026-08-19) vira meia-noite
+// UTC: sem isso, uma máquina de build em UTC-3 publica o dia anterior.
+const dataLonga = (d: Date) =>
+  d.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 const schema = [
   {
@@ -45,6 +51,7 @@ const schema = [
   titulo={`${post.data.titulo} | Autogestor`}
   descricao={post.data.descricao}
   schema={schema}
+  artigo={{ publicado: post.data.publicado, atualizado: post.data.atualizado }}
   trilha={[
     { nome: "Início", href: "/" },
     { nome: "Blog", href: "/blog" },
@@ -56,6 +63,21 @@ const schema = [
       <div class="post__corpo">
         <p class="olho"><a href={`/${solucao.slug}`}>{solucao.nome}</a></p>
         <h1>{post.data.titulo}</h1>
+        <!-- A regra do Fio B muda todo janeiro: sem data na tela, quem lê em
+             2027 não tem como saber se o número ainda vale. -->
+        <p class="post__data">
+          {
+            post.data.atualizado ? (
+              <time datetime={post.data.atualizado.toISOString()}>
+                Atualizado em {dataLonga(post.data.atualizado)}
+              </time>
+            ) : (
+              <time datetime={post.data.publicado.toISOString()}>
+                Publicado em {dataLonga(post.data.publicado)}
+              </time>
+            )
+          }
+        </p>
         <div class="post__conteudo">
           <Content />
         </div>
@@ -76,11 +98,15 @@ const schema = [
         }
       </div>
 
-      <aside class="post__lateral">
+      <aside class="post__lateral" id="pedir">
         <LeadForm solucao={solucao} destaque instancia="blog" />
       </aside>
     </div>
   </article>
+
+  <!-- No celular a lateral cai para o fim de um documento de ~5.400px: da
+       primeira rolagem até o rodapé não sobrava nenhuma ação na tela. -->
+  <BarraAcao solucao={solucao} rotulo="Pedir análise" />
 </Base>
 
 <style>
@@ -94,33 +120,40 @@ const schema = [
     .post__lateral { position: sticky; top: calc(var(--e-16) + var(--e-4)); }
   }
   .post__corpo h1 { margin-top: var(--e-2); max-width: 24ch; }
+  .post__data { font-size: var(--t-sm); color: var(--texto-suave); }
   .post__conteudo {
     margin-top: var(--e-8);
     max-width: 72ch;
     color: var(--texto);
     line-height: 1.7;
   }
-  .post__conteudo :first-child { margin-top: 0; }
-  .post__conteudo p { margin: 0 0 var(--e-4); }
-  .post__conteudo h2 {
+  /* `:global()` obrigatório nos descendentes: este HTML vem de <Content />, e o
+     markdown renderizado não recebe o atributo de escopo que o Astro exige no
+     último elemento do seletor. Sem isto nenhuma regra abaixo aplica — a tabela
+     saía sem borda, sem fundo e com o padding de 1px do navegador. */
+  .post__conteudo > :global(:first-child) { margin-top: 0; }
+  .post__conteudo :global(p) { margin: 0 0 var(--e-4); }
+  .post__conteudo :global(h2) {
     margin: var(--e-12) 0 var(--e-4);
     font-size: var(--t-xl);
     scroll-margin-top: var(--e-8);
   }
-  .post__conteudo a { color: var(--link); }
-  .post__conteudo a:hover { color: var(--link-hover); }
-  .post__conteudo table {
+  .post__conteudo :global(a) { color: var(--link); }
+  .post__conteudo :global(a:hover) { color: var(--link-hover); }
+  .post__conteudo :global(table) {
     width: 100%;
     margin: var(--e-6) 0;
     border-collapse: collapse;
     font-size: var(--t-sm);
   }
-  .post__conteudo th, .post__conteudo td {
+  .post__conteudo :global(th),
+  .post__conteudo :global(td) {
     padding: var(--e-3);
     border: 1px solid var(--borda);
     text-align: left;
+    vertical-align: top;
   }
-  .post__conteudo th { background: var(--superficie); font-weight: 700; }
+  .post__conteudo :global(th) { background: var(--superficie); font-weight: 700; }
   .post__relacionados {
     margin-top: var(--e-12);
     padding-top: var(--e-8);

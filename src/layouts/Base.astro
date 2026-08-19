@@ -16,8 +16,11 @@ interface Props {
   /** Página sem conteúdo próprio de busca (recibo, erro). Fora do índice, mas
    *  os links continuam sendo seguidos. */
   noindex?: boolean;
+  /** Presente = a página é um artigo datado. Um prop só, porque og:type e as
+   *  duas datas do Open Graph são a mesma decisão: ou tudo, ou nada. */
+  artigo?: { publicado: Date; atualizado?: Date };
 }
-const { titulo, descricao, schema = [], trilha = [], ogImagem = "/img/og.png", noindex = false } = Astro.props;
+const { titulo, descricao, schema = [], trilha = [], ogImagem = "/img/og.png", noindex = false, artigo } = Astro.props;
 
 const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
 const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", site).href;
@@ -127,7 +130,9 @@ const grafo: Record<string, unknown>[] = [
       } catch {}
     </script>
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={artigo ? "article" : "website"} />
+    {artigo && <meta property="article:published_time" content={artigo.publicado.toISOString()} />}
+    {artigo && <meta property="article:modified_time" content={(artigo.atualizado ?? artigo.publicado).toISOString()} />}
     <meta property="og:site_name" content={EMPRESA.nome} />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:title" content={titulo} />

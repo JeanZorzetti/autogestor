@@ -1,13 +1,27 @@
 import type { APIRoute } from "astro";
+import { getCollection } from "astro:content";
 import { SOLUCOES } from "../data/solucoes";
 import { EMPRESA, enderecoLinha } from "../consts";
 
 // llms.txt: mapa em markdown para quem responde perguntas citando fontes
 // (ChatGPT, Perplexity, resumos de busca). Não substitui o sitemap — dá
 // contexto que <title> sozinho não dá.
-export const GET: APIRoute = ({ site }) => {
+export const GET: APIRoute = async ({ site }) => {
   const base = (site ?? new URL("https://autogestor.roilabs.com.br")).origin;
   const linhas = SOLUCOES.map((s) => `- [${s.nome}](${base}/${s.slug}): ${s.descricao}`).join("\n");
+
+  // Os posts são o conteúdo escrito para ser citado — resposta na primeira
+  // frase, número com fonte. Fora daqui, o arquivo apontava só para páginas de
+  // venda. A data vai junto porque parte do conteúdo expira em janeiro.
+  const guias = (await getCollection("blog"))
+    .sort((a, b) => +b.data.publicado - +a.data.publicado)
+    .map(
+      (p) =>
+        `- [${p.data.titulo}](${base}/blog/${p.id}) — atualizado em ${(p.data.atualizado ?? p.data.publicado)
+          .toISOString()
+          .slice(0, 10)}: ${p.data.descricao}`
+    )
+    .join("\n");
 
   return new Response(
     `# Autogestor
@@ -23,6 +37,10 @@ Endereço: ${enderecoLinha}.
 ## Soluções
 
 ${linhas}
+
+## Guias
+
+${guias}
 
 ## Institucional
 
