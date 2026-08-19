@@ -16,24 +16,27 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
       WhatsApp
     </a>
+    <!-- Sem hambúrguer: 6 verticais cabem numa barra que quebra no celular.
+         Menu fechado esconde exatamente o que a pessoa veio procurar.
+         "Sobre" não é uma solução (já vive no rodapé) — incluí-lo aqui abria
+         uma linha extra só para ele.
+         DOM fica logo→zap→nav (tab order não muda do que já era); a partir de
+         900px o CSS reordena visualmente para logo→nav→zap, entre a logo e o
+         WhatsApp na mesma linha. -->
+    <nav class="nav" aria-label="Soluções">
+      <ul class="nav__lista">
+        {
+          SOLUCOES.map((s) => (
+            <li>
+              <a href={`/${s.slug}`} aria-current={atual(`/${s.slug}`) ? "page" : undefined}>
+                {s.curto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </div>
-  <!-- Sem hambúrguer: 6 verticais cabem numa barra que quebra em duas linhas no
-       celular. Menu fechado esconde exatamente o que a pessoa veio procurar.
-       "Sobre" não é uma solução (já vive no rodapé) — incluí-lo aqui abria uma
-       3ª linha só para ele e custava 48px da primeira dobra no celular. -->
-  <nav class="nav" aria-label="Soluções">
-    <ul class="container nav__lista">
-      {
-        SOLUCOES.map((s) => (
-          <li>
-            <a href={`/${s.slug}`} aria-current={atual(`/${s.slug}`) ? "page" : undefined}>
-              {s.curto}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
 </header>
 
 <style>
@@ -50,6 +53,7 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
   }
   .cabecalho__linha {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--e-4);
@@ -62,6 +66,7 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
     gap: var(--e-2);
     text-decoration: none;
     color: var(--marca-forte);
+    order: 1;
   }
   .marca__nome {
     font-weight: 700;
@@ -80,20 +85,46 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
     font-weight: 700;
     font-size: var(--t-sm);
     text-decoration: none;
+    order: 2;
   }
   .cabecalho__zap:hover { background: var(--cinza-100); }
 
-  .nav { border-top: 1px solid var(--borda); background: var(--superficie); }
+  /* Abaixo de 900px o nav não cabe ao lado da logo e do WhatsApp: vira sua
+     própria linha cheia (order:3 + flex-basis:100% força o quebra), com a
+     aparência de barra secundária (fundo e borda) que já existia. A partir de
+     900px isso se desliga e o nav entra na mesma linha, entre os dois. */
+  .nav {
+    order: 3;
+    flex-basis: 100%;
+    border-top: 1px solid var(--borda);
+    background: var(--superficie);
+    margin-inline: calc(-1 * var(--e-4));
+    width: calc(100% + var(--e-8));
+  }
+  @media (min-width: 900px) {
+    .nav {
+      order: 2;
+      flex-basis: auto;
+      width: auto;
+      margin-inline: 0;
+      border-top: none;
+      background: none;
+    }
+    /* Some order:2 com o do nav — empata em DOM (zap vem antes do nav no
+       HTML), então o desempate manda o zap pra frente de novo. Sobe pra 3. */
+    .cabecalho__zap { order: 3; }
+  }
   .nav__lista {
     display: flex;
     flex-wrap: wrap;
     gap: var(--e-1) var(--e-2);
     list-style: none;
-    /* `margin: 0` sozinho zerava o margin-inline:auto herdado de .container e
-       colava a lista na borda esquerda da viewport, fora de alinhamento com a
-       logo acima. Só o eixo vertical (o 1em padrão de <ul>) precisa ser zerado. */
     margin-block: 0;
+    padding-inline: var(--e-4);
     padding-block: var(--e-2);
+  }
+  @media (min-width: 900px) {
+    .nav__lista { padding: 0; }
   }
   .nav__lista a {
     /* flex + min-height para o alvo de toque bater 44px: com padding sozinho o
