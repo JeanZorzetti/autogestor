@@ -4,6 +4,7 @@ import LeadForm from "../components/LeadForm.astro";
 import Faq from "../components/Faq.astro";
 import type { Pergunta } from "../components/Faq.astro";
 import SolucaoCard from "../components/SolucaoCard.astro";
+import BarraAcao from "../components/BarraAcao.astro";
 import { SOLUCOES, type Solucao } from "../data/solucoes";
 import { EMPRESA } from "../consts";
 
@@ -74,7 +75,7 @@ const schema = [
     </div>
   </section>
 
-  <section class="secao">
+  <section class="secao" id="pedir" tabindex="-1">
     <div class="container fechamento">
       <div>
         <span class="olho">Próximo passo</span>
@@ -97,6 +98,8 @@ const schema = [
       </ul>
     </div>
   </section>
+
+  <BarraAcao solucao={solucao} />
 </Base>
 
 <style>

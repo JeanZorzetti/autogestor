@@ -67,6 +67,11 @@ src/
   Formulário genérico na home compete com os seis específicos e gera lead sem contexto.
 - **O formulário tem 3 campos.** O site antigo pedia 6. E-mail saiu porque o canal
   de atendimento real é o WhatsApp.
+- **Barra de ação fixa só no celular.** O cabeçalho não é sticky abaixo de 900px
+  (tem 226px), e as páginas de vertical passam de 8.000px: entre o formulário do
+  topo e o do fim havia 3.845px sem nenhuma ação na tela. A barra custa 56px e um
+  `IntersectionObserver` a esconde enquanto um formulário está visível — parada
+  ali, ela cobriria justamente o botão de enviar.
 - **Sem menu hambúrguer.** As 6 verticais cabem numa barra que quebra em duas
   linhas no celular; menu fechado esconde exatamente o que a pessoa veio procurar.
   O cabeçalho só é `sticky` a partir de 900px — no celular ele tem 209px de altura.

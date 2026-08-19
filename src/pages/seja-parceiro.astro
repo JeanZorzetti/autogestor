@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import LeadForm from "../components/LeadForm.astro";
 import Faq from "../components/Faq.astro";
+import BarraAcao from "../components/BarraAcao.astro";
 import { PARCEIRO } from "../data/solucoes";
 import { EMPRESA } from "../consts";
 
@@ -138,7 +139,7 @@ const schema = [
     </div>
   </section>
 
-  <section class="secao">
+  <section class="secao" id="pedir" tabindex="-1">
     <div class="container fechamento">
       <div>
         <span class="olho">Próximo passo</span>
@@ -151,6 +152,8 @@ const schema = [
       <LeadForm solucao={PARCEIRO} titulo="Quero saber como funciona" destaque instancia="fim" />
     </div>
   </section>
+
+  <BarraAcao solucao={PARCEIRO} rotulo="Quero ser parceiro" />
 </Base>
 
 <style>
