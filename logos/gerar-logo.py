@@ -34,6 +34,18 @@ def pt(r, th):
     return (CX + r * math.cos(math.radians(th)), CY - r * math.sin(math.radians(th)))
 
 
+def afila(s, inicio, expoente):
+    """1 ate `inicio`, caindo a 0 em s=1.
+
+    O max(0, ...) nao e paranoia: em s=1 a divisao da -2e-16 por arredondamento,
+    e em Python base negativa elevada a expoente fracionario devolve um COMPLEXO
+    em vez de estourar — as coordenadas viram lixo silenciosamente.
+    """
+    if s <= inicio:
+        return 1.0
+    return max(0.0, 1.0 - (s - inicio) / (1.0 - inicio)) ** expoente
+
+
 def sample(a0, sweep, rfn, wfn, amp, n):
     """Amostra as duas bordas de uma fita: rfn da o eixo, wfn a meia-espessura."""
     out, inn = [], []
@@ -80,6 +92,8 @@ def d_of(out, inn):
 # e #e47a45 passa por um marrom dessaturado bem no meio da marca. O original
 # tambem troca de cor de chapa, no lado direito.
 RHO, THK, A_RING = 0.865 * R, 0.205 * R, 92.0
+# Amplitude do hexagono: 4,0% do raio, o harmonico de cos(6t) medido no original.
+HEX = 0.040
 
 
 def _ring_r(s, th):
@@ -91,57 +105,118 @@ def _ring_r(s, th):
 def ring_blue():
     def wfn(s):                       # cinzel na cabeca, o pico do topo
         return 0.5 * THK * (0.62 + 0.38 * min(1.0, s / 0.09))
-    return sample(A_RING, 250, _ring_r, wfn, 0.030, 30)
+    return sample(A_RING, 250, _ring_r, wfn, HEX, 30)
 
 
 def ring_orange():
     def wfn(s):                       # afila ate a ponta que fecha o vortice
-        t = 1.0 if s < 0.62 else (1 - (s - 0.62) / 0.38) ** 0.85
-        return 0.5 * THK * t
-    return sample(A_RING + 238, 108, _ring_r, wfn, 0.030, 20)
+        return 0.5 * THK * afila(s, 0.70, 0.85)
+    # Comeca em 300 e nao em 330: o corte reto da traseira precisa cair onde a
+    # rampa "oa" ja e azul puro, senao ele mesmo vira a aresta que veio evitar.
+    return sample(A_RING + 208, 148, _ring_r, wfn, HEX, 26)
 
 
 # --- bracos -----------------------------------------------------------------
 def arm(a0):
-    r0, r1, wmax, sweep = 0.250 * R, 0.680 * R, 0.100 * R, 205
+    r0, r1, wmax, sweep = 0.250 * R, 0.680 * R, 0.108 * R, 205
     k = math.log(r1 / r0)
-    # lente: espessura zero nas duas pontas, cheia no meio
-    wfn = lambda s: wmax * math.sin(math.pi * s) ** 0.60
-    return sample(a0, sweep, lambda s, th: r0 * math.exp(k * s), wfn, 0.012, 26)
+    # Lente: espessura zero nas duas pontas, cheia no meio. Expoente acima de 1
+    # alonga o afilamento — no original as pontas sao laminas, nao dedos.
+    wfn = lambda s: wmax * math.sin(math.pi * s) ** 1.35
+    return sample(a0, sweep, lambda s, th: r0 * math.exp(k * s), wfn, 0.012, 30)
 
 
 def build():
-    """[(cor, d)] — a distribuicao azul/laranja segue a medida no PNG original."""
-    return [("b", d_of(*ring_blue())), ("o", d_of(*ring_orange())),
+    """[(rampa, d)] — a distribuicao azul/laranja segue a medida no PNG original.
+
+    O anel laranja usa a rampa "oa", que apaga no rabo: no original ele nao
+    encosta no azul, dissolve nele entre 320 e 0 graus.
+    """
+    return [("b", d_of(*ring_blue())), ("oa", d_of(*ring_orange())),
             ("b", d_of(*arm(62))), ("o", d_of(*arm(182))), ("b", d_of(*arm(302)))]
 
 
 # ---------------------------------------------------------------- saidas
 
-# Claro: primitivos da paleta (#005ca6, #002b74, #e47a45 e vizinhos).
-# Escuro: familia do azul-marca do tema escuro (--marca #77abf8). O #002b74
-# do claro some sobre o #142339 do cabecalho escuro.
-CLARO = {"b": ("#0a6fbd", "#005ca6", "#002b74"), "o": ("#eb8f68", "#e47a45", "#d26831")}
-ESCURO = {"b": ("#9cc4ff", "#6fa6f2", "#4a86d8"), "o": ("#f5a074", "#eb8f68", "#dd7648")}
+# O degrade e VERTICAL e GLOBAL, nao um por caminho: medindo o PNG original, a
+# cor de qualquer pixel depende so da altura dele na marca — anel e bracos
+# seguem a mesma rampa. Por isso userSpaceOnUse com o mesmo eixo em todos.
+Y0, Y1 = 5.0, 95.0
 
-GEO = {"b": (".62", "0", ".12", "1"), "o": (".85", "0", ".45", "1")}
-OFFS = ("0", ".5", "1")
+# Rampas: (offset, chave-de-cor). Offsets vieram da leitura do original faixa a
+# faixa (#006bb6 no topo, #002b74 embaixo, no azul).
+RAMPAS = {
+    "b": (("0", "b0"), (".28", "b1"), (".62", "b2"), ("1", "b3")),
+    "o": (("0", "o0"), (".45", "o1"), ("1", "o2")),
+}
+
+# Anel laranja: fracao de laranja sobre azul ao longo do mesmo eixo vertical.
+# No original ele nao encosta no azul, dissolve nele — #ff8d36 puro no topo,
+# #a86d61 na altura de 0 grau, #4c5375 a 340, azul limpo a 320. Mistura opaca e
+# nao opacidade: no trecho de baixo o laranja e a unica camada ali, entao
+# transparencia deixaria o fundo aparecer em vez do azul.
+OA = ((0.0, 1.0), (.20, 1.0), (.34, .93), (.50, .75), (.66, .37), (.79, .05),
+      (.87, 0.0), (1.0, 0.0))
+
+# Claro: valores lidos do original — os tokens da paleta (#005ca6, #002b74,
+# #e47a45) sairam dele, entao caem quase em cima.
+CLARO = {"b0": "#006bb6", "b1": "#0057a6", "b2": "#0b3c82", "b3": "#002b74",
+         "o0": "#f2813b", "o1": "#e47a45", "o2": "#d26831"}
+# Escuro: a mesma rampa levantada para a familia do --marca do tema escuro. Os
+# azuis do claro afundam no #060d19; o degrade continua claro em cima, escuro
+# embaixo, so que dentro de uma faixa que ainda contrasta com o fundo.
+ESCURO = {"b0": "#a9cdff", "b1": "#7fb2f6", "b2": "#5c93e4", "b3": "#4681d2",
+          "o0": "#f9a273", "o1": "#ef8a5c", "o2": "#de7141"}
 
 HEAD = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" '
         'role="img" aria-label="Autogestor">')
 
 
-def _grad(gid, key, stops):
-    x1, y1, x2, y2 = GEO[key]
-    return ('<linearGradient id="{}" x1="{}" y1="{}" x2="{}" y2="{}">{}</linearGradient>'
-            .format(gid, x1, y1, x2, y2, stops))
+def _grad(gid, stops):
+    return ('<linearGradient id="{}" gradientUnits="userSpaceOnUse" '
+            'x1="0" y1="{}" x2="0" y2="{}">{}</linearGradient>'.format(gid, Y0, Y1, stops))
+
+
+def _rgb(h):
+    return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+
+
+def _hex(c):
+    return "#" + "".join("{:02x}".format(max(0, min(255, int(round(v))))) for v in c)
+
+
+def _em(paradas, t):
+    """Cor de uma rampa ja resolvida no offset t."""
+    for i in range(len(paradas) - 1):
+        o0, c0 = paradas[i]
+        o1, c1 = paradas[i + 1]
+        if o0 <= t <= o1:
+            f = 0.0 if o1 == o0 else (t - o0) / (o1 - o0)
+            return tuple(a + (b - a) * f for a, b in zip(_rgb(c0), _rgb(c1)))
+    return _rgb(paradas[-1][1])
+
+
+def paradas(pal):
+    """{rampa: [(offset, hex)]} — inclui a "oa", misturada laranja sobre azul."""
+    res = {k: [(float(o), pal[c]) for o, c in RAMPAS[k]] for k in RAMPAS}
+    res["oa"] = [(t, _hex([o * f + b * (1 - f) for o, b in
+                           zip(_em(res["o"], t), _em(res["b"], t))]))
+                 for t, f in OA]
+    return res
+
+
+def _stops(lista, attr):
+    return "".join('<stop offset="{}" {}/>'.format(_num(o), attr(i, c))
+                   for i, (o, c) in enumerate(lista))
+
+
+def _num(o):
+    return "{:.3g}".format(o)
 
 
 def svg_fixo(pal):
-    defs = "".join(
-        _grad(k, k, "".join('<stop offset="{}" stop-color="{}"/>'.format(o, c)
-                            for o, c in zip(OFFS, pal[k])))
-        for k in ("b", "o"))
+    p = paradas(pal)
+    defs = "".join(_grad(k, _stops(p[k], lambda i, c: 'stop-color="{}"'.format(c))) for k in p)
     corpo = "".join('<path fill="url(#{})" d="{}"/>'.format(c, d) for c, d in build())
     return HEAD + "<defs>" + defs + "</defs>" + corpo + "</svg>"
 
@@ -153,18 +228,20 @@ def svg_mono():
 
 def svg_auto():
     """Arquivo unico que troca sozinho no prefers-color-scheme (favicon, e-mail)."""
-    regras = ["".join("#{}{}{{stop-color:{}}}".format(k, i, c)
-                      for k in ("b", "o") for i, c in enumerate(CLARO[k]))]
-    regras.append("@media(prefers-color-scheme:dark){")
-    regras.append("".join("#{}{}{{stop-color:{}}}".format(k, i, c)
-                          for k in ("b", "o") for i, c in enumerate(ESCURO[k])))
-    regras.append("}")
+    claro, escuro = paradas(CLARO), paradas(ESCURO)
+
+    def regras(p):
+        return "".join("#s{}{}{{stop-color:{}}}".format(k, i, c)
+                       for k in p for i, (_, c) in enumerate(p[k]))
+    css = regras(claro) + "@media(prefers-color-scheme:dark){" + regras(escuro) + "}"
+    # stop-color tambem como atributo: cliente que descarta o <style> (e-mail
+    # faz isso) cairia para preto em vez de ficar na versao clara.
     defs = "".join(
-        _grad("g" + k, k, "".join('<stop id="{}{}" offset="{}"/>'.format(k, i, o)
-                                  for i, o in enumerate(OFFS)))
-        for k in ("b", "o"))
+        _grad("g" + k, _stops(claro[k],
+                              lambda i, c, k=k: 'id="s{}{}" stop-color="{}"'.format(k, i, c)))
+        for k in claro)
     corpo = "".join('<path fill="url(#g{})" d="{}"/>'.format(c, d) for c, d in build())
-    return HEAD + "<style>" + "".join(regras) + "</style><defs>" + defs + "</defs>" + corpo + "</svg>"
+    return HEAD + "<style>" + css + "</style><defs>" + defs + "</defs>" + corpo + "</svg>"
 
 
 ASTRO = '''---
@@ -210,16 +287,17 @@ const {{ size = 40, class: klass }} = Astro.props;
 
 
 def svg_astro():
+    claro, escuro = paradas(CLARO), paradas(ESCURO)
     defs = "\n    ".join(
-        _grad("lg-" + k, k, "".join(
-            '<stop offset="{}" style="stop-color:var(--lg-{}{})" />'.format(o, k, i)
-            for i, o in enumerate(OFFS)))
-        for k in ("b", "o"))
+        _grad("lg-" + k, _stops(claro[k], lambda i, c, k=k: 'style="stop-color:var(--lg-{}{})"'.format(k, i)))
+        for k in claro)
     corpo = "\n  ".join('<path fill="url(#lg-{})" d="{}" />'.format(c, d) for c, d in build())
-    var_claro = "\n    ".join("--lg-{}{}: {};".format(k, i, c)
-                              for k in ("b", "o") for i, c in enumerate(CLARO[k]))
-    var_tema = "\n      ".join("--lg-{}{}: light-dark({}, {});".format(k, i, CLARO[k][i], ESCURO[k][i])
-                               for k in ("b", "o") for i in range(3))
+    nomes = [(k, i) for k in claro for i in range(len(claro[k]))]
+    var_claro = "\n    ".join(
+        "--lg-{}{}: {};".format(k, i, claro[k][i][1]) for k, i in nomes)
+    var_tema = "\n      ".join(
+        "--lg-{}{}: light-dark({}, {});".format(k, i, claro[k][i][1], escuro[k][i][1])
+        for k, i in nomes)
     return ASTRO.format(defs=defs, corpo=corpo, var_claro=var_claro, var_tema=var_tema)
 
 
