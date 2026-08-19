@@ -91,6 +91,17 @@ const grafo: Record<string, unknown>[] = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Antes de qualquer pintura: escolha salva vence o sistema operacional.
+         Rodando depois, a página piscaria no tema errado. `is:inline` para o
+         Astro não empacotar isto num módulo com defer, que é o que anula a
+         única razão de o script existir. try/catch porque localStorage lança
+         quando o armazenamento está bloqueado — e aí o erro mataria o resto. -->
+    <script is:inline>
+      try {
+        const t = localStorage.getItem("tema");
+        if (t === "claro" || t === "escuro") document.documentElement.dataset.tema = t;
+      } catch {}
+    </script>
     <title>{titulo}</title>
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonical} />

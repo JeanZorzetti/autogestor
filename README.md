@@ -81,9 +81,25 @@ src/
   `#022C69` variando só a luminosidade, e a cor fica no papel que já tinha no
   claro: o bloco de marca (`.secao--marca` e rodapé). No claro esse bloco é a
   superfície mais escura da página; no escuro, a mais clara — a hierarquia
-  inverte, o papel não. Custa 626 bytes de CSS e zero JavaScript: segue o
-  sistema operacional por `prefers-color-scheme`, sem botão, sem `localStorage`
-  e sem script bloqueante no `<head>` para evitar piscada.
+  inverte, o papel não. Custa 1.070 bytes de CSS e 870 de JavaScript inline.
+- **Um valor por token, via `light-dark()`.** Os dois temas ficam lado a lado na
+  mesma declaração. A alternativa — `@media (prefers-color-scheme)` mais
+  `:root[data-tema]` repetindo a lista — escreveria cada cor escura duas vezes,
+  e quem ajustasse uma esqueceria a outra. Por tabela, o seletor manual sai de
+  graça: `color-scheme: only light|dark` reposiciona os tokens *e* os controles
+  nativos de uma vez.
+- **O `@supports` de `light-dark()` não é adorno.** Sem suporte, a declaração
+  fica inválida no tempo de computação e `background: var(--fundo)` cai para
+  transparente — o fundo do botão laranja sumiria. Com a guarda, quem não
+  suporta fica no claro de hoje, intacto, e o botão de tema nem aparece (o
+  script checa `CSS.supports` antes de revelar).
+- **O botão de tema mora no rodapé, não no cabeçalho.** A primeira linha do
+  cabeçalho já leva logo e WhatsApp; um quarto item quebrava para outra linha e
+  194px de cabeçalho viravam 254px, fixos em toda rolagem no celular, por um
+  controle usado uma vez por visita.
+- **O script do tema é `is:inline` no `<head>`.** Se o Astro o empacotasse num
+  módulo com `defer`, ele rodaria depois da primeira pintura — que é exatamente
+  a piscada que ele existe para evitar.
 - **`--superficie-alta` existe por causa do escuro.** No claro ela é o mesmo
   branco do fundo e quem separa o cartão é a borda. No escuro precisa ser um
   degrau *acima* do fundo — cartão mais escuro que a seção faz o conteúdo
@@ -108,7 +124,7 @@ projeto próprio reusando `layouts/` e `components/`.
 
 - `/admin` em Next.js lendo `crm_leads` (o motivo de o banco existir).
 - Fonte da marca: hoje o site usa a stack de sistema, que custa 0 KB.
-- Botão manual de tema. O escuro segue só o sistema operacional. Para dar a
-  escolha, some `:root[data-tema="escuro"]` ao bloco de `prefers-color-scheme`
-  em `global.css` — o resto do CSS não muda, porque tudo já lê token.
+- Terceiro estado do tema ("voltar ao sistema"). O botão alterna entre claro e
+  escuro; depois do primeiro clique a escolha fica salva até alguém limpar o
+  `localStorage`.
 - Analytics e rastreio de conversão.

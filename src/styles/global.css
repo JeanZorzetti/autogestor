@@ -7,9 +7,9 @@
    preserva a cor exata da logo sem quebrar acessibilidade. */
 
 :root {
-  /* Diz ao navegador que os dois temas existem: <select>, barra de rolagem,
-     autofill e placeholder passam a seguir o tema sozinhos, sem CSS nosso. */
-  color-scheme: light dark;
+  /* Nada de `color-scheme` aqui: ele mora dentro do @supports de light-dark().
+     Anunciar os dois esquemas sem conseguir trocar as cores faria o navegador
+     escurecer <select> e barra de rolagem com a página ainda branca. */
 
   /* --- primitivos: nunca usados direto em componente --- */
   --azul-900: #002b74;
@@ -113,51 +113,65 @@
    (.secao--marca e rodapé). No claro esse bloco é a superfície mais ESCURA da
    página; no escuro, a mais CLARA. A hierarquia inverte, o papel não.
 
-   Segue o sistema operacional e só ele: sem botão, sem localStorage, sem
-   script bloqueante no <head> para evitar piscada. Trocar por um seletor
-   manual depois é acrescentar `:root[data-tema="escuro"]` a este bloco.
+   Um valor por token, os dois temas lado a lado em light-dark(). A alternativa
+   (@media prefers-color-scheme + :root[data-tema] repetindo a lista) escreveria
+   cada cor escura duas vezes — e quem ajustasse uma esqueceria a outra.
 
-   Os 49 pares de contraste foram medidos, não estimados. Os apertados:
+   O @supports não é adorno: sem light-dark(), a declaração fica inválida no
+   tempo de computação e `background: var(--fundo)` cai para transparente. Em
+   navegador antigo isso apagaria o fundo do botão laranja. Com a guarda, quem
+   não suporta simplesmente fica no claro de hoje, intacto.
+
+   Sem override de sombra: sobre fundo quase preto ela não separa nada. Quem
+   separa cartão de seção no escuro é a borda.
+
+   Os pares de contraste foram medidos, não estimados. Os apertados:
    marca-forte sobre o chip de hover 5.61:1, borda de campo sobre o cartão
    3.41:1 (WCAG 1.4.11 pede 3), laranja-400 sobre #022C69 5.53:1. */
-@media (prefers-color-scheme: dark) {
+@supports (color: light-dark(#fff, #000)) {
   :root {
+    /* Habilita light-dark() e faz <select>, barra de rolagem, autofill e
+       placeholder seguirem o tema sozinhos, sem CSS nosso. */
+    color-scheme: light dark;
+
     /* Primitivos que os componentes leem direto. Trocados aqui em vez de nos
        semânticos porque é o mesmo papel nos dois temas — superfície de chip,
        de hover, contorno de campo — só que espelhado. */
-    --azul-100: #19345d;   /* chip: WhatsApp do cabeçalho, ícone do card, topo da capa */
-    --cinza-100: #162b4b;  /* hover: clareia sobre o cabeçalho, escurece sobre o chip */
-    --cinza-500: #627693;  /* contorno de campo — 3.41:1 sobre o cartão */
-    --cinza-400: #8f9bae;  /* marcador fraco das listas "o que fica de fora" */
+    --azul-100: light-dark(#e2ecf6, #19345d);   /* chip: WhatsApp, ícone do card, topo da capa */
+    --cinza-100: light-dark(#e8edf3, #162b4b);  /* hover: clareia sobre o cabeçalho, escurece sobre o chip */
+    --cinza-500: light-dark(#7d8b9d, #627693);  /* contorno de campo — 3.41:1 sobre o cartão */
+    --cinza-400: light-dark(#9aa8b8, #8f9bae);  /* marcador fraco das listas "o que fica de fora" */
 
     /* Semânticos. Três degraus de superfície, do fundo à marca. */
-    --fundo: #060d19;
-    --superficie: #0b1728;
-    --superficie-alta: #142339;
-    --superficie-marca: #022c69;
-    --borda: #3d5171;
-    --texto: #e9eef6;      /* não é branco puro: #fff sobre azul quase preto vibra */
-    --texto-suave: #adbacd;
-    --marca: #77abf8;
-    --marca-forte: #6ca4f9;
-    --link: #77abf8;
-    --link-hover: #a9c8fb;
-    --foco: #88b6fc;
+    --fundo: light-dark(#ffffff, #060d19);
+    --superficie: light-dark(#f5f7fa, #0b1728);
+    --superficie-alta: light-dark(#ffffff, #142339);
+    --superficie-marca: light-dark(#002b74, #022c69);
+    --borda: light-dark(#d3dbe5, #3d5171);
+    /* Escuro não é branco puro: #fff sobre azul quase preto vibra. */
+    --texto: light-dark(#0b1b2b, #e9eef6);
+    --texto-suave: light-dark(#516275, #adbacd);
+    --marca: light-dark(#005ca6, #77abf8);
+    --marca-forte: light-dark(#002b74, #6ca4f9);
+    --link: light-dark(#004898, #77abf8);
+    --link-hover: light-dark(#002b74, #a9c8fb);
+    --foco: light-dark(#004898, #88b6fc);
 
     /* Estado do formulário: fundo escuro tingido + texto claro da mesma
        família. O par claro (#fdeceb) viraria um bloco branco dentro do card. */
-    --erro: #e2685a;
-    --erro-fundo: #502521;
-    --erro-texto: #f3d1cd;
-    --ok: #51d68d;
-    --ok-fundo: #1e4831;
-    --ok-texto: #cdf3df;
-
-    /* Sombra de tinta some sobre fundo quase preto. Preto puro e mais densa —
-       ainda assim quem separa cartão de seção aqui é a borda, não a sombra. */
-    --sombra-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
-    --sombra-md: 0 2px 4px rgba(0, 0, 0, 0.6), 0 12px 28px rgba(0, 0, 0, 0.5);
+    --erro: light-dark(#b3261e, #e2685a);
+    --erro-fundo: light-dark(#fdeceb, #502521);
+    --erro-texto: light-dark(#7a1c15, #f3d1cd);
+    --ok: light-dark(#1a7f45, #51d68d);
+    --ok-fundo: light-dark(#e7f4ec, #1e4831);
+    --ok-texto: light-dark(#14532d, #cdf3df);
   }
+
+  /* O seletor manual. `only` desliga o outro esquema para o UA inteiro, então
+     um clique reposiciona tanto os nossos tokens quanto os controles nativos.
+     Sem escolha salva, nenhum dos dois casa e o sistema operacional decide. */
+  :root[data-tema="claro"] { color-scheme: only light; }
+  :root[data-tema="escuro"] { color-scheme: only dark; }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
