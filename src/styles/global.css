@@ -335,6 +335,26 @@ img, svg { max-width: 100%; height: auto; display: block; }
 }
 .pular:focus { top: var(--e-4); }
 
+/* Trilha do Base. Fundo transparente de propósito: a primeira seção logo abaixo
+   é branca (.secao) ou cinza (.topo), e pintar a trilha acertaria uma e erraria
+   a outra. Sem fundo, ela lê como respiro do cabeçalho nas duas. */
+.trilha {
+  padding-top: var(--e-6);
+  font-size: var(--t-sm);
+  color: var(--texto-suave);
+}
+.trilha ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin: 0;
+  padding: 0;
+}
+.trilha li + li::before { content: "/"; margin-right: var(--e-2); }
+.trilha a { color: inherit; }
+.trilha a:hover { color: var(--link-hover); }
+
 /* Hero + fechamento das páginas de vertical: mesmo par de blocos em Vertical.astro,
    seja-parceiro.astro e sobre.astro — vivia copiado nos três. */
 .topo { background: var(--superficie); padding-block: var(--e-12) var(--e-16); }

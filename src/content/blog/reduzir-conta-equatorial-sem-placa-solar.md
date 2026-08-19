@@ -1,5 +1,6 @@
 ---
 titulo: "Como reduzir a conta da Equatorial Goiás sem instalar placa solar"
+curto: "Reduzir a conta sem placa solar"
 descricao: "Cooperativa de energia por compensação dá desconto na fatura da Equatorial sem obra, sem placa e sem troca de distribuidora. Entenda como funciona."
 vertical: coopluz
 publicado: 2026-08-19

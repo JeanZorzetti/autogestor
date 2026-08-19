@@ -8,6 +8,10 @@ const blog = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
   schema: z.object({
     titulo: z.string(),
+    /** Rótulo da trilha. O título inteiro ocupava duas linhas no celular e
+     *  repetia o H1 logo abaixo — mesmo motivo do `curto` em solucoes.ts.
+     *  Sem ele, a trilha cai no título completo. */
+    curto: z.string().optional(),
     descricao: z.string(),
     vertical: z.string(),
     publicado: z.coerce.date(),

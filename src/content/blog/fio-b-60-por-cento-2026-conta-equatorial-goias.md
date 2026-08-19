@@ -1,5 +1,6 @@
 ---
 titulo: "Fio B a 60% em 2026: por que a conta da Equatorial Goiás subiu"
+curto: "Fio B a 60% em 2026"
 descricao: "A Lei 14.300 elevou a cobrança do Fio B para 60% em 2026, e quem tem geração própria sente esse aumento direto na fatura. Entenda o motivo e a alternativa sem obra."
 vertical: coopluz
 publicado: 2026-08-19

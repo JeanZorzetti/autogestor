@@ -4,11 +4,44 @@ import Base from "../../layouts/Base.astro";
 import { porSlug } from "../../data/solucoes";
 
 const posts = (await getCollection("blog")).sort((a, b) => +b.data.publicado - +a.data.publicado);
+
+const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
+const abs = (p: string) => new URL(p, site).href;
+
+// `timeZone: "UTC"` pelo mesmo motivo de [slug].astro: a data do front matter é
+// meia-noite UTC e um build em UTC-3 imprimiria o dia anterior.
+const dataCurta = (d: Date) =>
+  d.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+// `Blog` com os posts embutidos em vez de `ItemList`: diz o que a página é e o
+// que ela lista de uma vez só. Cada nó repete o `@id` que a página do post
+// declara, para o buscador costurar os dois como a mesma entidade.
+const schema = [
+  {
+    "@type": "Blog",
+    "@id": `${abs("/blog")}#blog`,
+    name: "Guias da Autogestor",
+    inLanguage: "pt-BR",
+    publisher: { "@id": abs("/#organizacao") },
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting",
+      "@id": `${abs(`/blog/${p.id}`)}#post`,
+      headline: p.data.titulo,
+      description: p.data.descricao,
+      url: abs(`/blog/${p.id}`),
+      datePublished: p.data.publicado.toISOString(),
+    })),
+  },
+];
 ---
 
+{/* Título e descrição descrevem os posts que EXISTEM. A versão anterior
+    prometia seguro, viagens e crédito para uma página só de energia — quem
+    clicasse na busca saía. Reescrever quando o segundo cluster entrar. */}
 <Base
-  titulo="Blog Autogestor — energia, seguro, viagens, crédito e veículos"
-  descricao="Guias sobre conta de luz, seguro veicular, consórcio, financiamento e repasse de veículos, escritos pela equipe da Autogestor."
+  titulo="Guias da Autogestor — conta de luz e energia em Goiás"
+  descricao="Como funcionam o desconto na conta da Equatorial Goiás, a Lei 14.300 e a compensação de energia por cooperativa. Guias da equipe da Autogestor."
+  schema={schema}
   trilha={[
     { nome: "Início", href: "/" },
     { nome: "Blog", href: "/blog" },
@@ -18,6 +51,10 @@ const posts = (await getCollection("blog")).sort((a, b) => +b.data.publicado - +
     <div class="container">
       <span class="olho">Blog</span>
       <h1>Guias da Autogestor</h1>
+      <p class="chamada">
+        O que muda na sua conta de luz em Goiás, explicado por quem atende esses casos todo dia — sem promessa que a
+        fatura não confirma.
+      </p>
       <ul class="blog-lista lista-limpa" role="list">
         {
           posts.map((post) => (
@@ -26,6 +63,11 @@ const posts = (await getCollection("blog")).sort((a, b) => +b.data.publicado - +
                 <span class="olho">{porSlug(post.data.vertical).nome}</span>
                 <h2>{post.data.titulo}</h2>
                 <p>{post.data.descricao}</p>
+                {/* Mesma razão da data no post: regra que muda em janeiro
+                    precisa dizer de quando é antes do clique, não depois. */}
+                <time datetime={(post.data.atualizado ?? post.data.publicado).toISOString()}>
+                  {dataCurta(post.data.atualizado ?? post.data.publicado)}
+                </time>
               </a>
             </li>
           ))
@@ -36,7 +78,12 @@ const posts = (await getCollection("blog")).sort((a, b) => +b.data.publicado - +
 </Base>
 
 <style>
-  .blog-lista { margin-top: var(--e-8); gap: var(--e-6); max-width: 72ch; }
+  /* 72ch é medida de leitura — aplicada a uma lista de cards, deixava ~40% do
+     container vazio a partir de 900px. Mesma correção que o Faq.astro já faz. */
+  .blog-lista { margin-top: var(--e-8); gap: var(--e-6); }
+  @media (min-width: 900px) {
+    .blog-lista { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  }
   .blog-item {
     display: block;
     padding: var(--e-6);
@@ -49,4 +96,5 @@ const posts = (await getCollection("blog")).sort((a, b) => +b.data.publicado - +
   .blog-item:hover { background: var(--superficie); }
   .blog-item h2 { margin: var(--e-2) 0 var(--e-2); font-size: var(--t-lg); color: var(--marca-forte); }
   .blog-item p { margin: 0; color: var(--texto-suave); }
+  .blog-item time { display: block; margin-top: var(--e-4); font-size: var(--t-sm); color: var(--texto-suave); }
 </style>

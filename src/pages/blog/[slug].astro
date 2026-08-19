@@ -55,7 +55,7 @@ const schema = [
   trilha={[
     { nome: "Início", href: "/" },
     { nome: "Blog", href: "/blog" },
-    { nome: post.data.titulo, href: `/blog/${post.id}` },
+    { nome: post.data.curto ?? post.data.titulo, href: `/blog/${post.id}` },
   ]}
 >
   <article class="secao post">

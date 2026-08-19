@@ -149,6 +149,28 @@ const grafo: Record<string, unknown>[] = [
     <a class="pular" href="#conteudo">Pular para o conteúdo</a>
     <Header />
     <main id="conteudo" tabindex="-1">
+      {/* O BreadcrumbList do @graph acima descrevia uma trilha que não existia
+          na página. Agora os dois saem da mesma lista: o que o buscador lê é o
+          que o leitor vê. Último item não é link — é onde a pessoa já está. */}
+      {
+        trilha.length > 1 && (
+          <nav class="trilha" aria-label="Trilha de navegação">
+            <div class="container">
+              <ol>
+                {trilha.map((t, i) =>
+                  i === trilha.length - 1 ? (
+                    <li aria-current="page">{t.nome}</li>
+                  ) : (
+                    <li>
+                      <a href={t.href}>{t.nome}</a>
+                    </li>
+                  )
+                )}
+              </ol>
+            </div>
+          </nav>
+        )
+      }
       <slot />
     </main>
     <Footer />

@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
+import { escopoDeCabecalho } from "./src/lib/tabela.mjs";
 
 // URL base vem do ambiente porque cada vertical vira subdomínio próprio depois
 // (seguro.autogestor.com.br etc). Canonical e sitemap saem daqui — errar isso
@@ -16,6 +17,7 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [sitemap({ filter: (page) => !page.includes("/obrigado") })],
   trailingSlash: "never",
+  markdown: { rehypePlugins: [escopoDeCabecalho] },
   build: { inlineStylesheets: "always" },
   image: { responsiveStyles: true },
 });
