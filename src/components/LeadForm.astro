@@ -17,10 +17,18 @@ const id = `lead-${solucao.slug}-${instancia}`;
 ---
 
 <section class:list={["form", destaque && "form--destaque"]} aria-labelledby={`${id}-titulo`}>
-  <h2 id={`${id}-titulo`}>{titulo}</h2>
-  <p class="form__sub">
-    Três campos. Um consultor responde no seu WhatsApp — sem robô e sem ligação de telemarketing.
-  </p>
+  <!-- Destaque: a seção que envolve este formulário já tem seu próprio h2/chamada
+       (o "fechamento" da página de vertical) — repetir "Peça sua cotação" e o
+       subtítulo aqui era eco, não conteúdo novo. O h2 continua na árvore de
+       acessibilidade via aria-labelledby, só sai da tela. -->
+  <h2 id={`${id}-titulo`} class:list={destaque && "visualmente-oculto"}>{titulo}</h2>
+  {
+    !destaque && (
+      <p class="form__sub">
+        Três campos. Um consultor responde no seu WhatsApp — sem robô e sem ligação de telemarketing.
+      </p>
+    )
+  }
 
   <form id={id} class="form__campos" method="post" action="/api/lead" novalidate>
     <input type="hidden" name="solucao" value={solucao.slug} />
@@ -107,7 +115,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
     font-size: var(--t-base);
     min-height: 48px;
     padding: var(--e-3);
-    border: 1px solid var(--cinza-400);
+    border: 1px solid var(--cinza-500);
     border-radius: var(--r-2);
     background: var(--fundo);
     color: var(--texto);

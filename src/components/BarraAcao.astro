@@ -1,5 +1,6 @@
 ---
 import type { Solucao } from "../data/solucoes";
+import { ICONES } from "../data/solucoes";
 import { whatsapp } from "../consts";
 
 interface Props {
@@ -18,7 +19,8 @@ const { solucao, rotulo = "Pedir cotação", alvo = "pedir" } = Astro.props;
 <div class="barra">
   <a class="btn btn--primario barra__acao" href={`#${alvo}`}>{rotulo}</a>
   <a class="btn btn--contorno barra__acao" href={whatsapp(`Olá! Quero saber sobre ${solucao.nome}.`)}>
-    <span aria-hidden="true">💬</span> WhatsApp
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
+    WhatsApp
   </a>
 </div>
 

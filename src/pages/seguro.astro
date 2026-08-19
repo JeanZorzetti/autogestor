@@ -54,7 +54,22 @@ const perguntas = [
     </ul>
     <p class="atalho">
       Prefere preencher a cotação completa agora?
-      {cotacoes.map((c, i) => (<>{i > 0 ? " · " : " "}<a href={c.href} rel="noopener">{c.rotulo.replace("Cotar seguro de ", "")}</a></>))}
+      {
+        cotacoes.map((c, i) => (
+          <>
+            {i > 0 ? " · " : " "}
+            <a
+              class="externo"
+              href={c.href}
+              target="_blank"
+              rel="noopener"
+              aria-label={`${c.rotulo} — site do parceiro, abre em nova aba`}
+            >
+              {c.rotulo.replace("Cotar seguro de ", "")}
+            </a>
+          </>
+        ))
+      }
     </p>
   </div>
 
@@ -94,7 +109,14 @@ const perguntas = [
         Se preferir resolver em três campos, use o formulário desta página — a gente pergunta o resto no WhatsApp.
       </p>
       <div class="botoes">
-        {cotacoes.map((c) => <a class="btn btn--contorno" href={c.href} rel="noopener">{c.rotulo}</a>)}
+        {
+          cotacoes.map((c) => (
+            <a class="btn btn--contorno externo" href={c.href} target="_blank" rel="noopener">
+              {c.rotulo}
+              <span class="visualmente-oculto">— site do parceiro, abre em nova aba</span>
+            </a>
+          ))
+        }
       </div>
     </div>
   </section>

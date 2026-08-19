@@ -174,8 +174,9 @@ const schema = [
 </Base>
 
 <style>
-  .topo { background: var(--superficie); padding-block: var(--e-16); }
-  .topo .chamada { font-size: var(--t-lg); }
+  /* Sem .topo__grade nesta página (não tem LeadForm no topo) — padding simétrico
+     em vez do par --e-12/--e-16 herdado de global.css. */
+  .topo { padding-block: var(--e-16); }
   .areas { margin-top: var(--e-8); }
   .areas p { color: var(--texto-suave); font-size: var(--t-sm); margin: 0; }
   .dif { margin-top: var(--e-8); gap: var(--e-8); }

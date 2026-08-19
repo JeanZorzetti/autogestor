@@ -13,6 +13,9 @@
   --azul-600: #005ca6;
   --azul-100: #e2ecf6;
   --laranja-500: #e47a45;
+  /* Só para o olho sobre --superficie-marca: o -500 dá 4.49:1 e reprova AA
+     por uma casa decimal. O -400 dá 5.42:1 sem mudar a cor em nenhum outro lugar. */
+  --laranja-400: #eb8f68;
   --laranja-600: #d26831;
   --laranja-100: #fceee6;
   --tinta: #0b1b2b;
@@ -20,6 +23,9 @@
   --cinza-100: #e8edf3;
   --cinza-200: #d3dbe5;
   --cinza-400: #9aa8b8;
+  /* -400 dá 2.42:1 sobre branco — abaixo do 3:1 que WCAG 1.4.11 pede para o
+     contorno de um campo. -500 é o primeiro degrau da escala que passa. */
+  --cinza-500: #7d8b9d;
   --cinza-600: #516275;
   --cinza-800: #263544;
 
@@ -145,7 +151,7 @@ img, svg { max-width: 100%; height: auto; display: block; }
   color: var(--marca);
   margin-bottom: var(--e-2);
 }
-.secao--marca .olho { color: var(--laranja-500); }
+.secao--marca .olho { color: var(--laranja-400); }
 
 .chamada { font-size: var(--t-md); color: var(--texto-suave); max-width: 62ch; }
 .secao--marca .chamada { color: var(--texto-sobre-marca); }
@@ -185,7 +191,9 @@ img, svg { max-width: 100%; height: auto; display: block; }
 /* --- grades --- */
 .grade { display: grid; gap: var(--e-4); }
 .grade--2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-.grade--3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+/* 260px dava 4 colunas em telas largas — 6 cards viram 4+2 (home) ou 4+1
+   órfão (verticais). 280px trava em 3. */
+.grade--3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 
 .cartao {
   background: var(--fundo);
@@ -220,6 +228,10 @@ img, svg { max-width: 100%; height: auto; display: block; }
   font-weight: 700;
 }
 
+/* Marca links que abrem em nova aba: só decorativo — o aviso que importa vai
+   no nome acessível (aria-label), não neste símbolo. */
+.externo::after { content: " ↗"; }
+
 .visualmente-oculto {
   position: absolute;
   width: 1px; height: 1px;
@@ -243,3 +255,14 @@ img, svg { max-width: 100%; height: auto; display: block; }
   transition: top 120ms ease;
 }
 .pular:focus { top: var(--e-4); }
+
+/* Hero + fechamento das páginas de vertical: mesmo par de blocos em Vertical.astro,
+   seja-parceiro.astro e sobre.astro — vivia copiado nos três. */
+.topo { background: var(--superficie); padding-block: var(--e-12) var(--e-16); }
+.topo__grade { display: grid; gap: var(--e-8); align-items: start; }
+@media (min-width: 900px) {
+  .topo__grade { grid-template-columns: 1fr minmax(360px, 420px); gap: var(--e-12); }
+}
+.topo .chamada, .topo__texto .chamada { font-size: var(--t-lg); }
+.fechamento { display: grid; gap: var(--e-8); align-items: center; }
+@media (min-width: 900px) { .fechamento { grid-template-columns: 1fr minmax(360px, 440px); } }

@@ -1,5 +1,5 @@
 ---
-import { SOLUCOES } from "../data/solucoes";
+import { SOLUCOES, ICONES } from "../data/solucoes";
 import { EMPRESA, whatsapp } from "../consts";
 
 const { pathname } = Astro.url;
@@ -13,11 +13,14 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
       <span class="marca__nome">Autogestor</span>
     </a>
     <a class="cabecalho__zap" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>
-      <span aria-hidden="true">💬</span> WhatsApp
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
+      WhatsApp
     </a>
   </div>
   <!-- Sem hambúrguer: 6 verticais cabem numa barra que quebra em duas linhas no
-       celular. Menu fechado esconde exatamente o que a pessoa veio procurar. -->
+       celular. Menu fechado esconde exatamente o que a pessoa veio procurar.
+       "Sobre" não é uma solução (já vive no rodapé) — incluí-lo aqui abria uma
+       3ª linha só para ele e custava 48px da primeira dobra no celular. -->
   <nav class="nav" aria-label="Soluções">
     <ul class="container nav__lista">
       {
@@ -29,7 +32,6 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
           </li>
         ))
       }
-      <li><a href="/sobre" aria-current={atual("/sobre") ? "page" : undefined}>Sobre</a></li>
     </ul>
   </nav>
 </header>

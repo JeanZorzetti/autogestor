@@ -47,7 +47,7 @@ const perguntas = [
     </ul>
     <p class="atalho">
       Quer pesquisar você mesmo primeiro?
-      <a href={EXTERNOS.agenciaViagens} rel="noopener">Abra nossa busca online 24h</a>.
+      <a class="externo" href={EXTERNOS.agenciaViagens} target="_blank" rel="noopener" aria-label="Abra nossa busca online 24h — site do parceiro, abre em nova aba">Abra nossa busca online 24h</a>.
     </p>
   </div>
 
@@ -62,7 +62,12 @@ const perguntas = [
             Nossa plataforma fica aberta 24 horas, com o mesmo inventário de voos e hotéis que um site de busca
             grande. Você compara, escolhe e emite sozinho, com promoções exclusivas de agência.
           </p>
-          <p><a class="btn btn--contorno" href={EXTERNOS.agenciaViagens} rel="noopener">Abrir a busca online</a></p>
+          <p>
+            <a class="btn btn--contorno externo" href={EXTERNOS.agenciaViagens} target="_blank" rel="noopener">
+              Abrir a busca online
+              <span class="visualmente-oculto">— site do parceiro, abre em nova aba</span>
+            </a>
+          </p>
         </div>
         <div class="cartao">
           <h3>A gente monta</h3>
