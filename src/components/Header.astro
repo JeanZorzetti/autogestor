@@ -1,6 +1,7 @@
 ---
 import { SOLUCOES, ICONES } from "../data/solucoes";
 import { EMPRESA, whatsapp } from "../consts";
+import Logo from "./Logo.astro";
 
 const { pathname } = Astro.url;
 const atual = (href: string) => pathname === href || pathname === `${href}/`;
@@ -9,7 +10,7 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
 <header class="cabecalho">
   <div class="container cabecalho__linha">
     <a href="/" class="marca" aria-label={`${EMPRESA.nome} — página inicial`}>
-      <img src="/img/logo-80.webp" width="40" height="41" alt="" fetchpriority="high" decoding="async" />
+      <Logo size={40} />
       <span class="marca__nome">Autogestor</span>
     </a>
     <a class="cabecalho__zap" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>

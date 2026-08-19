@@ -107,6 +107,9 @@ const grafo: Record<string, unknown>[] = [
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, follow" />}
 
+    {/* SVG primeiro: nítido em qualquer densidade e troca de cor sozinho no
+        tema escuro. O PNG fica de reserva para quem não lê ícone vetorial. */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#002b74" media="(prefers-color-scheme: light)" />
