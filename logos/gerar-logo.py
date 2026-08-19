@@ -7,15 +7,7 @@ de verdade: um anel hexagonal quase fechado mais tres bracos em espiral
 logaritmica a ~120 graus, o vortice.
 
 As proporcoes nao foram chutadas: sairam de uma segmentacao polar do PNG
-original (raio, espessura e extensao angular de cada arco, por cor) e dos
-harmonicos dos contornos. Os tres numeros que mandam na leitura da marca:
-
-  contorno externo do anel   cos(6t) a 4,0%     -> hexagono
-  contorno externo dos tres  cos(3t) a 12,8%    -> triangulo arredondado
-  furo do meio               cos(3t) a  4,7%    -> circulo
-
-Perder qualquer um deles descaracteriza a marca — o miolo virar hexagono junto
-com o anel foi exatamente o erro da primeira versao.
+original (raio, espessura e extensao angular de cada arco, por cor).
 
 Uso:  python logos/gerar-logo.py
 Depois:  node logos/rasterizar.mjs   (icones PNG, usa o sharp do projeto)
@@ -54,29 +46,17 @@ def afila(s, inicio, expoente):
     return max(0.0, 1.0 - (s - inicio) / (1.0 - inicio)) ** expoente
 
 
-def sample(a0, sweep, r_ext, r_int, amp, n):
-    """Amostra as duas bordas de uma fita, cada uma com seu proprio raio.
-
-    Independentes de proposito: nos bracos a borda interna fica parada sobre o
-    circulo do miolo enquanto a externa gira pra fora. E o que faz o centro ler
-    como circulo e o contorno dos tres como triangulo arredondado — com
-    `eixo +/- espessura` as duas bordas teriam a mesma forma, e o furo saia
-    triangular junto.
-    """
+def sample(a0, sweep, rfn, wfn, amp, n):
+    """Amostra as duas bordas de uma fita: rfn da o eixo, wfn a meia-espessura."""
     out, inn = [], []
     for i in range(n + 1):
         s = i / n
         th = a0 + sweep * s
-        h = hexmod(th, amp)
-        out.append(pt(r_ext(s, th) * h, th))
-        inn.append(pt(r_int(s, th) * h, th))
+        r = rfn(s, th) * hexmod(th, amp)
+        w = wfn(s)
+        out.append(pt(r + w, th))
+        inn.append(pt(r - w, th))
     return out, inn
-
-
-def fita(rfn, wfn):
-    """Adapta eixo + meia-espessura para o par de bordas do `sample`."""
-    return (lambda s, th: rfn(s, th) + wfn(s),
-            lambda s, th: rfn(s, th) - wfn(s))
 
 
 def catmull(p):
@@ -125,7 +105,7 @@ def _ring_r(s, th):
 def ring_blue():
     def wfn(s):                       # cinzel na cabeca, o pico do topo
         return 0.5 * THK * (0.62 + 0.38 * min(1.0, s / 0.09))
-    return sample(A_RING, 250, *fita(_ring_r, wfn), amp=HEX, n=30)
+    return sample(A_RING, 250, _ring_r, wfn, HEX, 30)
 
 
 def ring_orange():
@@ -133,32 +113,17 @@ def ring_orange():
         return 0.5 * THK * afila(s, 0.70, 0.85)
     # Comeca em 300 e nao em 330: o corte reto da traseira precisa cair onde a
     # rampa "oa" ja e azul puro, senao ele mesmo vira a aresta que veio evitar.
-    return sample(A_RING + 208, 148, *fita(_ring_r, wfn), amp=HEX, n=26)
+    return sample(A_RING + 208, 148, _ring_r, wfn, HEX, 26)
 
 
 # --- bracos -----------------------------------------------------------------
-# Roseta de tres laminas, ajustada aos perfis medidos no original: contorno
-# externo em 3-fold (triangulo arredondado) com pico .757 e vale .462 na fase
-# -32 graus, furo do meio circular em .32. Sem hexmod aqui — o 3-fold vem do
-# arranjo das tres, nao de modulacao.
-#
-# S=200 e o ponto do compromisso: braco mais longo afina a lamina (em 245 a
-# marca vira fiapo) e mais curto engorda demais. P_ARM = 120/S nao e ajuste
-# solto — e o minimo para o furo fechar em circulo: abaixo disso sobra angulo
-# sem nenhum braco com a borda interna parada, e o miolo sai triangular.
-A_ARM, S_ARM, R_FURO, K_ARM = 47.0, 200.0, 0.320 * R, 0.861
-P_ARM = 120.0 / S_ARM              # fracao do arco com a borda interna parada
-
-
 def arm(a0):
-    def r_ext(s, th):
-        return R_FURO * math.exp(K_ARM * s)
-
-    def r_int(s, th):
-        u = max(0.0, (s - P_ARM) / (1.0 - P_ARM))
-        return R_FURO * math.exp(K_ARM * u)
-
-    return sample(a0, S_ARM, r_ext, r_int, amp=0.0, n=34)
+    r0, r1, wmax, sweep = 0.250 * R, 0.680 * R, 0.108 * R, 205
+    k = math.log(r1 / r0)
+    # Lente: espessura zero nas duas pontas, cheia no meio. Expoente acima de 1
+    # alonga o afilamento — no original as pontas sao laminas, nao dedos.
+    wfn = lambda s: wmax * math.sin(math.pi * s) ** 1.35
+    return sample(a0, sweep, lambda s, th: r0 * math.exp(k * s), wfn, 0.012, 30)
 
 
 def build():
@@ -166,14 +131,9 @@ def build():
 
     O anel laranja usa a rampa "oa", que apaga no rabo: no original ele nao
     encosta no azul, dissolve nele entre 320 e 0 graus.
-
-    Laranja e o braco de A_ARM+120: e o que sai da esquerda, passa pelo fundo e
-    termina apontando pra direita — o mesmo tracado do arco laranja do original.
-    Vai por ultimo para ficar por cima dos azuis, como la.
     """
     return [("b", d_of(*ring_blue())), ("oa", d_of(*ring_orange())),
-            ("b", d_of(*arm(A_ARM))), ("b", d_of(*arm(A_ARM + 240))),
-            ("o", d_of(*arm(A_ARM + 120)))]
+            ("b", d_of(*arm(62))), ("o", d_of(*arm(182))), ("b", d_of(*arm(302)))]
 
 
 # ---------------------------------------------------------------- saidas
