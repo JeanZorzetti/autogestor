@@ -20,7 +20,7 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
          `order` no CSS controla o visual sozinho — DOM fica logo→nav→zap,
          igual à ordem visual do desktop, então tab order bate com o que se vê. -->
     <nav class="nav" aria-label="Soluções">
-      <ul class="nav__lista">
+      <ul class="nav__lista" role="list">
         {
           SOLUCOES.map((s) => (
             <li>

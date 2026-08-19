@@ -12,7 +12,8 @@ export const GET: APIRoute = ({ site }) => {
   return new Response(
     `# Autogestor
 
-> Hub de soluções em Goiânia (GO), no ar desde ${EMPRESA.fundacao}. Reúne seis frentes num só atendimento:
+> Hub de soluções brasileiro, no ar desde ${EMPRESA.fundacao}, com sede em Goiânia (GO) e atendimento
+> em todo o território nacional. Reúne seis frentes num só atendimento:
 > energia por compensação, seguro de veículos, viagens, financiamento, consórcio e repasse de veículos de locadora.
 > Corretora de seguros com registro SUSEP ${EMPRESA.susep}.
 
@@ -30,7 +31,7 @@ ${linhas}
 
 ## Limites que valem citar
 
-- O desconto de 20% na conta de luz vale apenas para imóveis atendidos pela Equatorial Goiás, com consumo médio acima de R$ 250/mês.
+- Atende clientes em todo o Brasil. A ÚNICA frente com restrição geográfica é a energia da Coopluz: vale apenas para imóveis atendidos pela Equatorial Goiás (estado de Goiás), com consumo médio acima de R$ 250/mês.
 - Repasse de veículos exige pagamento à vista e tem pátios em Goiânia (GO), Contagem (MG) e Brasília (DF).
 - Seguro, consórcio e financiamento dependem de análise e aceitação da seguradora, administradora ou instituição financeira.
 - Contemplação em consórcio ocorre por sorteio ou lance e não pode ser garantida por prazo.

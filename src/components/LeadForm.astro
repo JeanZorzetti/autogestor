@@ -16,17 +16,20 @@ const { solucao, titulo = "Peça sua cotação", destaque = false, instancia = "
 const id = `lead-${solucao.slug}-${instancia}`;
 ---
 
-<section class:list={["form", destaque && "form--destaque"]} aria-labelledby={`${id}-titulo`}>
-  <!-- Destaque: a seção que envolve este formulário já tem seu próprio h2/chamada
-       (o "fechamento" da página de vertical) — repetir "Peça sua cotação" e o
-       subtítulo aqui era eco, não conteúdo novo. O h2 continua na árvore de
-       acessibilidade via aria-labelledby, só sai da tela. -->
-  <h2 id={`${id}-titulo`} class:list={destaque && "visualmente-oculto"}>{titulo}</h2>
+<div class:list={["form", destaque && "form--destaque"]}>
+  <!-- Não é landmark de propósito: a página de vertical renderiza este bloco
+       duas vezes, e dois <section aria-labelledby> com o mesmo nome acessível
+       ("Peça sua cotação") apareciam como duas regiões indistinguíveis para
+       quem navega por landmark. Fora do destaque, o h2 abaixo estrutura o
+       bloco; dentro dele, quem titula é o h2 da seção de fechamento ao lado. -->
   {
     !destaque && (
-      <p class="form__sub">
-        Três campos. Um consultor responde no seu WhatsApp — sem robô e sem ligação de telemarketing.
-      </p>
+      <>
+        <h2>{titulo}</h2>
+        <p class="form__sub">
+          Três campos. Um consultor responde no seu WhatsApp — sem robô e sem ligação de telemarketing.
+        </p>
+      </>
     )
   }
 
@@ -91,7 +94,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
     Prefere falar agora?
     <a href={whatsapp(`Olá! Quero saber sobre ${solucao.nome}.`)}>Chamar no WhatsApp {EMPRESA.telefoneExibicao}</a>
   </p>
-</section>
+</div>
 
 <style>
   .form {

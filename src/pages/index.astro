@@ -1,9 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
 import SolucaoCard from "../components/SolucaoCard.astro";
+import LeadForm from "../components/LeadForm.astro";
 import Faq from "../components/Faq.astro";
 import BarraAcao from "../components/BarraAcao.astro";
-import { SOLUCOES } from "../data/solucoes";
+import { SOLUCOES, GERAL } from "../data/solucoes";
 import { EMPRESA, whatsapp } from "../consts";
 
 const perguntas = [
@@ -17,7 +18,7 @@ const perguntas = [
   },
   {
     p: "Atendem fora de Goiânia?",
-    r: "Seguro, financiamento, consórcio e viagens atendem todo o Brasil. O desconto de energia da Coopluz vale apenas para imóveis atendidos pela Equatorial Goiás. O repasse de veículos tem pátios em Goiânia (GO), Contagem (MG) e Brasília (DF).",
+    r: "Sim, em todo o Brasil. O escritório fica em Goiânia e o atendimento é por WhatsApp, então a distância não muda nada em seguro, viagens, financiamento, consórcio ou repasse. A única exceção é a energia da Coopluz, que só funciona para imóveis atendidos pela Equatorial Goiás. No repasse, a retirada acontece nos pátios de Goiânia (GO), Contagem (MG) ou Brasília (DF).",
   },
   {
     p: "Como funciona o atendimento?",
@@ -54,27 +55,34 @@ const schema = [
 ---
 
 <Base
-  titulo="Autogestor — seguro, energia, viagens, crédito e veículos em Goiânia"
-  descricao="Hub de soluções em Goiânia desde 2004: seguro de carro, moto e caminhão, 20% de desconto na conta de luz, passagens aéreas, financiamento, consórcio e repasse de veículos de locadora."
+  titulo="Autogestor — seguro, energia, viagens, crédito e veículos"
+  descricao="Seguro de carro, moto e caminhão, passagens aéreas, financiamento, consórcio e repasse de veículos — em todo o Brasil, desde 2004. Energia com 20% de desconto em Goiás."
   schema={schema}
 >
   <section class="capa">
-    <div class="container">
-      <span class="olho">Hub de soluções em Goiânia desde {EMPRESA.fundacao}</span>
-      <h1>Seis frentes que pesam no seu mês. Um consultor só para resolver.</h1>
-      <p class="chamada capa__chamada">
-        Seguro de veículo, desconto na conta de luz, passagem aérea, financiamento, consórcio e compra de seminovo
-        direto de locadora. A Autogestor cota, compara e acompanha o contrato — você fala com uma pessoa, não com
-        seis empresas.
-      </p>
-      <div class="capa__acoes">
-        <a class="btn btn--primario" href="#solucoes">Ver as seis soluções</a>
-        <a class="btn btn--contorno" href={whatsapp("Olá! Não sei qual solução preciso, pode me orientar?")}>
-          Não sei por onde começar
-        </a>
+    <div class="container topo__grade">
+      <div class="capa__texto">
+        <span class="olho">Hub de soluções em todo o Brasil desde {EMPRESA.fundacao}</span>
+        <h1>Seis frentes que pesam no seu mês. Um consultor só para resolver.</h1>
+        <p class="chamada capa__chamada">
+          Seguro de veículo, desconto na conta de luz, passagem aérea, financiamento, consórcio e compra de seminovo
+          direto de locadora. A Autogestor cota, compara e acompanha o contrato — você fala com uma pessoa, não com
+          seis empresas.
+        </p>
+        <div class="capa__acoes">
+          <a class="btn btn--primario" href="#solucoes">Ver as seis soluções</a>
+          <a class="btn btn--contorno" href={whatsapp("Olá! Não sei qual solução preciso, pode me orientar?")}>
+            Não sei por onde começar
+          </a>
+        </div>
       </div>
-      <ul class="provas">
-        <li><strong>2004</strong><span>atendendo em Goiânia</span></li>
+      <div>
+        <LeadForm solucao={GERAL} titulo="Fale com um consultor" instancia="capa" />
+      </div>
+    </div>
+    <div class="container">
+      <ul class="provas" role="list">
+        <li><strong>2004</strong><span>atendendo em todo o Brasil</span></li>
         <li><strong>SUSEP {EMPRESA.susep}</strong><span>corretora registrada</span></li>
         <li><strong>R$ 0</strong><span>para cotar e simular</span></li>
       </ul>
@@ -86,7 +94,7 @@ const schema = [
       <span class="olho">Escolha por onde começar</span>
       <h2>O que a Autogestor resolve</h2>
       <p class="chamada">Cada frente tem consultor próprio. Clique na sua e peça a cotação em três campos.</p>
-      <ul class="grade grade--3 lista-limpa solucoes">
+      <ul class="grade grade--3 lista-limpa solucoes" role="list">
         {SOLUCOES.map((s) => <SolucaoCard solucao={s} />)}
       </ul>
     </div>
@@ -114,8 +122,8 @@ const schema = [
         <div>
           <h3>Gente de Goiânia, no seu WhatsApp</h3>
           <p>
-            Escritório no Jardim Europa, atendimento por WhatsApp e o mesmo número desde sempre. Sinistro, dúvida
-            de fatura ou remarcação de voo têm para quem ligar.
+            Escritório no Jardim Europa e o mesmo número desde sempre — atendendo o Brasil inteiro por WhatsApp.
+            Sinistro, dúvida de fatura ou remarcação de voo têm para quem ligar.
           </p>
         </div>
       </div>
@@ -126,7 +134,7 @@ const schema = [
     <div class="container">
       <span class="olho">Como funciona</span>
       <h2>Três passos, sem visita e sem papelada antecipada</h2>
-      <ol class="passos">
+      <ol class="passos" role="list">
         <li>
           <h3>Você escolhe a frente</h3>
           <p>Abre a página da solução e deixa nome, WhatsApp e um dado de contexto. Leva menos de um minuto.</p>
@@ -160,7 +168,7 @@ const schema = [
 
 <style>
   .capa {
-    background: linear-gradient(180deg, var(--azul-100) 0%, var(--fundo) 100%);
+    background: linear-gradient(180deg, var(--capa-topo) 0%, var(--fundo) 100%);
     padding-block: var(--e-16) var(--e-12);
   }
   .capa__chamada { font-size: var(--t-lg); }
@@ -174,6 +182,7 @@ const schema = [
     padding: var(--e-6) 0 0;
     border-top: 1px solid var(--borda);
   }
+  .capa__texto { min-width: 0; }
   .provas li { display: grid; }
   .provas strong { font-size: var(--t-xl); color: var(--marca-forte); letter-spacing: -0.02em; }
   .provas span { font-size: var(--t-sm); color: var(--texto-suave); }

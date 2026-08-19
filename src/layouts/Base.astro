@@ -1,7 +1,8 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { EMPRESA, enderecoLinha } from "../consts";
+import { EMPRESA } from "../consts";
+import { AREA_SERVIDA } from "../data/solucoes";
 import "../styles/global.css";
 
 interface Props {
@@ -33,7 +34,7 @@ const grafo: Record<string, unknown>[] = [
     image: { "@id": abs("/#logo") },
     foundingDate: EMPRESA.fundacao,
     description:
-      "Hub de soluções em energia por compensação, seguros, viagens, financiamento, consórcio e repasse de veículos, em Goiânia.",
+      "Hub de soluções em energia por compensação, seguros, viagens, financiamento, consórcio e repasse de veículos. Atende todo o Brasil, com sede em Goiânia (GO). Só a energia da Coopluz é restrita à área da Equatorial Goiás.",
     telephone: EMPRESA.telefone,
     email: EMPRESA.email,
     address: {
@@ -45,7 +46,7 @@ const grafo: Record<string, unknown>[] = [
       addressCountry: EMPRESA.endereco.pais,
     },
     geo: { "@type": "GeoCoordinates", latitude: EMPRESA.geo.lat, longitude: EMPRESA.geo.lon },
-    areaServed: { "@type": "State", name: "Goiás" },
+    areaServed: AREA_SERVIDA.BR,
     identifier: { "@type": "PropertyValue", name: "SUSEP", value: EMPRESA.susep },
     sameAs: [...EMPRESA.redes],
   },
@@ -137,9 +138,6 @@ const grafo: Record<string, unknown>[] = [
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <meta name="geo.region" content="BR-GO" />
-    <meta name="geo.placename" content={EMPRESA.endereco.cidade} />
-
     <script type="application/ld+json" is:inline set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": grafo })} />
   </head>
   <body>
@@ -149,6 +147,5 @@ const grafo: Record<string, unknown>[] = [
       <slot />
     </main>
     <Footer />
-    <p class="visualmente-oculto">{enderecoLinha}</p>
   </body>
 </html>

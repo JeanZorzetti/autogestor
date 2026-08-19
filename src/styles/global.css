@@ -46,6 +46,7 @@
   --texto: var(--tinta);
   --texto-suave: var(--cinza-600);
   --texto-invertido: #ffffff;
+  --capa-topo: var(--azul-100);
   --marca: var(--azul-600);
   --marca-forte: var(--azul-900);
   --acento: var(--laranja-500);
@@ -147,6 +148,11 @@
     --superficie: light-dark(#f5f7fa, #0b1728);
     --superficie-alta: light-dark(#ffffff, #142339);
     --superficie-marca: light-dark(#002b74, #022c69);
+    /* Topo do gradiente do herói. No claro é o azul-100 de sempre. No escuro
+       precisa ficar ABAIXO do cabeçalho (#142339): com --azul-100 (#19345d) o
+       herói saía mais claro que a barra acima dele, invertendo a ordem de
+       elevação que o resto deste arquivo mantém. */
+    --capa-topo: light-dark(#e2ecf6, #101d31);
     --borda: light-dark(#d3dbe5, #3d5171);
     /* Escuro não é branco puro: #fff sobre azul quase preto vibra. */
     --texto: light-dark(#0b1b2b, #e9eef6);

@@ -23,7 +23,8 @@ import { whatsapp } from "../consts";
           Perguntar no WhatsApp
         </a>
       </p>
-      <ul class="grade grade--3 lista-limpa cards">
+      <h2 class="cards__titulo">Comece por uma das seis soluções</h2>
+      <ul class="grade grade--3 lista-limpa cards" role="list">
         {SOLUCOES.map((s) => <SolucaoCard solucao={s} />)}
       </ul>
     </div>
@@ -32,5 +33,6 @@ import { whatsapp } from "../consts";
 
 <style>
   .acoes { display: flex; flex-wrap: wrap; gap: var(--e-3); margin-block: var(--e-8); }
-  .cards { margin-top: var(--e-12); }
+  .cards__titulo { margin-top: var(--e-12); }
+  .cards { margin-top: var(--e-6); }
 </style>

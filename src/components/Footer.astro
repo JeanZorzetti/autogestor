@@ -9,7 +9,8 @@ const ano = new Date().getFullYear();
     <div>
       <p class="rodape__marca">Autogestor</p>
       <p class="rodape__texto">
-        Hub de soluções em energia, seguros, viagens, crédito e veículos. Em Goiânia desde {EMPRESA.fundacao}.
+        Hub de soluções em energia, seguros, viagens, crédito e veículos. Atendimento em todo o Brasil, de
+        Goiânia, desde {EMPRESA.fundacao}.
       </p>
       <p class="rodape__texto">
         Corretora registrada na SUSEP sob o nº {EMPRESA.susep}.
@@ -18,14 +19,14 @@ const ano = new Date().getFullYear();
 
     <nav aria-label="Soluções (rodapé)">
       <h2 class="rodape__titulo">Soluções</h2>
-      <ul class="rodape__links">
+      <ul class="rodape__links" role="list">
         {SOLUCOES.map((s) => <li><a href={`/${s.slug}`}>{s.nome}</a></li>)}
       </ul>
     </nav>
 
     <nav aria-label="Institucional">
       <h2 class="rodape__titulo">Institucional</h2>
-      <ul class="rodape__links">
+      <ul class="rodape__links" role="list">
         <li><a href="/sobre">Sobre a Autogestor</a></li>
         <li><a href="/seja-parceiro">Seja um parceiro</a></li>
         <li><a href={whatsapp("Olá! Vim pelo site da Autogestor.")}>Falar no WhatsApp</a></li>
@@ -39,7 +40,7 @@ const ano = new Date().getFullYear();
         <a href={`tel:${EMPRESA.telefone}`}>{EMPRESA.telefoneExibicao}</a><br />
         <a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a>
       </address>
-      <ul class="rodape__redes">
+      <ul class="rodape__redes" role="list">
         <li><a href={EMPRESA.redes[0]} rel="me noopener">Instagram</a></li>
         <li><a href={EMPRESA.redes[1]} rel="me noopener">Facebook</a></li>
       </ul>

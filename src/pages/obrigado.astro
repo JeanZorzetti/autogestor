@@ -55,7 +55,7 @@ const falhou = Astro.url.searchParams.has("erro");
       </p>
 
       <h2 class="mais">{falhou ? "Já que está aqui, veja as outras frentes" : "Enquanto isso, veja as outras frentes"}</h2>
-      <ul class="lista-check">
+      <ul class="lista-check" role="list">
         {SOLUCOES.map((s) => (
           <li>
             <a href={`/${s.slug}`}>{s.nome}</a> — {s.resumo}

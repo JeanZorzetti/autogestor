@@ -9,7 +9,7 @@ import { EMPRESA, enderecoLinha, whatsapp } from "../consts";
 const perguntas = [
   {
     p: "Desde quando a Autogestor existe?",
-    r: "Desde 2004, em Goiânia. Começou como corretora de seguros e foi somando frentes conforme os mesmos clientes pediam: crédito, viagens, energia e veículos.",
+    r: "Desde 2004, em Goiânia. Começou como corretora de seguros e foi somando frentes conforme os mesmos clientes pediam: crédito, viagens, energia e veículos. Hoje o atendimento é nacional, feito por WhatsApp a partir do escritório em Goiânia.",
   },
   {
     p: "Vocês são uma empresa só ou várias?",
@@ -44,8 +44,8 @@ const schema = [
 ---
 
 <Base
-  titulo="Sobre a Autogestor — hub de negócios em Goiânia desde 2004"
-  descricao="A Autogestor nasceu em 2004 em Goiânia como corretora de seguros e virou um hub de soluções: energia, seguros, viagens, financiamento, consórcio e repasse de veículos."
+  titulo="Sobre a Autogestor — hub de negócios desde 2004"
+  descricao="A Autogestor nasceu em 2004 em Goiânia como corretora de seguros e virou um hub de soluções para todo o Brasil: energia, seguros, viagens, financiamento, consórcio e repasse de veículos."
   schema={schema}
   trilha={[
     { nome: "Início", href: "/" },
@@ -68,7 +68,7 @@ const schema = [
     <div class="container">
       <span class="olho">Áreas de atuação</span>
       <h2>Seis frentes, um cadastro</h2>
-      <ul class="grade grade--2 areas lista-limpa">
+      <ul class="grade grade--2 areas lista-limpa" role="list">
         {SOLUCOES.map((s) => <SolucaoCard solucao={s} />)}
       </ul>
     </div>
@@ -120,7 +120,7 @@ const schema = [
       </div>
       <div>
         <h3>Ir direto para uma solução</h3>
-        <ul class="lista-check">
+        <ul class="lista-check" role="list">
           {SOLUCOES.map((s) => <li><a href={`/${s.slug}`}>{s.nome}</a></li>)}
         </ul>
       </div>

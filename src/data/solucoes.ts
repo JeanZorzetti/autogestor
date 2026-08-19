@@ -13,6 +13,10 @@ export type Solucao = {
    *  11 páginas competindo entre si. */
   titulo: string;
   descricao: string;
+  /** Onde a solução realmente atende — vira `areaServed` no JSON-LD. Só a
+   *  Coopluz é restrita: depende da área de concessão da Equatorial Goiás.
+   *  O resto do hub atende o Brasil inteiro. */
+  abrangencia: "BR" | "GO";
   /** Rótulo e placeholder do 3º campo do formulário. Nome e WhatsApp são os
    *  outros dois; e-mail foi cortado porque o canal de atendimento é WhatsApp. */
   campo: { rotulo: string; exemplo: string; opcoes?: readonly string[] };
@@ -43,6 +47,7 @@ export const SOLUCOES: readonly Solucao[] = [
     titulo: "Coopluz: 20% de desconto na conta de luz em Goiás | Autogestor",
     descricao:
       "Associe-se à Coopluz e pague 20% menos na conta da Equatorial Goiás. Sem instalar placa solar, sem obra, sem taxa de adesão e sem multa para sair.",
+    abrangencia: "GO",
     campo: { rotulo: "Valor médio da sua conta de luz", exemplo: "ex.: R$ 450" },
     cta: "Quero pagar 20% menos",
     fechamento: "Peça a análise da sua conta de luz",
@@ -53,9 +58,10 @@ export const SOLUCOES: readonly Solucao[] = [
     nome: "Seguro e proteção veicular",
     curto: "Seguro",
     resumo: "Cotação de carro, moto e caminhão comparada entre seguradoras, com assistência 24h.",
-    titulo: "Seguro de carro, moto e caminhão em Goiânia | Autogestor",
+    titulo: "Seguro de carro, moto e caminhão no Brasil | Autogestor",
     descricao:
       "Corretora com registro SUSEP desde 2004. Comparamos seguro e proteção veicular para carro, moto e caminhão, com assistência 24h nacional e apoio na regulação de sinistro.",
+    abrangencia: "BR",
     campo: { rotulo: "Marca e modelo do veículo", exemplo: "ex.: Onix 2021" },
     cta: "Quero minha cotação",
     fechamento: "Peça sua cotação de seguro",
@@ -69,6 +75,7 @@ export const SOLUCOES: readonly Solucao[] = [
     titulo: "Passagens aéreas e hotéis com tarifa de agência | Autogestor Viagens",
     descricao:
       "Agência online 24h para passagens aéreas nacionais e internacionais, hotéis e resorts com tarifas exclusivas e pagamento em até 12x no cartão.",
+    abrangencia: "BR",
     campo: { rotulo: "Para onde você quer ir?", exemplo: "ex.: Maceió em janeiro, 2 adultos" },
     cta: "Quero uma cotação de viagem",
     fechamento: "Peça sua cotação de viagem",
@@ -79,9 +86,10 @@ export const SOLUCOES: readonly Solucao[] = [
     nome: "Financiamento de veículos",
     curto: "Financiamento",
     resumo: "Crédito aprovado antes de escolher o carro. Sem taxa para analisar sua ficha.",
-    titulo: "Financiamento de carro, moto e caminhão em Goiânia | Autogestor",
+    titulo: "Financiamento de carro, moto e caminhão | Autogestor",
     descricao:
       "Financiamento para veículo novo ou usado, nacional ou importado. Aprovação antes da compra, sem cobrança para analisar a ficha nem para liberar o crédito.",
+    abrangencia: "BR",
     campo: { rotulo: "Quanto você precisa financiar?", exemplo: "ex.: R$ 60.000" },
     cta: "Quero simular meu crédito",
     fechamento: "Simule seu crédito antes de escolher o veículo",
@@ -92,9 +100,10 @@ export const SOLUCOES: readonly Solucao[] = [
     nome: "Consórcio",
     curto: "Consórcio",
     resumo: "Carro, moto, caminhão ou imóvel com parcela sem juros e lance para antecipar.",
-    titulo: "Consórcio de veículo e imóvel em Goiânia | Autogestor",
+    titulo: "Consórcio de veículo e imóvel no Brasil | Autogestor",
     descricao:
       "Consórcio de carro, moto, caminhão e imóvel: parcela sem juros, com taxa de administração, e possibilidade de antecipar a contemplação por lance.",
+    abrangencia: "BR",
     campo: {
       rotulo: "O que você quer conquistar?",
       exemplo: "Carro",
@@ -112,6 +121,7 @@ export const SOLUCOES: readonly Solucao[] = [
     titulo: "Repasse de veículos de locadora abaixo da FIPE | Autogestor",
     descricao:
       "Compra direta de veículos desmobilizados das maiores locadoras do Brasil, abaixo da tabela FIPE, sem leilão e sem sinistro. Pátios em Goiânia, Contagem e Brasília.",
+    abrangencia: "BR",
     campo: { rotulo: "Quanto você pretende investir?", exemplo: "ex.: R$ 80.000 à vista" },
     cta: "Quero ver os veículos",
     fechamento: "Peça a lista de veículos disponíveis",
@@ -132,15 +142,44 @@ export const PARCEIRO: Solucao = {
   nome: "Programa de parceiros",
   curto: "Parceiro",
   resumo: "Indique clientes das seis frentes e receba por indicação validada.",
-  titulo: "Seja parceiro Autogestor: renda extra por indicação em Goiás | Autogestor",
+  titulo: "Seja parceiro Autogestor: renda extra por indicação | Autogestor",
   descricao:
     "Ganhe renda extra indicando clientes para energia, seguro, viagens, financiamento, consórcio e repasse. Sem investimento inicial, sem estoque e sem equipe própria.",
+  abrangencia: "BR",
   campo: {
     rotulo: "Qual frente mais combina com você?",
     exemplo: "Energia (Coopluz)",
     opcoes: ["Energia (Coopluz)", "Seguros", "Viagens", "Financiamento", "Consórcio", "Repasse", "Todas"],
   },
   cta: "Quero ser parceiro",
-    fechamento: "Comece pela conversa, não pelo contrato",
+  fechamento: "Comece pela conversa, não pelo contrato",
   icone: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M16.6 5.3a3.2 3.2 0 0 1 0 6.2M17.7 14a6.2 6.2 0 0 1 3.5 6"/>',
 };
+
+/** Captação da home, onde a pessoa ainda não escolheu vertical. Existe como
+ *  `Solucao` para reusar o LeadForm inteiro em vez de manter um segundo
+ *  formulário — e porque o /api/lead valida o slug contra esta lista. */
+export const GERAL: Solucao = {
+  slug: "geral",
+  nome: "as seis soluções",
+  curto: "Início",
+  resumo: "Seis frentes num só atendimento.",
+  titulo: "Autogestor",
+  descricao: "Captação da home, antes de a pessoa escolher a frente.",
+  abrangencia: "BR",
+  campo: {
+    rotulo: "O que você procura?",
+    exemplo: "Energia (Coopluz)",
+    opcoes: ["Energia (Coopluz)", "Seguro", "Viagens", "Financiamento", "Consórcio", "Repasse", "Ainda não sei"],
+  },
+  cta: "Falar com um consultor",
+  fechamento: "Fale com um consultor",
+  icone: ICONES.grupo,
+};
+
+/** `areaServed` do schema.org a partir da abrangência. Fica aqui, e não em
+ *  cada layout, porque a exceção da Coopluz tem que ter um dono só. */
+export const AREA_SERVIDA = {
+  BR: { "@type": "Country", name: "Brasil" },
+  GO: { "@type": "State", name: "Goiás" },
+} as const;

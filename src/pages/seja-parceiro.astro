@@ -29,7 +29,7 @@ const perguntas = [
   },
   {
     p: "Atende fora de Goiânia?",
-    r: "Sim. Estamos selecionando parceiros em várias cidades. A restrição geográfica existe só na energia da Coopluz, que depende da área de concessão da Equatorial Goiás.",
+    r: "Sim, em todo o Brasil — seguro, viagens, financiamento, consórcio e repasse não dependem de onde você mora. A única frente com limite geográfico é a energia da Coopluz, presa à área de concessão da Equatorial Goiás.",
   },
 ];
 
@@ -47,7 +47,7 @@ const schema = [
 ---
 
 <Base
-  titulo="Seja parceiro Autogestor: renda extra por indicação em Goiás"
+  titulo="Seja parceiro Autogestor: renda extra por indicação"
   descricao="Ganhe renda extra indicando clientes para energia, seguro, viagens, financiamento, consórcio e repasse. Sem investimento inicial, sem estoque e sem equipe própria."
   schema={schema}
   trilha={[
@@ -64,7 +64,7 @@ const schema = [
           Você indica, a Autogestor cota, fecha e cuida do pós-venda. Você recebe por indicação validada. Sem
           investir, sem estocar nada e sem montar equipe — porque a estrutura já existe há {new Date().getFullYear() - 2004} anos.
         </p>
-        <ul class="lista-check destaques">
+        <ul class="lista-check destaques" role="list">
           <li>Sem investimento inicial e sem estoque</li>
           <li>Operação remota, com plataforma online de atendimento</li>
           <li>Pagamento por indicação validada</li>
@@ -88,16 +88,16 @@ const schema = [
       <div class="grade grade--2">
         <div class="cartao">
           <h3>O que torna fácil de indicar</h3>
-          <ul class="lista-check">
+          <ul class="lista-check" role="list">
             <li>Benefício imediato e mensurável na fatura do cliente</li>
             <li>Sem taxa de adesão e sem multa de cancelamento</li>
             <li>Nada é instalado no imóvel de quem adere</li>
-            <li>Mercado ativo em todo o estado de Goiás</li>
+            <li>Mercado ativo em todo o estado de Goiás (as outras cinco frentes você indica de qualquer lugar do país)</li>
           </ul>
         </div>
         <div class="cartao">
           <h3>O que você recebe da Autogestor</h3>
-          <ul class="lista-check">
+          <ul class="lista-check" role="list">
             <li>Treinamento e material pronto para apresentar</li>
             <li>Consultor que assume a partir da indicação</li>
             <li>Acompanhamento do status de cada cliente indicado</li>
@@ -146,7 +146,8 @@ const schema = [
         <h2>Comece pela conversa, não pelo contrato</h2>
         <p class="chamada">
           Deixe seu WhatsApp e a frente que mais combina com você. Um consultor explica remuneração, treinamento e
-          como funciona na prática — sem compromisso e sem custo. Autogestor, Goiânia, desde {EMPRESA.fundacao}.
+          como funciona na prática — sem compromisso e sem custo. Autogestor, de Goiânia para todo o Brasil,
+          desde {EMPRESA.fundacao}.
         </p>
       </div>
       <LeadForm solucao={PARCEIRO} titulo="Quero saber como funciona" destaque instancia="fim" />

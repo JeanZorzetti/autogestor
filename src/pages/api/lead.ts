@@ -1,12 +1,12 @@
 import type { APIRoute } from "astro";
 import { parseLead } from "../../lib/lead.mjs";
 import { dbOn, gravarLead } from "../../lib/db";
-import { SOLUCOES, PARCEIRO } from "../../data/solucoes";
+import { SOLUCOES, PARCEIRO, GERAL } from "../../data/solucoes";
 
 // Única rota dinâmica do site. O resto é HTML estático.
 export const prerender = false;
 
-const SLUGS = [...SOLUCOES, PARCEIRO].map((s) => s.slug);
+const SLUGS = [...SOLUCOES, PARCEIRO, GERAL].map((s) => s.slug);
 
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });

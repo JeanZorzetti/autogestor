@@ -5,7 +5,7 @@ import Faq from "../components/Faq.astro";
 import type { Pergunta } from "../components/Faq.astro";
 import SolucaoCard from "../components/SolucaoCard.astro";
 import BarraAcao from "../components/BarraAcao.astro";
-import { SOLUCOES, type Solucao } from "../data/solucoes";
+import { SOLUCOES, AREA_SERVIDA, type Solucao } from "../data/solucoes";
 import { EMPRESA } from "../consts";
 
 interface Props {
@@ -29,8 +29,7 @@ const schema = [
     description: solucao.descricao,
     url,
     provider: { "@id": new URL("/#organizacao", site).href },
-    areaServed: { "@type": "State", name: "Goiás" },
-    audience: { "@type": "Audience", geographicArea: { "@type": "City", name: "Goiânia" } },
+    areaServed: AREA_SERVIDA[solucao.abrangencia],
   },
   {
     "@type": "FAQPage",
@@ -81,8 +80,8 @@ const schema = [
         <span class="olho">Próximo passo</span>
         <h2>{solucao.fechamento}</h2>
         <p class="chamada">
-          Um consultor da Autogestor responde no seu WhatsApp. Corretora em Goiânia desde {EMPRESA.fundacao},
-          registro SUSEP {EMPRESA.susep}.
+          Um consultor da Autogestor responde no seu WhatsApp. Corretora desde {EMPRESA.fundacao}, registro
+          SUSEP {EMPRESA.susep}, com sede em {EMPRESA.endereco.cidade} e atendimento em todo o Brasil.
         </p>
       </div>
       <LeadForm solucao={solucao} titulo="Peça sua cotação" destaque instancia="fim" />
@@ -93,7 +92,7 @@ const schema = [
     <div class="container">
       <span class="olho">Também resolvemos</span>
       <h2>Outras soluções do hub</h2>
-      <ul class="grade grade--3 lista-limpa">
+      <ul class="grade grade--3 lista-limpa" role="list">
         {outras.map((s) => <SolucaoCard solucao={s} />)}
       </ul>
     </div>
