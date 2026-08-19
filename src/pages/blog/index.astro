@@ -1,0 +1,52 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { porSlug } from "../../data/solucoes";
+
+const posts = (await getCollection("blog")).sort((a, b) => +b.data.publicado - +a.data.publicado);
+---
+
+<Base
+  titulo="Blog Autogestor — energia, seguro, viagens, crédito e veículos"
+  descricao="Guias sobre conta de luz, seguro veicular, consórcio, financiamento e repasse de veículos, escritos pela equipe da Autogestor."
+  trilha={[
+    { nome: "Início", href: "/" },
+    { nome: "Blog", href: "/blog" },
+  ]}
+>
+  <section class="secao">
+    <div class="container">
+      <span class="olho">Blog</span>
+      <h1>Guias da Autogestor</h1>
+      <ul class="blog-lista lista-limpa" role="list">
+        {
+          posts.map((post) => (
+            <li>
+              <a class="blog-item" href={`/blog/${post.id}`}>
+                <span class="olho">{porSlug(post.data.vertical).nome}</span>
+                <h2>{post.data.titulo}</h2>
+                <p>{post.data.descricao}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .blog-lista { margin-top: var(--e-8); gap: var(--e-6); max-width: 72ch; }
+  .blog-item {
+    display: block;
+    padding: var(--e-6);
+    border: 1px solid var(--borda);
+    border-radius: var(--r-3);
+    background: var(--superficie-alta);
+    text-decoration: none;
+    color: inherit;
+  }
+  .blog-item:hover { background: var(--superficie); }
+  .blog-item h2 { margin: var(--e-2) 0 var(--e-2); font-size: var(--t-lg); color: var(--marca-forte); }
+  .blog-item p { margin: 0; color: var(--texto-suave); }
+</style>
