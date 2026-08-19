@@ -67,17 +67,17 @@ const { solucao, rotulo = "Pedir cotação", alvo = "pedir", mensagem = `Olá! Q
 </style>
 
 <script>
-  // Some enquanto qualquer formulário está na tela: parada aí, a barra cobriria
-  // justamente o botão de enviar.
+  // Some enquanto qualquer formulário ou o par de CTAs do herói está na tela:
+  // parada aí, a barra cobriria o botão de enviar ou o próprio CTA que repete.
   const barra = document.querySelector<HTMLElement>(".barra");
-  const formularios = [...document.querySelectorAll(".form")];
+  const alvos = [...document.querySelectorAll(".form, .capa__acoes")];
 
-  if (barra && formularios.length) {
+  if (barra && alvos.length) {
     const visiveis = new Set<Element>();
     const olho = new IntersectionObserver((entradas) => {
       for (const e of entradas) (e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target));
       barra.toggleAttribute("data-oculta", visiveis.size > 0);
     });
-    formularios.forEach((f) => olho.observe(f));
+    alvos.forEach((f) => olho.observe(f));
   }
 </script>

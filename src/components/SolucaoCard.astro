@@ -42,7 +42,12 @@ const { solucao } = Astro.props;
   .scard__titulo { font-size: var(--t-md); margin-bottom: var(--e-2); }
   .scard__titulo a { color: var(--marca-forte); text-decoration: none; }
   .scard__titulo a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
-  .scard__titulo a:focus-visible { outline: none; }
+  /* Sem :has(), o anel some do link e não reaparece em lugar nenhum — quem tem
+     :focus-visible mas não :has() (Firefox <121) navega os cards sem foco
+     visível. O anel só some quando o navegador sabe redesenhá-lo no card. */
+  @supports selector(:has(*)) {
+    .scard__titulo a:focus-visible { outline: none; }
+  }
   .scard__resumo { color: var(--texto-suave); font-size: var(--t-sm); margin: 0; }
   /* Afordância persistente: cor + sublinhado no título somem no toque (sem
      hover), e o cursor:pointer também. Isto é o único sinal que sobrevive. */
