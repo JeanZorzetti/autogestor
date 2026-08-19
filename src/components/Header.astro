@@ -89,7 +89,10 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
     flex-wrap: wrap;
     gap: var(--e-1) var(--e-2);
     list-style: none;
-    margin: 0;
+    /* `margin: 0` sozinho zerava o margin-inline:auto herdado de .container e
+       colava a lista na borda esquerda da viewport, fora de alinhamento com a
+       logo acima. Só o eixo vertical (o 1em padrão de <ul>) precisa ser zerado. */
+    margin-block: 0;
     padding-block: var(--e-2);
   }
   .nav__lista a {
