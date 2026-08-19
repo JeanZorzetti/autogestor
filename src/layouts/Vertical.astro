@@ -78,7 +78,7 @@ const schema = [
     <div class="container fechamento">
       <div>
         <span class="olho">Próximo passo</span>
-        <h2>{solucao.cta.replace(/^Quero /, "Peça agora: ")}</h2>
+        <h2>{solucao.fechamento}</h2>
         <p class="chamada">
           Um consultor da Autogestor responde no seu WhatsApp. Corretora em Goiânia desde {EMPRESA.fundacao},
           registro SUSEP {EMPRESA.susep}.
@@ -104,8 +104,6 @@ const schema = [
   .topo__grade { display: grid; gap: var(--e-8); align-items: start; }
   @media (min-width: 900px) {
     .topo__grade { grid-template-columns: 1fr minmax(360px, 420px); gap: var(--e-12); }
-    /* O formulário acompanha a leitura da página longa em telas altas. */
-    .topo__form { position: sticky; top: 140px; }
   }
   .topo__texto .chamada { font-size: var(--t-lg); }
   .fechamento { display: grid; gap: var(--e-8); align-items: center; }

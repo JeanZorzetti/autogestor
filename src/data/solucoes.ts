@@ -17,6 +17,9 @@ export type Solucao = {
    *  outros dois; e-mail foi cortado porque o canal de atendimento é WhatsApp. */
   campo: { rotulo: string; exemplo: string; opcoes?: readonly string[] };
   cta: string;
+  /** H2 do bloco final, logo acima do formulário de fechamento. Escrito à mão:
+   *  derivar do `cta` por regex produzia "Peça agora: simular meu crédito". */
+  fechamento: string;
   /** Conteúdo interno do <svg viewBox="0 0 24 24">, traçado em currentColor. */
   icone: string;
 };
@@ -41,6 +44,7 @@ export const SOLUCOES: readonly Solucao[] = [
       "Associe-se à Coopluz e pague 20% menos na conta da Equatorial Goiás. Sem instalar placa solar, sem obra, sem taxa de adesão e sem multa para sair.",
     campo: { rotulo: "Valor médio da sua conta de luz", exemplo: "ex.: R$ 450" },
     cta: "Quero pagar 20% menos",
+    fechamento: "Peça a análise da sua conta de luz",
     icone: ICONES.energia,
   },
   {
@@ -53,6 +57,7 @@ export const SOLUCOES: readonly Solucao[] = [
       "Corretora com registro SUSEP desde 2004. Comparamos seguro e proteção veicular para carro, moto e caminhão, com assistência 24h nacional e apoio na regulação de sinistro.",
     campo: { rotulo: "Marca e modelo do veículo", exemplo: "ex.: Onix 2021" },
     cta: "Quero minha cotação",
+    fechamento: "Peça sua cotação de seguro",
     icone: ICONES.escudo,
   },
   {
@@ -65,6 +70,7 @@ export const SOLUCOES: readonly Solucao[] = [
       "Agência online 24h para passagens aéreas nacionais e internacionais, hotéis e resorts com tarifas exclusivas e pagamento em até 12x no cartão.",
     campo: { rotulo: "Para onde você quer ir?", exemplo: "ex.: Maceió em janeiro, 2 adultos" },
     cta: "Quero uma cotação de viagem",
+    fechamento: "Peça sua cotação de viagem",
     icone: ICONES.aviao,
   },
   {
@@ -77,6 +83,7 @@ export const SOLUCOES: readonly Solucao[] = [
       "Financiamento para veículo novo ou usado, nacional ou importado. Aprovação antes da compra, sem cobrança para analisar a ficha nem para liberar o crédito.",
     campo: { rotulo: "Quanto você precisa financiar?", exemplo: "ex.: R$ 60.000" },
     cta: "Quero simular meu crédito",
+    fechamento: "Simule seu crédito antes de escolher o veículo",
     icone: ICONES.nota,
   },
   {
@@ -93,6 +100,7 @@ export const SOLUCOES: readonly Solucao[] = [
       opcoes: ["Carro", "Moto", "Caminhão", "Imóvel", "Serviços"],
     },
     cta: "Quero ver as parcelas",
+    fechamento: "Veja quanto fica a parcela do seu consórcio",
     icone: ICONES.grupo,
   },
   {
@@ -105,6 +113,7 @@ export const SOLUCOES: readonly Solucao[] = [
       "Compra direta de veículos desmobilizados das maiores locadoras do Brasil, abaixo da tabela FIPE, sem leilão e sem sinistro. Pátios em Goiânia, Contagem e Brasília.",
     campo: { rotulo: "Quanto você pretende investir?", exemplo: "ex.: R$ 80.000 à vista" },
     cta: "Quero ver os veículos",
+    fechamento: "Peça a lista de veículos disponíveis",
     icone: ICONES.carro,
   },
 ];
@@ -131,5 +140,6 @@ export const PARCEIRO: Solucao = {
     opcoes: ["Energia (Coopluz)", "Seguros", "Viagens", "Financiamento", "Consórcio", "Repasse", "Todas"],
   },
   cta: "Quero ser parceiro",
+    fechamento: "Comece pela conversa, não pelo contrato",
   icone: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M16.6 5.3a3.2 3.2 0 0 1 0 6.2M17.7 14a6.2 6.2 0 0 1 3.5 6"/>',
 };

@@ -37,6 +37,19 @@
   --acento-hover: var(--laranja-600);
   --acento-texto: var(--tinta);
   --foco: var(--azul-700);
+  /* Sobre --superficie-marca (azul-900). Hex direto porque são claros demais
+     para sair de um primitivo da escala de cinza sem virar cinza-azulado sujo. */
+  --texto-sobre-marca: #c8d6e6;
+  --texto-sobre-marca-suave: #9fb4cb;
+  --link-sobre-marca: #cfe1f3;
+  /* Estado do formulário. Vermelho e verde só aqui: cor nunca é o único sinal —
+     o aviso sempre carrega texto, e o campo recusado leva aria-invalid. */
+  --erro: #b3261e;
+  --erro-fundo: #fdeceb;
+  --erro-texto: #7a1c15;
+  --ok: #1a7f45;
+  --ok-fundo: #e7f4ec;
+  --ok-texto: #14532d;
 
   /* --- escala de espaço: base 4, nada entre os passos --- */
   --e-1: 0.25rem;
@@ -108,6 +121,12 @@ img, svg { max-width: 100%; height: auto; display: block; }
   outline-offset: 2px;
   border-radius: var(--r-1);
 }
+/* Sobre o azul-900 o anel azul dá 1.49:1 e some — e o rodapé sozinho tem 13
+   links. Sobre superfície de marca o anel é branco, que dá 15.5:1. */
+.rodape :focus-visible,
+.secao--marca :focus-visible {
+  outline-color: var(--texto-invertido);
+}
 
 .container { width: 100%; max-width: var(--largura); margin-inline: auto; padding-inline: var(--e-4); }
 
@@ -115,7 +134,7 @@ img, svg { max-width: 100%; height: auto; display: block; }
 .secao--suave { background: var(--superficie); }
 .secao--marca { background: var(--superficie-marca); color: var(--texto-invertido); }
 .secao--marca h2, .secao--marca h3 { color: var(--texto-invertido); }
-.secao--marca a { color: #cfe1f3; }
+.secao--marca a { color: var(--link-sobre-marca); }
 
 .olho {
   display: block;
@@ -129,7 +148,7 @@ img, svg { max-width: 100%; height: auto; display: block; }
 .secao--marca .olho { color: var(--laranja-500); }
 
 .chamada { font-size: var(--t-md); color: var(--texto-suave); max-width: 62ch; }
-.secao--marca .chamada { color: #c8d6e6; }
+.secao--marca .chamada { color: var(--texto-sobre-marca); }
 
 /* --- botões --- */
 .btn {
@@ -151,12 +170,16 @@ img, svg { max-width: 100%; height: auto; display: block; }
 .btn:active { transform: translateY(1px); }
 .btn--primario { background: var(--acento); color: var(--acento-texto); }
 .btn--primario:hover { background: var(--acento-hover); color: var(--acento-texto); }
+/* Travado por aria-disabled (e não por `disabled`, que jogaria o foco no body).
+   Sem opacidade: escurecer o laranja aqui derrubaria os 5.98:1 do rótulo. */
+.btn[aria-disabled="true"] { cursor: default; }
+.btn--primario[aria-disabled="true"]:hover { background: var(--acento); }
 .btn--marca { background: var(--marca-forte); color: var(--texto-invertido); }
 .btn--marca:hover { background: var(--azul-700); color: var(--texto-invertido); }
 .btn--contorno { background: transparent; border-color: currentColor; color: var(--marca-forte); }
 .btn--contorno:hover { background: var(--azul-100); color: var(--marca-forte); }
-.secao--marca .btn--contorno { color: #ffffff; }
-.secao--marca .btn--contorno:hover { background: rgba(255, 255, 255, 0.12); color: #ffffff; }
+.secao--marca .btn--contorno { color: var(--texto-invertido); }
+.secao--marca .btn--contorno:hover { background: rgba(255, 255, 255, 0.12); color: var(--texto-invertido); }
 .btn--bloco { width: 100%; }
 
 /* --- grades --- */

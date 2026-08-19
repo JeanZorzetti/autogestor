@@ -24,10 +24,11 @@ const id = `lead-${solucao.slug}-${instancia}`;
 
   <form id={id} class="form__campos" method="post" action="/api/lead" novalidate>
     <input type="hidden" name="solucao" value={solucao.slug} />
-    <input type="hidden" name="origem" value={`site:${solucao.slug}`} />
-    <!-- Isca para robô. Escondida do olho E do leitor de tela: pessoa nenhuma
-         deve encontrar este campo, muito menos preencher sem querer. -->
-    <p class="isca" aria-hidden="true">
+    <input type="hidden" name="origem" value={`site:${solucao.slug}:${instancia}`} />
+    <!-- Isca para robô. Fora da tela e fora da ordem de tabulação, mas SEM
+         aria-hidden: elemento focável dentro de aria-hidden é violação de ARIA.
+         Quem usa leitor de tela ouve o rótulo, que diz para não preencher. -->
+    <p class="isca">
       <label for={`${id}-empresa`}>Não preencha este campo</label>
       <input id={`${id}-empresa`} name="empresa" type="text" tabindex="-1" autocomplete="off" />
     </p>
@@ -66,8 +67,10 @@ const id = `lead-${solucao.slug}-${instancia}`;
     </p>
 
     <!-- role="status" anuncia sem roubar o foco; o script move o foco para o
-         campo errado, que é o que resolve a tarefa. -->
-    <p class="form__aviso" id={`${id}-aviso`} role="status" hidden></p>
+         campo errado, que é o que resolve a tarefa. Sem `hidden`: região viva que
+         nasce escondida recebe o texto antes de existir na árvore de
+         acessibilidade, e o leitor de tela não anuncia nada. -->
+    <p class="form__aviso" id={`${id}-aviso`} role="status"></p>
 
     <button class="btn btn--primario btn--bloco" type="submit">{solucao.cta}</button>
 
@@ -111,21 +114,25 @@ const id = `lead-${solucao.slug}-${instancia}`;
     width: 100%;
   }
   .campo input[aria-invalid="true"], .campo select[aria-invalid="true"] {
-    border-color: #b3261e;
+    border-color: var(--erro);
     border-width: 2px;
   }
   .campo__dica { font-size: var(--t-sm); color: var(--texto-suave); }
 
+  /* Vazio, sai do fluxo para não abrir um vão de 1rem antes do botão — mas
+     continua na árvore de acessibilidade, que é o motivo de não usar `hidden`
+     nem `display: none`. */
+  .form__aviso:empty { position: absolute; padding: 0; border: 0; }
   .form__aviso {
     margin: 0;
     padding: var(--e-3);
     border-radius: var(--r-2);
     font-size: var(--t-sm);
-    background: #fdeceb;
-    color: #7a1c15;
-    border-left: 4px solid #b3261e;
+    background: var(--erro-fundo);
+    color: var(--erro-texto);
+    border-left: 4px solid var(--erro);
   }
-  .form__aviso[data-ok] { background: #e7f4ec; color: #14532d; border-left-color: #1a7f45; }
+  .form__aviso[data-ok] { background: var(--ok-fundo); color: var(--ok-texto); border-left-color: var(--ok); }
 
   .form__legal { font-size: var(--t-sm); color: var(--texto-suave); margin: 0; }
   .form__alternativa { margin: var(--e-6) 0 0; font-size: var(--t-sm); color: var(--texto-suave); }
@@ -141,17 +148,38 @@ const id = `lead-${solucao.slug}-${instancia}`;
     const botao = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const rotulo = botao.textContent ?? "";
 
+    // aria-disabled em vez de `disabled`: botão desabilitado sai da árvore de
+    // acessibilidade e joga o foco no <body>. Quem enviou pelo teclado ficava
+    // sem foco e sem anúncio — o formulário parecia não ter feito nada.
+    const travado = () => botao.getAttribute("aria-disabled") === "true";
+    const travar = (v: boolean) => {
+      if (v) botao.setAttribute("aria-disabled", "true");
+      else botao.removeAttribute("aria-disabled");
+    };
+
     const mostrar = (texto: string, ok: boolean) => {
-      aviso.textContent = texto;
-      aviso.hidden = false;
       aviso.toggleAttribute("data-ok", ok);
+      aviso.textContent = texto;
+    };
+
+    // Liga o aviso ao campo recusado: quem chega nele pelo foco ouve o rótulo e
+    // a dica, mas nunca o motivo da recusa se essa ligação não existir.
+    const descrever = (el: Element, ligar: boolean) => {
+      const ids = (el.getAttribute("aria-describedby") ?? "").split(" ").filter((x) => x && x !== aviso.id);
+      if (ligar) ids.push(aviso.id);
+      if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
+      else el.removeAttribute("aria-describedby");
     };
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      form.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
-      aviso.hidden = true;
-      botao.disabled = true;
+      if (travado()) return;
+      form.querySelectorAll("[aria-invalid]").forEach((el) => {
+        el.removeAttribute("aria-invalid");
+        descrever(el, false);
+      });
+      mostrar("", false);
+      travar(true);
       botao.textContent = "Enviando…";
 
       try {
@@ -165,8 +193,10 @@ const id = `lead-${solucao.slug}-${instancia}`;
 
         if (r.ok) {
           form.reset();
-          mostrar("Recebemos. Um consultor chama você no WhatsApp em instantes.", true);
-          botao.disabled = true;
+          mostrar(
+            "Recebemos. Um consultor chama você no WhatsApp — no próximo expediente, se for fora do horário comercial.",
+            true
+          );
           botao.textContent = "Pedido enviado";
           return;
         }
@@ -176,14 +206,15 @@ const id = `lead-${solucao.slug}-${instancia}`;
         const alvo = corpo.campo ? form.querySelector<HTMLElement>(`[name="${corpo.campo}"]`) : null;
         if (alvo) {
           alvo.setAttribute("aria-invalid", "true");
+          descrever(alvo, true);
           alvo.focus();
         }
       } catch {
         mostrar("Sem conexão com o servidor. Chame no WhatsApp que respondemos na hora.", false);
       } finally {
         if (botao.textContent === "Enviando…") {
-          botao.disabled = false;
           botao.textContent = rotulo;
+          travar(false);
         }
       }
     });
