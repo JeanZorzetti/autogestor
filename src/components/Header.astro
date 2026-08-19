@@ -13,17 +13,12 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
       <Logo size={40} />
       <span class="marca__nome">Autogestor</span>
     </a>
-    <a class="cabecalho__zap" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
-      WhatsApp
-    </a>
     <!-- Sem hambúrguer: 6 verticais cabem numa barra que quebra no celular.
          Menu fechado esconde exatamente o que a pessoa veio procurar.
          "Sobre" não é uma solução (já vive no rodapé) — incluí-lo aqui abria
          uma linha extra só para ele.
-         DOM fica logo→zap→nav (tab order não muda do que já era); a partir de
-         900px o CSS reordena visualmente para logo→nav→zap, entre a logo e o
-         WhatsApp na mesma linha. -->
+         `order` no CSS controla o visual sozinho — DOM fica logo→nav→zap,
+         igual à ordem visual do desktop, então tab order bate com o que se vê. -->
     <nav class="nav" aria-label="Soluções">
       <ul class="nav__lista">
         {
@@ -37,7 +32,10 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
         }
       </ul>
     </nav>
-
+    <a class="cabecalho__zap" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
+      WhatsApp
+    </a>
   </div>
 </header>
 
@@ -112,8 +110,7 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
       border-top: none;
       background: none;
     }
-    /* Some order:2 com o do nav — empata em DOM (zap vem antes do nav no
-       HTML), então o desempate manda o zap pra frente de novo. Sobe pra 3. */
+    /* Nav sobe para order:2 aqui — zap precisa ir para depois dele. */
     .cabecalho__zap { order: 3; }
   }
   .nav__lista {

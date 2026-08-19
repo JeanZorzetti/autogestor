@@ -141,6 +141,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
     border-left: 4px solid var(--erro);
   }
   .form__aviso[data-ok] { background: var(--ok-fundo); color: var(--ok-texto); border-left-color: var(--ok); }
+  .form__aviso a { color: inherit; font-weight: 700; }
 
   .form__legal { font-size: var(--t-sm); color: var(--texto-suave); margin: 0; }
   .form__alternativa { margin: var(--e-6) 0 0; font-size: var(--t-sm); color: var(--texto-suave); }
@@ -155,6 +156,10 @@ const id = `lead-${solucao.slug}-${instancia}`;
     const aviso = form.querySelector<HTMLElement>(".form__aviso")!;
     const botao = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const rotulo = botao.textContent ?? "";
+    // Mesmo link que já aparece em ".form__alternativa" — reaproveitado aqui
+    // para quando o erro é sistêmico (servidor fora do ar, sem conexão): a
+    // saída fica junto do aviso, não só em texto cinza no fim da seção.
+    const linkZap = form.closest(".form")?.querySelector<HTMLAnchorElement>(".form__alternativa a");
 
     // aria-disabled em vez de `disabled`: botão desabilitado sai da árvore de
     // acessibilidade e joga o foco no <body>. Quem enviou pelo teclado ficava
@@ -165,9 +170,10 @@ const id = `lead-${solucao.slug}-${instancia}`;
       else botao.removeAttribute("aria-disabled");
     };
 
-    const mostrar = (texto: string, ok: boolean) => {
+    const mostrar = (texto: string, ok: boolean, comLink = false) => {
       aviso.toggleAttribute("data-ok", ok);
-      aviso.textContent = texto;
+      aviso.textContent = texto ? `${texto} ` : "";
+      if (comLink && linkZap) aviso.append(Object.assign(document.createElement("a"), { href: linkZap.href, textContent: "Chamar no WhatsApp" }));
     };
 
     // Liga o aviso ao campo recusado: quem chega nele pelo foco ouve o rótulo e
@@ -209,8 +215,9 @@ const id = `lead-${solucao.slug}-${instancia}`;
           return;
         }
 
-        mostrar(corpo.erro ?? "Não conseguimos enviar agora. Chame no WhatsApp que respondemos na hora.", false);
-        // Anunciar o erro não resolve a tarefa; levar o foco ao campo errado, sim.
+        // Sem `campo`, a falha é do servidor, não de algo que dá para corrigir
+        // no formulário — é aí que o link substitui o reenvio.
+        mostrar(corpo.erro ?? "Não conseguimos enviar agora.", false, !corpo.campo);
         const alvo = corpo.campo ? form.querySelector<HTMLElement>(`[name="${corpo.campo}"]`) : null;
         if (alvo) {
           alvo.setAttribute("aria-invalid", "true");
@@ -218,7 +225,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
           alvo.focus();
         }
       } catch {
-        mostrar("Sem conexão com o servidor. Chame no WhatsApp que respondemos na hora.", false);
+        mostrar("Sem conexão com o servidor.", false, true);
       } finally {
         if (botao.textContent === "Enviando…") {
           botao.textContent = rotulo;

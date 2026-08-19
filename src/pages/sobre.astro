@@ -1,6 +1,8 @@
 ---
 import Base from "../layouts/Base.astro";
 import Faq from "../components/Faq.astro";
+import SolucaoCard from "../components/SolucaoCard.astro";
+import BarraAcao from "../components/BarraAcao.astro";
 import { SOLUCOES } from "../data/solucoes";
 import { EMPRESA, enderecoLinha, whatsapp } from "../consts";
 
@@ -62,54 +64,13 @@ const schema = [
     </div>
   </section>
 
-  <section class="secao">
+  <section class="secao" id="solucoes">
     <div class="container">
       <span class="olho">Áreas de atuação</span>
       <h2>Seis frentes, um cadastro</h2>
-      <div class="grade grade--2 areas">
-        <div class="cartao">
-          <h3>Autogestor Seguros e Proteção Veicular</h3>
-          <p>
-            Contratação e renovação de seguros e proteção veicular, assistência 24h nacional por 0800, regulação de
-            sinistro, gestão e análise de risco. Registro SUSEP {EMPRESA.susep}.
-          </p>
-        </div>
-        <div class="cartao">
-          <h3>Autogestor Financiamentos</h3>
-          <p>
-            Consultoria e assessoria em crédito e financiamento de carros, motos e caminhões, com comparação entre
-            financeiras antes da escolha do veículo.
-          </p>
-        </div>
-        <div class="cartao">
-          <h3>Autogestor Viagens</h3>
-          <p>
-            Pacotes e planos nacionais e internacionais, passagens aéreas e hotéis pela agência online 24h, com
-            condições exclusivas e suporte personalizado.
-          </p>
-        </div>
-        <div class="cartao">
-          <h3>Energia por compensação</h3>
-          <p>
-            Parceria credenciada com a Coopluz, cooperativa de energia por compensação em Goiás, que reduz em 20% a
-            conta da Equatorial sem obra e sem placa solar.
-          </p>
-        </div>
-        <div class="cartao">
-          <h3>Consórcio</h3>
-          <p>
-            Cartas de crédito de veículo e imóvel em grupos de administradoras autorizadas pelo Banco Central, para
-            quem tem prazo e prefere não pagar juros.
-          </p>
-        </div>
-        <div class="cartao">
-          <h3>Repasse de veículos</h3>
-          <p>
-            Intermediação de compra direta de frota desmobilizada das maiores locadoras do país, com pátios em
-            Goiânia, Contagem e Brasília.
-          </p>
-        </div>
-      </div>
+      <ul class="grade grade--2 areas lista-limpa">
+        {SOLUCOES.map((s) => <SolucaoCard solucao={s} />)}
+      </ul>
     </div>
   </section>
 
@@ -171,6 +132,8 @@ const schema = [
       <Faq perguntas={perguntas} />
     </div>
   </section>
+
+  <BarraAcao alvo="solucoes" rotulo="Ver as soluções" mensagem="Olá! Vim pelo site da Autogestor." />
 </Base>
 
 <style>
@@ -178,7 +141,6 @@ const schema = [
      em vez do par --e-12/--e-16 herdado de global.css. */
   .topo { padding-block: var(--e-16); }
   .areas { margin-top: var(--e-8); }
-  .areas p { color: var(--texto-suave); font-size: var(--t-sm); margin: 0; }
   .dif { margin-top: var(--e-8); gap: var(--e-8); }
   .dif p { color: var(--texto-sobre-marca); font-size: var(--t-sm); }
   .contato { display: grid; gap: var(--e-8); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }

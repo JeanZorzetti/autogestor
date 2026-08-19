@@ -25,7 +25,12 @@ const { perguntas, titulo = "Perguntas frequentes" } = Astro.props;
 </section>
 
 <style>
-  .faq__lista { display: grid; gap: var(--e-2); max-width: 78ch; }
+  .faq__lista { display: grid; gap: var(--e-2); max-width: 78ch; align-items: start; }
+  /* Acima de 900px, 78ch deixava ~430px vazios no container de 1120px. Duas
+     colunas usam o espaço sem esticar a resposta além do confortável de ler. */
+  @media (min-width: 900px) {
+    .faq__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-2) var(--e-6); max-width: none; }
+  }
   .faq__item {
     border: 1px solid var(--borda);
     border-radius: var(--r-3);

@@ -54,7 +54,7 @@ const falhou = Astro.url.searchParams.has("erro");
         <a class="btn btn--contorno" href="/">Voltar ao início</a>
       </p>
 
-      <h2 class="mais">Enquanto isso, veja as outras frentes</h2>
+      <h2 class="mais">{falhou ? "Já que está aqui, veja as outras frentes" : "Enquanto isso, veja as outras frentes"}</h2>
       <ul class="lista-check">
         {SOLUCOES.map((s) => (
           <li>

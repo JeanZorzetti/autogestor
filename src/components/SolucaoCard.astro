@@ -14,6 +14,7 @@ const { solucao } = Astro.props;
     <a href={`/${solucao.slug}`}>{solucao.nome}</a>
   </h3>
   <p class="scard__resumo">{solucao.resumo}</p>
+  <span class="scard__seta" aria-hidden="true">Ver solução →</span>
 </li>
 
 <style>
@@ -39,8 +40,17 @@ const { solucao } = Astro.props;
     margin-bottom: var(--e-4);
   }
   .scard__titulo { font-size: var(--t-md); margin-bottom: var(--e-2); }
-  .scard__titulo a { color: var(--texto); text-decoration: none; }
+  .scard__titulo a { color: var(--marca-forte); text-decoration: none; }
   .scard__titulo a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
   .scard__titulo a:focus-visible { outline: none; }
   .scard__resumo { color: var(--texto-suave); font-size: var(--t-sm); margin: 0; }
+  /* Afordância persistente: cor + sublinhado no título somem no toque (sem
+     hover), e o cursor:pointer também. Isto é o único sinal que sobrevive. */
+  .scard__seta {
+    display: block;
+    margin-top: var(--e-3);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--marca);
+  }
 </style>

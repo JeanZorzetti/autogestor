@@ -90,7 +90,7 @@ const grafo: Record<string, unknown>[] = [
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!-- Antes de qualquer pintura: escolha salva vence o sistema operacional.
          Rodando depois, a página piscaria no tema errado. `is:inline` para o
          Astro não empacotar isto num módulo com defer, que é o que anula a
@@ -114,6 +114,17 @@ const grafo: Record<string, unknown>[] = [
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#002b74" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#060d19" media="(prefers-color-scheme: dark)" />
+    <!-- As duas <meta> acima seguem o sistema operacional de graça, sem JS —
+         mas só o sistema, não a escolha manual salva. Quem salvou "escuro"
+         num SO claro via a barra do navegador na cor errada até o script do
+         rodapé rodar. Mesmo `data-tema` que a página já tem, aplicado às
+         metas agora, antes da pintura. -->
+    <script is:inline>
+      try {
+        const t = document.documentElement.dataset.tema;
+        if (t) document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", t === "escuro" ? "#060d19" : "#002b74"));
+      } catch {}
+    </script>
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={EMPRESA.nome} />

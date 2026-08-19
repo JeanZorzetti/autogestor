@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import SolucaoCard from "../components/SolucaoCard.astro";
 import Faq from "../components/Faq.astro";
+import BarraAcao from "../components/BarraAcao.astro";
 import { SOLUCOES } from "../data/solucoes";
 import { EMPRESA, whatsapp } from "../consts";
 
@@ -153,6 +154,8 @@ const schema = [
       <Faq perguntas={perguntas} />
     </div>
   </section>
+
+  <BarraAcao alvo="solucoes" rotulo="Ver as soluções" mensagem="Olá! Não sei qual solução preciso, pode me orientar?" />
 </Base>
 
 <style>
