@@ -7,6 +7,10 @@
    preserva a cor exata da logo sem quebrar acessibilidade. */
 
 :root {
+  /* Diz ao navegador que os dois temas existem: <select>, barra de rolagem,
+     autofill e placeholder passam a seguir o tema sozinhos, sem CSS nosso. */
+  color-scheme: light dark;
+
   /* --- primitivos: nunca usados direto em componente --- */
   --azul-900: #002b74;
   --azul-700: #004898;
@@ -32,6 +36,11 @@
   /* --- semânticos: é isto que os componentes leem --- */
   --fundo: #ffffff;
   --superficie: var(--cinza-50);
+  /* Superfície elevada (cartão, formulário, cabeçalho, barra fixa). No claro é
+     o mesmo branco do fundo — a borda é que separa. No escuro precisa ser um
+     degrau ACIMA do fundo: cartão mais escuro que a seção é o erro clássico
+     de dark mode, faz o conteúdo parecer afundado em vez de destacado. */
+  --superficie-alta: var(--fundo);
   --superficie-marca: var(--azul-900);
   --borda: var(--cinza-200);
   --texto: var(--tinta);
@@ -43,6 +52,10 @@
   --acento-hover: var(--laranja-600);
   --acento-texto: var(--tinta);
   --foco: var(--azul-700);
+  /* Link em texto corrido. Era primitivo cru no seletor `a` — virou semântico
+     porque é o único ponto onde a cor precisa inverter no tema escuro. */
+  --link: var(--azul-700);
+  --link-hover: var(--azul-900);
   /* Sobre --superficie-marca (azul-900). Hex direto porque são claros demais
      para sair de um primitivo da escala de cinza sem virar cinza-azulado sujo. */
   --texto-sobre-marca: #c8d6e6;
@@ -91,6 +104,62 @@
   --largura: 1120px;
 }
 
+/* --- tema escuro ---------------------------------------------------------
+   Rampa inteira derivada de #022C69 (H 216, S 96%, L 21%), variando só a
+   luminosidade. Por isso o escuro parece a MESMA marca com a luz apagada, e
+   não um segundo design: o azul da logo é o eixo, não um detalhe.
+
+   #022C69 fica onde estava a função dele no claro — o bloco de marca
+   (.secao--marca e rodapé). No claro esse bloco é a superfície mais ESCURA da
+   página; no escuro, a mais CLARA. A hierarquia inverte, o papel não.
+
+   Segue o sistema operacional e só ele: sem botão, sem localStorage, sem
+   script bloqueante no <head> para evitar piscada. Trocar por um seletor
+   manual depois é acrescentar `:root[data-tema="escuro"]` a este bloco.
+
+   Os 49 pares de contraste foram medidos, não estimados. Os apertados:
+   marca-forte sobre o chip de hover 5.61:1, borda de campo sobre o cartão
+   3.41:1 (WCAG 1.4.11 pede 3), laranja-400 sobre #022C69 5.53:1. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Primitivos que os componentes leem direto. Trocados aqui em vez de nos
+       semânticos porque é o mesmo papel nos dois temas — superfície de chip,
+       de hover, contorno de campo — só que espelhado. */
+    --azul-100: #19345d;   /* chip: WhatsApp do cabeçalho, ícone do card, topo da capa */
+    --cinza-100: #162b4b;  /* hover: clareia sobre o cabeçalho, escurece sobre o chip */
+    --cinza-500: #627693;  /* contorno de campo — 3.41:1 sobre o cartão */
+    --cinza-400: #8f9bae;  /* marcador fraco das listas "o que fica de fora" */
+
+    /* Semânticos. Três degraus de superfície, do fundo à marca. */
+    --fundo: #060d19;
+    --superficie: #0b1728;
+    --superficie-alta: #142339;
+    --superficie-marca: #022c69;
+    --borda: #3d5171;
+    --texto: #e9eef6;      /* não é branco puro: #fff sobre azul quase preto vibra */
+    --texto-suave: #adbacd;
+    --marca: #77abf8;
+    --marca-forte: #6ca4f9;
+    --link: #77abf8;
+    --link-hover: #a9c8fb;
+    --foco: #88b6fc;
+
+    /* Estado do formulário: fundo escuro tingido + texto claro da mesma
+       família. O par claro (#fdeceb) viraria um bloco branco dentro do card. */
+    --erro: #e2685a;
+    --erro-fundo: #502521;
+    --erro-texto: #f3d1cd;
+    --ok: #51d68d;
+    --ok-fundo: #1e4831;
+    --ok-texto: #cdf3df;
+
+    /* Sombra de tinta some sobre fundo quase preto. Preto puro e mais densa —
+       ainda assim quem separa cartão de seção aqui é a borda, não a sombra. */
+    --sombra-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+    --sombra-md: 0 2px 4px rgba(0, 0, 0, 0.6), 0 12px 28px rgba(0, 0, 0, 0.5);
+  }
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -116,8 +185,8 @@ h3 { font-size: var(--t-lg); }
 p { margin: 0 0 var(--e-4); text-wrap: pretty; }
 p:last-child { margin-bottom: 0; }
 
-a { color: var(--azul-700); text-underline-offset: 3px; }
-a:hover { color: var(--azul-900); }
+a { color: var(--link); text-underline-offset: 3px; }
+a:hover { color: var(--link-hover); }
 
 img, svg { max-width: 100%; height: auto; display: block; }
 
@@ -180,8 +249,6 @@ img, svg { max-width: 100%; height: auto; display: block; }
    Sem opacidade: escurecer o laranja aqui derrubaria os 5.98:1 do rótulo. */
 .btn[aria-disabled="true"] { cursor: default; }
 .btn--primario[aria-disabled="true"]:hover { background: var(--acento); }
-.btn--marca { background: var(--marca-forte); color: var(--texto-invertido); }
-.btn--marca:hover { background: var(--azul-700); color: var(--texto-invertido); }
 .btn--contorno { background: transparent; border-color: currentColor; color: var(--marca-forte); }
 .btn--contorno:hover { background: var(--azul-100); color: var(--marca-forte); }
 .secao--marca .btn--contorno { color: var(--texto-invertido); }
@@ -196,7 +263,7 @@ img, svg { max-width: 100%; height: auto; display: block; }
 .grade--3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 
 .cartao {
-  background: var(--fundo);
+  background: var(--superficie-alta);
   border: 1px solid var(--borda);
   border-radius: var(--r-3);
   padding: var(--e-6);
@@ -218,16 +285,6 @@ img, svg { max-width: 100%; height: auto; display: block; }
   transform: rotate(-45deg);
 }
 
-.selo {
-  display: inline-block;
-  padding: var(--e-1) var(--e-3);
-  border-radius: var(--r-full);
-  background: var(--laranja-100);
-  color: #8a3f14;
-  font-size: var(--t-sm);
-  font-weight: 700;
-}
-
 /* Marca links que abrem em nova aba: só decorativo — o aviso que importa vai
    no nome acessível (aria-label), não neste símbolo. */
 .externo::after { content: " ↗"; }
@@ -247,8 +304,10 @@ img, svg { max-width: 100%; height: auto; display: block; }
   left: var(--e-4);
   top: -60px;
   z-index: 100;
-  background: var(--fundo);
+  background: var(--superficie-alta);
   color: var(--texto);
+  /* No escuro a sombra não separa nada de um fundo quase preto — a borda sim. */
+  border: 1px solid var(--borda);
   padding: var(--e-3) var(--e-4);
   border-radius: var(--r-2);
   box-shadow: var(--sombra-md);

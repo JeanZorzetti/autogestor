@@ -134,6 +134,8 @@ const perguntas = [
   .fora li::before { content: "—"; position: absolute; left: 0; color: var(--cinza-400); }
   .patios { margin-top: var(--e-8); gap: var(--e-8); }
   .patios p { color: var(--texto-sobre-marca); font-size: var(--t-sm); }
-  .uf { font-size: var(--t-sm); color: var(--laranja-500); }
+  /* -400 e não -500: aqui a sigla fica sobre --superficie-marca, onde o -500
+     dá 4.49:1 e reprova AA por uma casa decimal. Mesmo caso do .olho. */
+  .uf { font-size: var(--t-sm); color: var(--laranja-400); }
   .aviso { margin-top: var(--e-12); font-size: var(--t-sm); color: var(--texto-sobre-marca-suave); max-width: 78ch; }
 </style>

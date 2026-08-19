@@ -77,6 +77,20 @@ src/
   O cabeçalho só é `sticky` a partir de 900px — no celular ele tem 209px de altura.
 - **FAQ em `<details>` nativo.** Teclado e estado de graça, e a resposta fica no
   HTML mesmo fechada, que é o que o `FAQPage` do JSON-LD precisa espelhar.
+- **O tema escuro é o mesmo azul com a luz apagada.** A rampa inteira sai de
+  `#022C69` variando só a luminosidade, e a cor fica no papel que já tinha no
+  claro: o bloco de marca (`.secao--marca` e rodapé). No claro esse bloco é a
+  superfície mais escura da página; no escuro, a mais clara — a hierarquia
+  inverte, o papel não. Custa 626 bytes de CSS e zero JavaScript: segue o
+  sistema operacional por `prefers-color-scheme`, sem botão, sem `localStorage`
+  e sem script bloqueante no `<head>` para evitar piscada.
+- **`--superficie-alta` existe por causa do escuro.** No claro ela é o mesmo
+  branco do fundo e quem separa o cartão é a borda. No escuro precisa ser um
+  degrau *acima* do fundo — cartão mais escuro que a seção faz o conteúdo
+  parecer afundado, que é o erro clássico de dark mode.
+- **O rodapé não tem `margin-top`.** A última seção já entrega `--e-16` de
+  respiro; a margem somava outros 64px de faixa vazia entre o fim do conteúdo e
+  o bloco escuro — no tema escuro isso virava uma tira morta bem visível.
 - **`/obrigado` é renderizada no servidor.** Precisa ler `?erro=1` do redirect do
   endpoint; se fosse estática, quem enviou sem JavaScript e errou o telefone leria
   "pedido recebido" — a página mentiria justamente para quem não foi atendido.
@@ -94,4 +108,7 @@ projeto próprio reusando `layouts/` e `components/`.
 
 - `/admin` em Next.js lendo `crm_leads` (o motivo de o banco existir).
 - Fonte da marca: hoje o site usa a stack de sistema, que custa 0 KB.
+- Botão manual de tema. O escuro segue só o sistema operacional. Para dar a
+  escolha, some `:root[data-tema="escuro"]` ao bloco de `prefers-color-scheme`
+  em `global.css` — o resto do CSS não muda, porque tudo já lê token.
 - Analytics e rastreio de conversão.
