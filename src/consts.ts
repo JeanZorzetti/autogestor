@@ -41,6 +41,10 @@ export const EXTERNOS = {
   cotacaoCaminhao: "https://www.corretor-online.com.br/canalcliente/index.htm?Pw=QlhjVzV2QjlKdjFHc05ua1ZSU2YrUT09",
   agenciaViagens: "https://br.onertravel.com/autogestorviagens/home",
   coopluz: "https://coopluz.eco.br/",
+  /** Consulta pública de corretores da SUSEP. A página de seguro afirma um
+   *  registro; sem o caminho para conferir, é só um número na tela — e é o
+   *  tipo de alegação que motor de resposta não cita sem fonte. */
+  susepConsulta: "https://www2.susep.gov.br/safe/Corretores/pesquisa",
 } as const;
 
 /** Prazo e horário de atendimento. Ficam aqui pelo mesmo motivo do NAP acima:

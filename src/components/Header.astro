@@ -13,12 +13,21 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
       <Logo size={40} />
       <span class="marca__nome">Autogestor</span>
     </a>
+    {/* WhatsApp antes do nav no DOM porque é essa a ordem do CELULAR, onde os
+         dois ficam em linhas diferentes: logo e WhatsApp em cima, as 6
+         verticais embaixo. Com o nav antes, o Tab pulava a barra inteira antes
+         de chegar num botão que se vê ali no topo — 6 links de distância entre
+         o que se lê e o que recebe foco. No desktop o `order` recoloca o nav no
+         meio e a inversão que sobra é de dois itens vizinhos, na mesma linha. */}
+    <a class="cabecalho__zap externo" href={whatsapp("Olá! Vim pelo site da Autogestor.")} target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
+      WhatsApp
+      <span class="visualmente-oculto">— abre em nova aba</span>
+    </a>
     {/* Sem hambúrguer: 6 verticais cabem numa barra que quebra no celular.
          Menu fechado esconde exatamente o que a pessoa veio procurar.
          "Sobre" não é uma solução (já vive no rodapé) — incluí-lo aqui abria
-         uma linha extra só para ele.
-         `order` no CSS controla o visual sozinho — DOM fica logo→nav→zap,
-         igual à ordem visual do desktop, então tab order bate com o que se vê. */}
+         uma linha extra só para ele. */}
     <nav class="nav" aria-label="Soluções">
       <ul class="nav__lista" role="list">
         {
@@ -32,11 +41,6 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
         }
       </ul>
     </nav>
-    <a class="cabecalho__zap externo" href={whatsapp("Olá! Vim pelo site da Autogestor.")} target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
-      WhatsApp
-      <span class="visualmente-oculto">— abre em nova aba</span>
-    </a>
   </div>
 </header>
 
@@ -67,7 +71,6 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
     gap: var(--e-2);
     text-decoration: none;
     color: var(--marca-forte);
-    order: 1;
   }
   .marca__nome {
     font-weight: 700;
@@ -86,16 +89,15 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
     font-weight: 700;
     font-size: var(--t-sm);
     text-decoration: none;
-    order: 2;
   }
   .cabecalho__zap:hover { background: var(--cinza-100); }
 
   /* Abaixo de 900px o nav não cabe ao lado da logo e do WhatsApp: vira sua
-     própria linha cheia (order:3 + flex-basis:100% força o quebra), com a
-     aparência de barra secundária (fundo e borda) que já existia. A partir de
-     900px isso se desliga e o nav entra na mesma linha, entre os dois. */
+     própria linha cheia (flex-basis:100% força a quebra), com a aparência de
+     barra secundária (fundo e borda) que já existia. Nenhum `order` aqui — a
+     ordem visual do celular é a ordem do DOM, e é o que o Tab percorre. A
+     partir de 900px o nav sobe para o meio da linha única. */
   .nav {
-    order: 3;
     flex-basis: 100%;
     border-top: 1px solid var(--borda);
     background: var(--superficie);
@@ -111,7 +113,8 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
       border-top: none;
       background: none;
     }
-    /* Nav sobe para order:2 aqui — zap precisa ir para depois dele. */
+    /* Nav sobe para o meio aqui (a logo fica no order 0 implícito) — o zap
+       precisa ir para depois dele. */
     .cabecalho__zap { order: 3; }
   }
   .nav__lista {

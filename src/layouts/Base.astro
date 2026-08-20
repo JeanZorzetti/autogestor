@@ -129,7 +129,11 @@ const grafo: Record<string, unknown>[] = [
     </script>
     <title>{titulo}</title>
     <meta name="description" content={descricao} />
-    <link rel="canonical" href={canonical} />
+    {/* Sem canonical quando a página está fora do índice: a tag existe para
+         dizer qual URL indexar, e /404 apontava para /404 — declarando como
+         canônica exatamente a página que o `noindex` da linha seguinte manda
+         ignorar. Duas instruções contraditórias na mesma <head>. */}
+    {!noindex && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex, follow" />}
 
     {/* SVG primeiro: nítido em qualquer densidade e troca de cor sozinho no

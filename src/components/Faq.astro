@@ -48,14 +48,22 @@ const { perguntas, titulo = "Perguntas frequentes" } = Astro.props;
     min-height: 48px;
   }
   .faq__item summary::-webkit-details-marker { display: none; }
+  /* O par de declarações não é engano: sem o texto alternativo (`/ ""`) o sinal
+     entra no nome acessível e o leitor de tela anuncia "…corretora ou revenda?
+     mais". A primeira linha é o que sobra em navegador que não suporta a
+     sintaxe de alt — sem ela, o sinal sumiria e o item perderia a afordância. */
   .faq__item summary::after {
     content: "+";
+    content: "+" / "";
     font-size: var(--t-xl);
     line-height: 1;
     color: var(--marca);
     flex: none;
   }
-  .faq__item[open] summary::after { content: "−"; }
+  .faq__item[open] summary::after {
+    content: "−";
+    content: "−" / "";
+  }
   .faq__item summary:hover { background: var(--superficie); }
   .faq__resposta { padding: 0 var(--e-4) var(--e-4); color: var(--texto-suave); }
 </style>

@@ -306,8 +306,14 @@ img, svg { max-width: 100%; height: auto; display: block; }
 }
 
 /* Marca links que abrem em nova aba: só decorativo — o aviso que importa vai
-   no nome acessível (aria-label), não neste símbolo. */
-.externo::after { content: " ↗"; }
+   no nome acessível, não neste símbolo. E para ele ficar mesmo fora desse nome
+   é preciso o texto alternativo vazio (`/ ""`); sem isso o leitor de tela lia
+   "WhatsApp — abre em nova aba seta". A primeira declaração é o que sobra em
+   navegador sem suporte à sintaxe de alt: lá o símbolo continua aparecendo. */
+.externo::after {
+  content: " ↗";
+  content: " ↗" / "";
+}
 
 .visualmente-oculto {
   position: absolute;
@@ -318,11 +324,14 @@ img, svg { max-width: 100%; height: auto; display: block; }
   white-space: nowrap;
 }
 
-/* Primeiro elemento focável da página, escondido até receber foco. */
+/* Primeiro elemento focável da página, escondido até receber foco.
+   -100px e não -60px: com 52px de altura o retângulo já saía da tela, mas a
+   sombra (`0 12px 28px`) continuava entrando ~32px e deixava um borrão cinza
+   no topo de toda página. Esconder o elemento é esconder a sombra junto. */
 .pular {
   position: absolute;
   left: var(--e-4);
-  top: -60px;
+  top: -100px;
   z-index: 100;
   background: var(--superficie-alta);
   color: var(--texto);

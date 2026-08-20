@@ -161,6 +161,8 @@ const id = `lead-${solucao.slug}-${instancia}`;
 </style>
 
 <script>
+  import { parseLead } from "../lib/lead.mjs";
+
   // Progressive enhancement: sem JS o form faz POST normal e o endpoint
   // redireciona para /obrigado. Com JS, responde na própria página.
   document.querySelectorAll<HTMLFormElement>('form[action="/api/lead"]').forEach((form) => {
@@ -207,6 +209,18 @@ const id = `lead-${solucao.slug}-${instancia}`;
       else el.removeAttribute("aria-describedby");
     };
 
+    // Recusa que a pessoa consegue corrigir: aviso + campo marcado + foco nele.
+    // Serve para as duas origens — a validação local e a resposta do servidor.
+    const recusar = (erro: string, campo?: string) => {
+      mostrar(erro, false, !campo);
+      const alvo = campo ? form.querySelector<HTMLElement>(`[name="${campo}"]`) : null;
+      if (alvo) {
+        alvo.setAttribute("aria-invalid", "true");
+        descrever(alvo, true);
+        alvo.focus();
+      }
+    };
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (travado()) return;
@@ -215,11 +229,20 @@ const id = `lead-${solucao.slug}-${instancia}`;
         descrever(el, false);
       });
       mostrar("", false);
+
+      const dados = Object.fromEntries(new FormData(form));
+      // Mesma função do /api/lead, não uma segunda regra parecida: nome vazio e
+      // telefone incompleto respondem na hora, sem ida ao servidor para ouvir
+      // "informe seu nome". O servidor continua validando — isto é conforto,
+      // não confiança. A lista de slugs é só a do próprio formulário: quem
+      // decide se o slug existe é o endpoint, que tem a lista inteira.
+      const local = parseLead(dados, [String(dados.solucao ?? "")]);
+      if (!local.ok) return recusar(local.erro, local.campo || undefined);
+
       travar(true);
       botao.textContent = "Enviando…";
 
       try {
-        const dados = Object.fromEntries(new FormData(form));
         const r = await fetch("/api/lead", {
           method: "POST",
           headers: { "content-type": "application/json" },
@@ -237,13 +260,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
 
         // Sem `campo`, a falha é do servidor, não de algo que dá para corrigir
         // no formulário — é aí que o link substitui o reenvio.
-        mostrar(corpo.erro ?? "Não conseguimos enviar agora.", false, !corpo.campo);
-        const alvo = corpo.campo ? form.querySelector<HTMLElement>(`[name="${corpo.campo}"]`) : null;
-        if (alvo) {
-          alvo.setAttribute("aria-invalid", "true");
-          descrever(alvo, true);
-          alvo.focus();
-        }
+        recusar(corpo.erro ?? "Não conseguimos enviar agora.", corpo.campo);
       } catch {
         mostrar("Sem conexão com o servidor.", false, true);
       } finally {
