@@ -46,6 +46,8 @@ const perguntas = [
   h1="Pague 20% menos na conta da Equatorial Goiás, sem obra e sem placa no telhado"
   chamada="A Coopluz é uma cooperativa de energia por compensação. Você se associa, recebe créditos de fazendas solares cooperadas e o desconto entra direto na sua fatura. Sem instalar nada, sem trocar de distribuidora e sem taxa de adesão."
   perguntas={perguntas}
+  tituloForm="Veja se você se qualifica"
+  rotuloBarra="Ver meu desconto"
 >
   <div class="beneficios" slot="hero">
     <ul class="beneficios__grade" role="list">
@@ -153,14 +155,20 @@ const perguntas = [
         </li>
         <li>
           <strong>1,66 milhão kWh</strong>
-          <span>compensados em março/2026, evitando 180 t de CO₂ — o equivalente a 720 árvores plantadas</span>
+          <span>compensados em março/2026</span>
         </li>
       </ul>
-      <p class="nota">Posição de março/2026, conforme relatório da Coopluz. A cooperativa segue crescendo mês a mês.</p>
+      <p class="nota">
+        Posição de março/2026, conforme relatório da Coopluz — 180 t de CO₂ evitadas, equivalente a 720 árvores
+        plantadas. A cooperativa segue crescendo mês a mês.
+      </p>
     </div>
   </section>
 
-  <section class="secao secao--suave">
+  {/* Fundo liso, não --suave: entre "Números da cooperativa" e "Quem está por
+       trás" (ambas --suave), três seções cinza seguidas apagavam o ritmo
+       alternado do resto da página. */}
+  <section class="secao">
     <div class="container">
       <span class="olho">Leia mais</span>
       <h2>Entenda a conta de luz antes de decidir</h2>
@@ -231,8 +239,10 @@ const perguntas = [
   .beneficios__grade span { display: block; margin-top: var(--e-2); font-size: var(--t-sm); color: var(--texto-suave); }
   /* SPC/Serasa é a objeção que mais trava adesão de quem já pesquisou e desistiu — ganha destaque de cor, não só de texto.
      Fundo claro fixo nos dois temas (mesmo motivo do cartão de marcas acima: laranja-100/600 não têm variante escura),
-     por isso o subtítulo usa cinza-600 direto em vez de --texto-suave, que clareia no escuro e ficaria ilegível aqui. */
-  .beneficios__item--acento {
+     por isso o subtítulo usa cinza-600 direto em vez de --texto-suave, que clareia no escuro e ficaria ilegível aqui.
+     Seletor qualificado com `.beneficios__grade li` na frente: sem isso `.beneficios__grade li` (0,1,1) vence
+     `.beneficios__item--acento` (0,1,0) sozinho, e o destaque nunca aplica. */
+  .beneficios__grade li.beneficios__item--acento {
     background: var(--laranja-100);
     border-color: var(--laranja-500);
   }
@@ -294,7 +304,9 @@ const perguntas = [
     letter-spacing: -0.01em;
   }
   .marcas__nos small {
-    color: #d26831;
+    /* #d26831 (--laranja-600) dá 3,64:1 sobre o branco fixo do cartão — reprova AA.
+       #b85520 é o primeiro degrau da mesma família que passa (4,82:1). */
+    color: #b85520;
     font-size: var(--t-sm);
     font-weight: 700;
     text-transform: uppercase;

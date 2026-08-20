@@ -48,7 +48,11 @@ export const SOLUCOES: readonly Solucao[] = [
     descricao:
       "Associe-se à Coopluz e pague 20% menos na conta da Equatorial Goiás. Sem instalar placa solar, sem obra, sem taxa de adesão e sem multa para sair.",
     abrangencia: "GO",
-    campo: { rotulo: "Valor médio da sua conta de luz", exemplo: "ex.: R$ 450" },
+    campo: {
+      rotulo: "Valor médio da sua conta de luz",
+      exemplo: "ex.: R$ 450",
+      opcoes: ["Até R$ 250", "R$ 251 a R$ 500", "R$ 501 a R$ 1.000", "Acima de R$ 1.000"],
+    },
     cta: "Quero pagar 20% menos",
     fechamento: "Peça a análise da sua conta de luz",
     icone: ICONES.energia,

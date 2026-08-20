@@ -15,8 +15,21 @@ interface Props {
   perguntas: readonly Pergunta[];
   /** Tipo de nó schema.org que melhor descreve a vertical. */
   tipoServico?: string;
+  /** H2 do formulário do topo e rótulo da barra fixa mobile. Default serve bem
+   *  quando a solução é comparada entre provedores (seguro, viagem); vertical
+   *  com preço fixo (ex.: desconto de %) tem motivo para trocar "cotação". */
+  tituloForm?: string;
+  rotuloBarra?: string;
 }
-const { solucao, h1, chamada, perguntas, tipoServico = "Service" } = Astro.props;
+const {
+  solucao,
+  h1,
+  chamada,
+  perguntas,
+  tipoServico = "Service",
+  tituloForm = "Peça sua cotação",
+  rotuloBarra = "Pedir cotação",
+} = Astro.props;
 const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
 const url = new URL(`/${solucao.slug}`, site).href;
 const outras = SOLUCOES.filter((s) => s.slug !== solucao.slug);
@@ -61,7 +74,7 @@ const schema = [
         <slot name="hero" />
       </div>
       <div class="topo__form">
-        <LeadForm solucao={solucao} instancia="topo" />
+        <LeadForm solucao={solucao} titulo={tituloForm} instancia="topo" />
       </div>
     </div>
   </section>
@@ -84,7 +97,7 @@ const schema = [
           SUSEP {EMPRESA.susep}, com sede em {EMPRESA.endereco.cidade} e atendimento em todo o Brasil.
         </p>
       </div>
-      <LeadForm solucao={solucao} titulo="Peça sua cotação" destaque instancia="fim" />
+      <LeadForm solucao={solucao} titulo={tituloForm} destaque instancia="fim" />
     </div>
   </section>
 
@@ -98,6 +111,6 @@ const schema = [
     </div>
   </section>
 
-  <BarraAcao solucao={solucao} />
+  <BarraAcao solucao={solucao} rotulo={rotuloBarra} />
 </Base>
 
