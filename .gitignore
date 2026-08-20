@@ -2,6 +2,7 @@ node_modules/
 dist/
 .astro/
 .vercel/
+.next/
 .env
 .env.local
 logos/logo-*.png

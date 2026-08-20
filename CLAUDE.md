@@ -73,9 +73,18 @@ estáticos) porque dependem do domínio de `SITE_URL`.
 - Antes de adicionar uma dependência para algo pequeno (parsing, travessia de árvore, rate limit), veja se o arquivo já resolveu isso com poucas linhas de propósito — é o padrão do repo (`escopoDeCabecalho` em [src/lib/tabela.mjs](src/lib/tabela.mjs), rate limit em `lead.ts`) e comentários `ponytail:` marcam onde a simplificação foi deliberada, com o teto e o gatilho para evoluir.
 - [README.md](README.md) tem a lista completa de decisões de UI/contraste/formulário não óbvias no código — leia antes de mexer em Header, LeadForm, BarraAcao ou no tema.
 
+## admin/ — painel Next.js separado
+
+[admin/](admin/) lê `crm_leads`/`crm_eventos` (motivo de o banco existir — ver
+[docs/planos/admin-nextjs.md](docs/planos/admin-nextjs.md) para o plano
+completo). É outro projeto Vercel (Root Directory = `admin`, domínio
+`admin.autogestor.roilabs.com.br`), App Router + `pg` cru + server actions,
+no mesmo padrão do roihub. Login com sessão (não Basic auth) porque o
+histórico do lead precisa dizer *quem* moveu. `npm test` roda de dentro de
+`admin/`, separado do `npm test` da raiz.
+
 ## O que ainda não existe
 
-- `/admin` em Next.js lendo `crm_leads` (motivo de o banco existir).
 - Fonte da marca própria (hoje usa a stack de fontes do sistema).
 - Terceiro estado do tema ("seguir o sistema") — hoje só alterna claro/escuro.
 - Analytics de conversão além do pageview GA4.
