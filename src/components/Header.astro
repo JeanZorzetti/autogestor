@@ -32,9 +32,10 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
         }
       </ul>
     </nav>
-    <a class="cabecalho__zap" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>
+    <a class="cabecalho__zap externo" href={whatsapp("Olá! Vim pelo site da Autogestor.")} target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES.zap} />
       WhatsApp
+      <span class="visualmente-oculto">— abre em nova aba</span>
     </a>
   </div>
 </header>

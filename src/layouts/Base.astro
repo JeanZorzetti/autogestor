@@ -24,8 +24,22 @@ interface Props {
    *  vez de um segundo nó: schema.org não tem tipo para documento legal, e um
    *  WebPage extra na mesma URL duplica a entidade em vez de descrevê-la. */
   atualizado?: string;
+  /** Subtipo do WebPage ("AboutPage", "ContactPage"…) quando schema.org tem um
+   *  específico. Mesmo raciocínio do `atualizado` acima: estende o nó que já
+   *  existe em vez de criar um segundo "esta página é sobre X" na mesma URL. */
+  tipoPagina?: string | string[];
 }
-const { titulo, descricao, schema = [], trilha = [], ogImagem = "/img/og.png", noindex = false, artigo, atualizado } = Astro.props;
+const {
+  titulo,
+  descricao,
+  schema = [],
+  trilha = [],
+  ogImagem = "/img/og.png",
+  noindex = false,
+  artigo,
+  atualizado,
+  tipoPagina = "WebPage",
+} = Astro.props;
 
 const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
 const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", site).href;
@@ -68,7 +82,7 @@ const grafo: Record<string, unknown>[] = [
     publisher: { "@id": abs("/#organizacao") },
   },
   {
-    "@type": "WebPage",
+    "@type": tipoPagina,
     "@id": `${canonical}#pagina`,
     url: canonical,
     name: titulo,

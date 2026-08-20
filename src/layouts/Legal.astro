@@ -44,7 +44,9 @@ const dataBR = new Date(`${LEGAL_ATUALIZADO}T12:00:00Z`).toLocaleDateString("pt-
         <p>
           {EMPRESA.nomeLegal}, registro SUSEP nº {EMPRESA.susep}. {enderecoLinha}.
           E-mail <a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a>, WhatsApp
-          <a href={whatsapp(`Olá! Tenho uma dúvida sobre ${nome.toLowerCase()}.`)}>{EMPRESA.telefoneExibicao}</a>.
+          <a class="externo" href={whatsapp(`Olá! Tenho uma dúvida sobre ${nome.toLowerCase()}.`)} target="_blank" rel="noopener">
+            {EMPRESA.telefoneExibicao}<span class="visualmente-oculto"> — abre em nova aba</span>
+          </a>.
         </p>
       </div>
     </div>

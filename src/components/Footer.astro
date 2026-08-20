@@ -32,7 +32,11 @@ const ano = new Date().getFullYear();
         <li><a href="/seja-parceiro">Seja um parceiro</a></li>
         <li><a href="/privacidade">Privacidade</a></li>
         <li><a href="/termos">Termos de uso</a></li>
-        <li><a href={whatsapp("Olá! Vim pelo site da Autogestor.")}>Falar no WhatsApp</a></li>
+        <li>
+          <a class="externo" href={whatsapp("Olá! Vim pelo site da Autogestor.")} target="_blank" rel="noopener">
+            Falar no WhatsApp<span class="visualmente-oculto"> — abre em nova aba</span>
+          </a>
+        </li>
       </ul>
     </nav>
 

@@ -51,14 +51,17 @@ const motivo = (campo && MOTIVO[campo]) || "Pode ter sido o WhatsApp com um díg
 
       <p class="acoes">
         <a
-          class="btn btn--primario"
+          class="btn btn--primario externo"
           href={whatsapp(
             falhou
               ? "Olá! Tentei enviar um pedido pelo site e deu erro."
               : "Olá! Acabei de enviar um pedido pelo site da Autogestor."
           )}
+          target="_blank"
+          rel="noopener"
         >
           Chamar no WhatsApp {EMPRESA.telefoneExibicao}
+          <span class="visualmente-oculto">— abre em nova aba</span>
         </a>
         <a class="btn btn--contorno" href="/">Voltar ao início</a>
       </p>

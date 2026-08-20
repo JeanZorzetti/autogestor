@@ -74,8 +74,14 @@ const schema = [
         </p>
         <div class="capa__acoes">
           <a class="btn btn--primario" href="#solucoes">Ver as seis soluções</a>
-          <a class="btn btn--contorno" href={whatsapp("Olá! Não sei qual solução preciso, pode me orientar?")}>
+          <a
+            class="btn btn--contorno externo"
+            href={whatsapp("Olá! Não sei qual solução preciso, pode me orientar?")}
+            target="_blank"
+            rel="noopener"
+          >
             Não sei por onde começar
+            <span class="visualmente-oculto">— abre em nova aba</span>
           </a>
         </div>
         {/* Dentro da coluna de texto, não abaixo da grade inteira: a coluna do

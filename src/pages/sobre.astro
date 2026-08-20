@@ -30,11 +30,6 @@ const abs = (p: string) => new URL(p, site).href;
 
 const schema = [
   {
-    "@type": "AboutPage",
-    "@id": abs("/sobre#pagina-sobre"),
-    mainEntity: { "@id": abs("/#organizacao") },
-  },
-  {
     "@type": "FAQPage",
     "@id": abs("/sobre#faq"),
     mainEntity: perguntas.map((q) => ({
@@ -50,6 +45,7 @@ const schema = [
   titulo="Sobre a Autogestor — hub de negócios desde 2004"
   descricao="A Autogestor nasceu em 2004 em Goiânia como corretora de seguros e virou um hub de soluções para todo o Brasil: energia, seguros, viagens, financiamento, consórcio e repasse de veículos."
   schema={schema}
+  tipoPagina={["WebPage", "AboutPage"]}
   trilha={[
     { nome: "Início", href: "/" },
     { nome: "Sobre", href: "/sobre" },
@@ -118,7 +114,10 @@ const schema = [
           <a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a>
         </address>
         <p>
-          <a class="btn btn--primario" href={whatsapp("Olá! Vim pelo site da Autogestor.")}>Falar no WhatsApp</a>
+          <a class="btn btn--primario externo" href={whatsapp("Olá! Vim pelo site da Autogestor.")} target="_blank" rel="noopener">
+            Falar no WhatsApp
+            <span class="visualmente-oculto">— abre em nova aba</span>
+          </a>
         </p>
       </div>
       <div>

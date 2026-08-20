@@ -29,6 +29,27 @@ const relacionados = (await getCollection("blog")).filter(
 const dataLonga = (d: Date) =>
   d.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
+// Os H2 em forma de pergunta já são o corpo do artigo (ver .md em
+// src/content/blog) — isto só declara o par pergunta/resposta que o texto já
+// tem, para quem extrai Q&A não precisar adivinhar a partir da prosa.
+const perguntasDoPost = (corpo: string) =>
+  corpo
+    .split(/\n## +/)
+    .slice(1)
+    .flatMap((bloco) => {
+      const quebra = bloco.indexOf("\n");
+      const pergunta = bloco.slice(0, quebra === -1 ? bloco.length : quebra).trim();
+      if (!pergunta.endsWith("?")) return [];
+      const resposta = bloco
+        .slice(quebra + 1)
+        .split(/\n\s*\n/)[0]
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+        .replace(/\n+/g, " ")
+        .trim();
+      return resposta ? [{ p: pergunta, r: resposta }] : [];
+    });
+const perguntas = perguntasDoPost(post.body ?? "");
+
 const schema = [
   {
     "@type": "BlogPosting",
@@ -44,6 +65,19 @@ const schema = [
     mainEntityOfPage: { "@id": `${url}#pagina` },
     about: { "@id": abs(`/${solucao.slug}#servico`) },
   },
+  ...(perguntas.length
+    ? [
+        {
+          "@type": "FAQPage",
+          "@id": `${url}#faq`,
+          mainEntity: perguntas.map((q) => ({
+            "@type": "Question",
+            name: q.p,
+            acceptedAnswer: { "@type": "Answer", text: q.r },
+          })),
+        },
+      ]
+    : []),
 ];
 ---
 

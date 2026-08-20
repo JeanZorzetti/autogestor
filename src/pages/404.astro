@@ -19,8 +19,9 @@ import { whatsapp } from "../consts";
       </p>
       <p class="acoes">
         <a class="btn btn--contorno" href="/">Ir para o início</a>
-        <a class="btn btn--primario" href={whatsapp("Olá! Não encontrei o que procurava no site.")}>
+        <a class="btn btn--primario externo" href={whatsapp("Olá! Não encontrei o que procurava no site.")} target="_blank" rel="noopener">
           Perguntar no WhatsApp
+          <span class="visualmente-oculto">— abre em nova aba</span>
         </a>
       </p>
       <h2 class="cards__titulo">Comece por uma das seis soluções</h2>

@@ -98,7 +98,9 @@ const id = `lead-${solucao.slug}-${instancia}`;
 
   <p class="form__alternativa">
     Prefere falar agora?
-    <a href={whatsapp(`Olá! Quero saber sobre ${solucao.nome}.`)}>Chamar no WhatsApp {EMPRESA.telefoneExibicao}</a>
+    <a class="externo" href={whatsapp(`Olá! Quero saber sobre ${solucao.nome}.`)} target="_blank" rel="noopener">
+      Chamar no WhatsApp {EMPRESA.telefoneExibicao}<span class="visualmente-oculto"> — abre em nova aba</span>
+    </a>
   </p>
 </div>
 
@@ -183,7 +185,12 @@ const id = `lead-${solucao.slug}-${instancia}`;
       aviso.toggleAttribute("data-ok", ok);
       aviso.textContent = texto ? `${texto} ` : "";
       if (comLink && linkZap) {
-        const link = Object.assign(document.createElement("a"), { href: linkZap.href, textContent: "Chamar no WhatsApp" });
+        const link = Object.assign(document.createElement("a"), {
+          href: linkZap.href,
+          target: "_blank",
+          rel: "noopener",
+          textContent: "Chamar no WhatsApp",
+        });
         aviso.append(link);
         // Erro sistêmico não tem campo para focar — o link é a única saída, e
         // sem foco quem usa teclado precisaria voltar (Shift+Tab) para achá-la.
