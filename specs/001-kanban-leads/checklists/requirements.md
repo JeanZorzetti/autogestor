@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain — 2 em aberto (FR-018, FR-019)
+- [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -31,8 +31,15 @@
 
 ## Notes
 
-- FR-018 (quadro substitui a tabela ou coexiste) e FR-019 (reordenação manual
-  dentro da coluna) são as duas decisões de escopo em aberto. Ambas mudam o
-  tamanho da entrega e, no caso de FR-019, exigem guardar posição por lead.
-- Resolver as duas antes de `/speckit-plan`. As demais lacunas foram preenchidas
-  com padrões razoáveis e estão registradas em Assumptions.
+- Decisões de escopo resolvidas pelo dono em 20/08/2026:
+  - **FR-018**: o quadro **substitui** a tabela em `/leads`. Sem alternador de
+    visão, sem rota separada, e o filtro por etapa sai da barra.
+  - **FR-019**: reordenação manual dentro da coluna **entra no escopo**, com a
+    ordem persistida e compartilhada por toda a equipe (User Story 4, P3).
+- Consequências registradas na spec: FR-016 reescrito (prioridade manual vence,
+  tempo parado é só o padrão), FR-020 a FR-022 acrescentados, dois edge cases de
+  concorrência/entrada de lead novo, entidade "Posição de prioridade", SC-008 e
+  SC-009.
+- Ponto de atenção para `/speckit-plan`: a posição de prioridade é o único dado
+  novo que a feature exige guardar. Vale confirmar se o custo dela se justifica
+  antes de escrever código, já que P1 e P2 entregam sem ela.

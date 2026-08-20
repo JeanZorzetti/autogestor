@@ -103,6 +103,37 @@ vertical aparecem, em todas as colunas, com as contagens atualizadas.
 
 ---
 
+### User Story 4 - Priorizar a fila dentro de uma etapa (Priority: P3)
+
+O corretor arrasta cartões para cima e para baixo dentro da mesma coluna para
+montar a ordem em que pretende trabalhar aquela etapa. A ordem que ele definiu
+fica salva e é a mesma que os colegas veem.
+
+**Why this priority**: Depende do quadro e do arraste já existirem. Ordenar por
+tempo parado resolve o caso comum; a priorização manual é o que permite dizer
+"esses três vêm primeiro hoje" quando o tempo parado não conta a história toda.
+
+**Independent Test**: Reordenar três cartões numa coluna, recarregar a página e
+conferir que a ordem se manteve; abrir em outra sessão e ver a mesma ordem.
+
+**Acceptance Scenarios**:
+
+1. **Given** uma coluna com vários cartões, **When** o corretor arrasta um
+   cartão para outra posição na mesma coluna, **Then** a nova ordem aparece na
+   hora e persiste após recarregar.
+2. **Given** um cartão foi reordenado dentro da coluna, **When** o corretor abre
+   o detalhe do lead, **Then** nenhum evento de mudança de etapa foi criado.
+3. **Given** outro usuário do painel abre o quadro, **When** a tela carrega,
+   **Then** ele vê a mesma ordem que o primeiro definiu.
+4. **Given** um lead novo chega do site, **When** ele aparece no quadro, **Then**
+   ocupa uma posição previsível na coluna "novo" sem embaralhar a ordem que os
+   corretores já tinham definido para os demais cartões.
+5. **Given** o cartão está com o foco do teclado, **When** o corretor usa as
+   teclas para movê-lo dentro da coluna, **Then** consegue reordenar sem mouse,
+   com a nova posição anunciada por leitor de tela.
+
+---
+
 ### Edge Cases
 
 - **Muitos cartões numa coluna**: cada coluna rola de forma independente sem
@@ -114,6 +145,11 @@ vertical aparecem, em todas as colunas, com as contagens atualizadas.
 - **Duas pessoas movendo o mesmo lead**: a última mudança gravada vence; ao
   recarregar, as duas veem o mesmo estado, e o histórico preserva as duas
   movimentações na ordem em que ocorreram.
+- **Duas pessoas reordenando a mesma coluna**: a última ordenação gravada vence
+  para o cartão movido; nenhum outro cartão da coluna troca de lugar por
+  consequência, e ninguém fica com uma ordem que só ele vê depois de recarregar.
+- **Lead novo chegando numa coluna já priorizada**: entra em posição definida —
+  não no meio da fila que os corretores montaram — e a ordem dos demais não muda.
 - **Sem banco configurado**: o aviso de "sem persistência" que a tela já exibe
   continua aparecendo e o quadro aparece vazio, sem quebrar.
 - **Sessão expirada durante o arraste**: a mudança não é gravada, o cartão
@@ -161,26 +197,38 @@ vertical aparecem, em todas as colunas, com as contagens atualizadas.
   o quadro inteiro, incluindo as contagens das colunas.
 - **FR-015**: O recorte atual do quadro MUST ser reproduzível pelo endereço da
   página (compartilhável e resistente a recarregar).
-- **FR-016**: Dentro de cada coluna, os cartões MUST seguir uma ordem estável e
-  previsível, com os leads parados há mais tempo aparecendo primeiro.
+- **FR-016**: Dentro de cada coluna, os cartões MUST seguir a ordem de
+  priorização definida pelos corretores; leads que ninguém priorizou ainda MUST
+  aparecer ordenados pelos parados há mais tempo primeiro.
 - **FR-017**: O sistema MUST manter o aviso de ausência de persistência quando o
   banco não estiver configurado, sem quebrar o quadro.
-- **FR-018**: [NEEDS CLARIFICATION: o quadro substitui a lista em tabela na tela
-  de Leads, ou as duas visões coexistem com um alternador de visão?]
-- **FR-019**: [NEEDS CLARIFICATION: reordenar cartões manualmente dentro de uma
-  coluna (priorização própria do corretor, com a ordem salva) entra no escopo,
-  ou a ordem é sempre automática por tempo parado?]
+- **FR-018**: O quadro MUST substituir a lista em tabela na tela de Leads — não
+  há alternador de visão nem rota separada, e o filtro por etapa sai da barra de
+  filtros por ser redundante com as colunas.
+- **FR-019**: Usuários MUST conseguir reordenar cartões dentro de uma coluna
+  arrastando, e a ordem resultante MUST persistir e valer para todos os usuários
+  do painel.
+- **FR-020**: Ao mover um cartão para outra coluna, o sistema MUST posicioná-lo
+  no ponto onde foi solto, e não em uma extremidade fixa da coluna de destino.
+- **FR-021**: A reordenação dentro de uma coluna MUST ser possível apenas pelo
+  teclado e em dispositivos de toque, como a movimentação entre colunas.
+- **FR-022**: Reordenar um cartão dentro da mesma coluna MUST NOT gerar evento
+  de mudança de etapa no histórico do lead — prioridade não é progresso no funil.
 
 ### Key Entities
 
 - **Lead**: um contato captado por um formulário do site. Atributos relevantes
   para o quadro: nome, vertical (uma das 8), etapa atual (uma das 5), telefone,
-  contexto de origem, valor e o momento em que entrou na etapa atual.
+  contexto de origem, valor, o momento em que entrou na etapa atual e a sua
+  posição de prioridade dentro da coluna.
 - **Etapa do funil**: uma das cinco posições fixas do funil — vira uma coluna.
 - **Vertical (pipeline)**: a linha de negócio do lead — recorta o quadro.
 - **Evento de movimentação**: o registro histórico de uma mudança de etapa, com
   origem, destino, nota opcional, autor e momento.
 - **Usuário do painel**: quem move os cartões; é o autor gravado no evento.
+- **Posição de prioridade**: a ordem de um lead dentro da sua coluna. É comum a
+  todos os usuários do painel (não é preferência pessoal) e sobrevive a
+  recarregar a página e a mudanças de etapa.
 
 ## Success Criteria *(mandatory)*
 
@@ -201,6 +249,10 @@ vertical aparecem, em todas as colunas, com as contagens atualizadas.
 - **SC-007**: Leads parados além do limiar são notados: o tempo médio de leads
   em "novo" e "contato" cai em relação à média das 4 semanas anteriores ao
   lançamento.
+- **SC-008**: A ordem de uma coluna é a mesma para todos: dois usuários abrindo
+  o mesmo recorte de filtro veem os cartões na mesma sequência em 100% dos casos.
+- **SC-009**: Reordenar não polui o histórico: o número de eventos de mudança de
+  etapa registrados continua igual ao número de mudanças reais de etapa.
 
 ## Assumptions
 
@@ -216,7 +268,15 @@ vertical aparecem, em todas as colunas, com as contagens atualizadas.
   o quadro não introduz paginação, apenas avisa quando o recorte ultrapassa o
   limite.
 - O filtro por etapa que existe hoje na tela perde a função no quadro (cada
-  etapa já é uma coluna) e pode sair da barra de filtros.
+  etapa já é uma coluna) e sai da barra de filtros. Endereços antigos que
+  carregam esse filtro continuam abrindo o quadro, apenas ignorando o parâmetro.
+- A tabela de leads deixa de existir: o quadro é a única visão de `/leads`.
+  Quem precisa de leitura linear usa a página de detalhe do lead ou o Painel.
+- A priorização é da equipe, não de cada pessoa — não existe ordem privada por
+  usuário. Com o time pequeno de hoje, uma fila compartilhada é o que faz o
+  quadro significar a mesma coisa para todo mundo.
+- A ordem definida por arraste é preservada quando o lead muda de etapa: ele
+  entra na coluna de destino na posição em que foi solto.
 - O quadro é a mesma feature em celular e desktop; nenhuma tela separada é
   criada para mobile.
 - A feature usa a autenticação, o banco e o registro de histórico que já existem
