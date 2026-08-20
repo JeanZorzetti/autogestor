@@ -37,7 +37,15 @@ const id = `lead-${solucao.slug}-${instancia}`;
   {/* O prazo desce por data-attribute porque o <script> abaixo é um módulo
        do navegador: ele não enxerga o frontmatter. Repetir a string literal lá
        é como as duas promessas divergem sem ninguém perceber. */}
-  <form id={id} class="form__campos" method="post" action="/api/lead" novalidate data-prazo={ATENDIMENTO.prazo}>
+  <form
+    id={id}
+    class="form__campos"
+    method="post"
+    action="/api/lead"
+    novalidate
+    data-prazo={ATENDIMENTO.prazo}
+    data-contexto-obrigatorio={solucao.campo.opcoes ? "1" : "0"}
+  >
     <input type="hidden" name="solucao" value={solucao.slug} />
     <input type="hidden" name="origem" value={`site:${solucao.slug}:${instancia}`} />
     {/* Isca para robô. Fora da tela e fora da ordem de tabulação, mas SEM
@@ -72,7 +80,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
       <label for={`${id}-contexto`}>{solucao.campo.rotulo}</label>
       {
         solucao.campo.opcoes ? (
-          <select id={`${id}-contexto`} name="contexto">
+          <select id={`${id}-contexto`} name="contexto" required>
             <option value="">Selecione</option>
             {solucao.campo.opcoes.map((o) => <option value={o}>{o}</option>)}
           </select>
@@ -236,7 +244,9 @@ const id = `lead-${solucao.slug}-${instancia}`;
       // "informe seu nome". O servidor continua validando — isto é conforto,
       // não confiança. A lista de slugs é só a do próprio formulário: quem
       // decide se o slug existe é o endpoint, que tem a lista inteira.
-      const local = parseLead(dados, [String(dados.solucao ?? "")]);
+      const slug = String(dados.solucao ?? "");
+      const obrigatorios = form.dataset.contextoObrigatorio === "1" ? [slug] : [];
+      const local = parseLead(dados, [slug], obrigatorios);
       if (!local.ok) return recusar(local.erro, local.campo || undefined);
 
       travar(true);
@@ -255,6 +265,14 @@ const id = `lead-${solucao.slug}-${instancia}`;
           mostrar(`Recebemos. Um consultor chama você no WhatsApp ${form.dataset.prazo} — no próximo dia útil, se você enviou fora do horário de atendimento.`, true);
           botao.textContent = "Pedido enviado";
           (window as any).gtag?.("event", "gerar_lead", { solucao: dados.solucao, origem: dados.origem });
+          // Sem isto o botão ficava travado (aria-disabled) para sempre: o
+          // `finally` abaixo só destrava quando o rótulo ainda é "Enviando…",
+          // e aqui ele já virou "Pedido enviado". Quem quisesse perguntar por
+          // uma segunda frente na mesma página encontrava um botão morto.
+          setTimeout(() => {
+            botao.textContent = rotulo;
+            travar(false);
+          }, 4000);
           return;
         }
 

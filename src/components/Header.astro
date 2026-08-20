@@ -126,6 +126,17 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
     padding-inline: var(--e-4);
     padding-block: var(--e-2);
   }
+  /* Abaixo de 600px, 6 itens em `wrap` custavam 3 linhas (~150px só de nav).
+     Rolagem horizontal com snap mantém as 6 visíveis (afordável pela borda de
+     saída) sem empurrar o H1 quase uma tela inteira para baixo. */
+  @media (max-width: 599px) {
+    .nav__lista {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+    }
+    .nav__lista li { flex: none; scroll-snap-align: start; }
+  }
   @media (min-width: 900px) {
     .nav__lista { padding: 0; }
   }

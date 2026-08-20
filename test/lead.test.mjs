@@ -47,3 +47,10 @@ test("marca o honeypot sem recusar", () => {
   assert.equal(r.ok, true);
   assert.equal(r.lead.isca, true);
 });
+
+test("exige contexto só na solução marcada como obrigatória", () => {
+  const semContexto = { solucao: "coopluz", nome: "Ana", whatsapp: "62982622220" };
+  assert.equal(parseLead(semContexto, SLUGS, ["coopluz"]).campo, "contexto", "obrigatório e vazio recusa");
+  assert.equal(parseLead(semContexto, SLUGS, []).ok, true, "sem exigência, vazio passa");
+  assert.equal(parseLead(semContexto, SLUGS).ok, true, "obrigatorios é opcional");
+});

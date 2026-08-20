@@ -6,7 +6,12 @@ import { SOLUCOES, PARCEIRO, GERAL } from "../../data/solucoes";
 // Única rota dinâmica do site. O resto é HTML estático.
 export const prerender = false;
 
-const SLUGS = [...SOLUCOES, PARCEIRO, GERAL].map((s) => s.slug);
+const TODAS = [...SOLUCOES, PARCEIRO, GERAL];
+const SLUGS = TODAS.map((s) => s.slug);
+// Sem `opcoes` o 3º campo é texto livre — vazio ainda é uma resposta válida
+// ("não sabe o modelo do carro" também é informação). Com `<select>`, vazio é
+// só o placeholder nunca tocado.
+const CONTEXTO_OBRIGATORIO = TODAS.filter((s) => s.campo.opcoes).map((s) => s.slug);
 
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -49,7 +54,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     return json({ erro: "Não recebemos os dados do formulário." }, 400);
   }
 
-  const r = parseLead(body, SLUGS);
+  const r = parseLead(body, SLUGS, CONTEXTO_OBRIGATORIO);
   if (!r.ok) return form ? redirect(`/obrigado?erro=${r.campo || "1"}`, 303) : json({ erro: r.erro, campo: r.campo }, 400);
 
   // Robô recebe 200 e vai embora achando que funcionou. Ensinar o robô qual

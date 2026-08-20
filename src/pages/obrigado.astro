@@ -16,6 +16,7 @@ const MOTIVO: Record<string, string> = {
   nome: "Faltou o seu nome.",
   whatsapp: "O WhatsApp não chegou completo — confira o DDD e os 9 dígitos.",
   solucao: "A solução escolhida não foi reconhecida.",
+  contexto: "Faltou selecionar uma opção.",
 };
 const motivo = (campo && MOTIVO[campo]) || "Pode ter sido o WhatsApp com um dígito faltando, ou o nosso servidor fora do ar.";
 ---

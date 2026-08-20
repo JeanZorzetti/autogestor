@@ -29,9 +29,12 @@ export function normalizarWhatsapp(bruto) {
  *
  * @param {unknown} body
  * @param {readonly string[]} slugs slugs de solução aceitos
+ * @param {readonly string[]} obrigatorios slugs cujo 3º campo é `<select>` — sem
+ *   contexto ali a resposta não roteia (a diferença entre um `<input>` de texto
+ *   vazio, que ainda é uma pista, e um "Selecione" nunca escolhido)
  * @returns {{ok: true, lead: object} | {ok: false, erro: string, campo: string}}
  */
-export function parseLead(body, slugs) {
+export function parseLead(body, slugs, obrigatorios = []) {
   if (!body || typeof body !== "object") return { ok: false, erro: "Não recebemos os dados do formulário.", campo: "" };
 
   const solucao = texto(body.solucao, 40);
@@ -43,6 +46,9 @@ export function parseLead(body, slugs) {
   const whatsapp = normalizarWhatsapp(body.whatsapp);
   if (!whatsapp) return { ok: false, erro: "Confira o WhatsApp: use DDD + 9 dígitos.", campo: "whatsapp" };
 
+  const contexto = texto(body.contexto, 300);
+  if (!contexto && obrigatorios.includes(solucao)) return { ok: false, erro: "Selecione uma opção.", campo: "contexto" };
+
   // Honeypot: campo escondido que só robô preenche. Responde sucesso para não
   // ensinar o robô a contornar, mas não grava.
   const isca = texto(body.empresa, 100);
@@ -53,7 +59,7 @@ export function parseLead(body, slugs) {
       solucao,
       nome,
       whatsapp,
-      contexto: texto(body.contexto, 300) || null,
+      contexto: contexto || null,
       origem: texto(body.origem, 80) || "site",
       isca: isca.length > 0,
     },
