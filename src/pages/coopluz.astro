@@ -23,6 +23,10 @@ const perguntas = [
     r: "O primeiro crédito costuma aparecer em até 90 dias. O prazo depende do ciclo de leitura da distribuidora e do processo de vinculação da unidade consumidora à cooperativa.",
   },
   {
+    p: "Meu nome está negativado. Posso participar?",
+    r: "Pode. A associação à Coopluz não passa por consulta ao SPC ou ao Serasa e não há análise de crédito: você não está contratando financiamento nem comprando equipamento, só recebendo créditos de energia na fatura que já é sua. O que impede a adesão é a conta estar em nome de outra pessoa, ter Tarifa Social ou isenção de ICMS de produtor rural, ou estar com irregularidade junto à distribuidora.",
+  },
+  {
     p: "Tem taxa de adesão, fidelidade ou multa para sair?",
     r: "Não há taxa de adesão nem multa de cancelamento. Ao sair, você paga apenas o saldo residual dos créditos já utilizados e não faturados.",
   },
@@ -47,6 +51,7 @@ const perguntas = [
     <li>20% de desconto todo mês, aplicado na própria fatura</li>
     <li>Nenhuma obra, nenhum equipamento, nenhuma placa</li>
     <li>Sem taxa de adesão e sem multa para cancelar</li>
+    <li>Sem consulta ao SPC ou Serasa e sem análise de crédito</li>
   </ul>
 
   <section class="secao">
@@ -73,7 +78,7 @@ const perguntas = [
       <ol class="etapas" role="list">
         <li>
           <h3>Você se associa</h3>
-          <p>Cadastro digital com uma fatura recente da Equatorial em mãos. Sem visita técnica e sem análise de crédito.</p>
+          <p>Cadastro digital com uma fatura recente da Equatorial em mãos. Sem visita técnica, sem análise de crédito e sem consulta ao SPC ou Serasa.</p>
         </li>
         <li>
           <h3>A fazenda gera</h3>
@@ -103,6 +108,7 @@ const perguntas = [
             <li>A conta média passa de R$ 250 por mês</li>
             <li>É residência, comércio, condomínio ou pequena indústria</li>
             <li>Você quer economia sem imobilizar capital</li>
+            <li>Seu nome está negativado — não há consulta ao SPC ou Serasa</li>
           </ul>
         </div>
         <div class="cartao">
@@ -118,11 +124,6 @@ const perguntas = [
           </p>
         </div>
       </div>
-      <p class="nota">
-        A Coopluz é uma cooperativa independente, com sede em Goiânia, e opera em parceria com Sicoob e Secovicred.
-        A Autogestor é parceira comercial credenciada — quer conhecer a cooperativa direto?
-        <a class="externo" href={EXTERNOS.coopluz} target="_blank" rel="noopener" aria-label="Veja o site da Coopluz — abre em nova aba">Veja o site da Coopluz</a>.
-      </p>
     </div>
   </section>
 
@@ -134,6 +135,29 @@ const perguntas = [
         <li><a href="/blog/reduzir-conta-equatorial-sem-placa-solar">Como reduzir a conta da Equatorial Goiás sem instalar placa solar</a></li>
         <li><a href="/blog/fio-b-60-por-cento-2026-conta-equatorial-goias">Fio B a 60% em 2026: por que a conta da Equatorial Goiás subiu</a></li>
       </ul>
+    </div>
+  </section>
+  <section class="secao secao--suave">
+    <div class="container">
+      <span class="olho">Quem está por trás</span>
+      <h2>Uma cooperativa de energia, uma de crédito e um parceiro credenciado</h2>
+      <p class="chamada">
+        A Coopluz é uma cooperativa independente com sede em Goiânia e opera em parceria com o Sicoob Secovicred.
+        A Autogestor é parceira comercial credenciada: é com a gente que você fala e é a Coopluz que emite o
+        contrato de associação. Nenhuma das três consulta SPC ou Serasa para associar você.
+      </p>
+      <ul class="marcas lista-limpa" role="list">
+        <li><img src="/img/parceiros/coopluz.png" width="356" height="104" alt="Coopluz" loading="lazy" decoding="async" /></li>
+        <li><img src="/img/parceiros/sicoob.png" width="254" height="86" alt="Sicoob Secovicred" loading="lazy" decoding="async" /></li>
+        <li class="marcas__nos">
+          <img src="/img/logo.svg" width="44" height="44" alt="" loading="lazy" decoding="async" />
+          <span>Autogestor<small>Parceiro autorizado</small></span>
+        </li>
+      </ul>
+      <p class="nota">
+        Quer conhecer a cooperativa direto?
+        <a class="externo" href={EXTERNOS.coopluz} target="_blank" rel="noopener" aria-label="Veja o site da Coopluz — abre em nova aba">Veja o site da Coopluz</a>.
+      </p>
     </div>
   </section>
 </Vertical>
@@ -155,4 +179,51 @@ const perguntas = [
   .fora li { padding-left: var(--e-6); position: relative; color: var(--texto-suave); }
   .fora li::before { content: "—"; position: absolute; left: 0; color: var(--cinza-400); }
   .nota { font-size: var(--t-sm); color: var(--texto-suave); margin-top: var(--e-4); }
+
+  /* Cartão branco fixo nos dois temas: os PNGs dos parceiros vêm com fundo
+     branco chapado e a marca deles não tem versão escura aprovada. */
+  .marcas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--e-6) var(--e-8);
+    margin-top: var(--e-8);
+    padding: var(--e-6) var(--e-8);
+    background: #fff;
+    border-radius: var(--r-3);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .marcas img { display: block; height: 40px; width: auto; }
+  .marcas li + li { position: relative; }
+  /* O traço separador do material impresso; some quando as marcas quebram
+     linha, porque aí ele apareceria pendurado no início da linha de baixo. */
+  @media (min-width: 700px) {
+    .marcas li + li::before {
+      content: "";
+      position: absolute;
+      left: calc(var(--e-8) / -2);
+      top: 50%;
+      transform: translateY(-50%);
+      height: 40px;
+      border-left: 1px solid rgba(0, 0, 0, 0.14);
+    }
+  }
+  .marcas__nos { display: flex; align-items: center; gap: var(--e-3); }
+  .marcas__nos img { height: 44px; }
+  .marcas__nos span {
+    display: grid;
+    color: #002b74;
+    font-weight: 700;
+    font-size: var(--t-lg);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .marcas__nos small {
+    color: #d26831;
+    font-size: var(--t-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
 </style>
