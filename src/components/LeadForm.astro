@@ -1,6 +1,6 @@
 ---
 import type { Solucao } from "../data/solucoes";
-import { EMPRESA, whatsapp } from "../consts";
+import { ATENDIMENTO, EMPRESA, whatsapp } from "../consts";
 
 interface Props {
   solucao: Solucao;
@@ -27,13 +27,17 @@ const id = `lead-${solucao.slug}-${instancia}`;
       <>
         <h2>{titulo}</h2>
         <p class="form__sub">
-          Três campos. Um consultor responde no seu WhatsApp — sem robô e sem ligação de telemarketing.
+          Três campos. Um consultor responde no seu WhatsApp {ATENDIMENTO.prazo} — sem robô e sem ligação de
+          telemarketing.
         </p>
       </>
     )
   }
 
-  <form id={id} class="form__campos" method="post" action="/api/lead" novalidate>
+  <!-- O prazo desce por data-attribute porque o <script> abaixo é um módulo
+       do navegador: ele não enxerga o frontmatter. Repetir a string literal lá
+       é como as duas promessas divergem sem ninguém perceber. -->
+  <form id={id} class="form__campos" method="post" action="/api/lead" novalidate data-prazo={ATENDIMENTO.prazo}>
     <input type="hidden" name="solucao" value={solucao.slug} />
     <input type="hidden" name="origem" value={`site:${solucao.slug}:${instancia}`} />
     <!-- Isca para robô. Fora da tela e fora da ordem de tabulação, mas SEM
@@ -86,7 +90,8 @@ const id = `lead-${solucao.slug}-${instancia}`;
     <button class="btn btn--primario btn--bloco" type="submit">{solucao.cta}</button>
 
     <p class="form__legal">
-      Ao enviar, você autoriza o contato da Autogestor sobre {solucao.nome}. Não vendemos seus dados.
+      Ao enviar, você autoriza o contato da Autogestor sobre {solucao.nome}. Não vendemos seus dados —
+      <a href="/privacidade">veja o que fazemos com eles</a>.
     </p>
   </form>
 
@@ -216,10 +221,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
 
         if (r.ok) {
           form.reset();
-          mostrar(
-            "Recebemos. Um consultor chama você no WhatsApp — no próximo expediente, se for fora do horário comercial.",
-            true
-          );
+          mostrar(`Recebemos. Um consultor chama você no WhatsApp ${form.dataset.prazo} — no próximo dia útil, se você enviou fora do horário de atendimento.`, true);
           botao.textContent = "Pedido enviado";
           return;
         }

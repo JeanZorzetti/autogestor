@@ -6,7 +6,7 @@ import type { Pergunta } from "../components/Faq.astro";
 import SolucaoCard from "../components/SolucaoCard.astro";
 import BarraAcao from "../components/BarraAcao.astro";
 import { SOLUCOES, AREA_SERVIDA, type Solucao } from "../data/solucoes";
-import { EMPRESA } from "../consts";
+import { ATENDIMENTO, EMPRESA } from "../consts";
 
 interface Props {
   solucao: Solucao;
@@ -80,7 +80,7 @@ const schema = [
         <span class="olho">Próximo passo</span>
         <h2>{solucao.fechamento}</h2>
         <p class="chamada">
-          Um consultor da Autogestor responde no seu WhatsApp. Corretora desde {EMPRESA.fundacao}, registro
+          Um consultor da Autogestor responde no seu WhatsApp {ATENDIMENTO.prazo}. Corretora desde {EMPRESA.fundacao}, registro
           SUSEP {EMPRESA.susep}, com sede em {EMPRESA.endereco.cidade} e atendimento em todo o Brasil.
         </p>
       </div>

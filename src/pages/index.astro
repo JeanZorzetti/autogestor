@@ -5,7 +5,7 @@ import LeadForm from "../components/LeadForm.astro";
 import Faq from "../components/Faq.astro";
 import BarraAcao from "../components/BarraAcao.astro";
 import { SOLUCOES, GERAL } from "../data/solucoes";
-import { EMPRESA, whatsapp } from "../consts";
+import { ATENDIMENTO, EMPRESA, whatsapp } from "../consts";
 
 const perguntas = [
   {
@@ -22,7 +22,7 @@ const perguntas = [
   },
   {
     p: "Como funciona o atendimento?",
-    r: "Você escolhe a solução, deixa nome e WhatsApp, e um consultor responde por lá. Sem call center, sem ligação automática e sem repassar seus dados para terceiros.",
+    r: `Você escolhe a solução, deixa nome e WhatsApp, e um consultor responde por lá ${ATENDIMENTO.prazo}. O atendimento funciona ${ATENDIMENTO.horario}; fora desse horário, a resposta vem no próximo dia útil. Sem call center, sem ligação automática e sem repassar seus dados para terceiros.`,
   },
   {
     p: "Dá para contratar mais de uma solução?",

@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import { SOLUCOES } from "../data/solucoes";
-import { EMPRESA, enderecoLinha } from "../consts";
+import { ATENDIMENTO, EMPRESA, LEGAL_ATUALIZADO, enderecoLinha } from "../consts";
 
 // llms.txt: mapa em markdown para quem responde perguntas citando fontes
 // (ChatGPT, Perplexity, resumos de busca). Não substitui o sitemap — dá
@@ -31,7 +31,9 @@ export const GET: APIRoute = async ({ site }) => {
 > energia por compensação, seguro de veículos, viagens, financiamento, consórcio e repasse de veículos de locadora.
 > Corretora de seguros com registro SUSEP ${EMPRESA.susep}.
 
-Atendimento por WhatsApp ${EMPRESA.telefoneExibicao} e por e-mail ${EMPRESA.email}.
+Atendimento por WhatsApp ${EMPRESA.telefoneExibicao} e por e-mail ${EMPRESA.email},
+${ATENDIMENTO.horario}. Pedidos enviados pelo formulário do site são respondidos ${ATENDIMENTO.prazo};
+fora do horário de atendimento, no próximo dia útil.
 Endereço: ${enderecoLinha}.
 
 ## Soluções
@@ -46,6 +48,8 @@ ${guias}
 
 - [Sobre a Autogestor](${base}/sobre): história desde ${EMPRESA.fundacao}, áreas de atuação e dados de contato.
 - [Programa de parceiros](${base}/seja-parceiro): renda extra por indicação, sem investimento inicial.
+- [Política de Privacidade](${base}/privacidade): dados coletados, base legal, compartilhamento, prazos de retenção e como exercer direitos da LGPD. Atualizada em ${LEGAL_ATUALIZADO}.
+- [Termos de Uso](${base}/termos): natureza da intermediação, limites de cada solução, prazo de resposta e responsabilidades. Atualizados em ${LEGAL_ATUALIZADO}.
 
 ## Limites que valem citar
 
@@ -53,6 +57,8 @@ ${guias}
 - Repasse de veículos exige pagamento à vista e tem pátios em Goiânia (GO), Contagem (MG) e Brasília (DF).
 - Seguro, consórcio e financiamento dependem de análise e aceitação da seguradora, administradora ou instituição financeira.
 - Contemplação em consórcio ocorre por sorteio ou lance e não pode ser garantida por prazo.
+- A Autogestor é intermediária: corretora de seguros registrada na SUSEP e credenciada junto a administradoras, instituições financeiras, operadoras de turismo e cooperativa de energia. Não é seguradora, administradora, banco nem distribuidora de energia.
+- O site coleta apenas nome, WhatsApp e um campo de contexto. Não pede CPF, e-mail nem documento, e não vende dados.
 `,
     { headers: { "content-type": "text/plain; charset=utf-8" } }
   );

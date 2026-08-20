@@ -42,3 +42,29 @@ export const EXTERNOS = {
   agenciaViagens: "https://br.onertravel.com/autogestorviagens/home",
   coopluz: "https://coopluz.eco.br/",
 } as const;
+
+/** Prazo e horário de atendimento. Ficam aqui pelo mesmo motivo do NAP acima:
+ *  saem no formulário, no /obrigado, no JSON-LD e no llms.txt — e uma promessa
+ *  que diverge entre esses quatro é promessa quebrada em pelo menos um deles. */
+export const ATENDIMENTO = {
+  /** Encaixa depois de um verbo: "responde <prazo>". */
+  prazo: "no mesmo dia útil",
+  horario: "de segunda a sexta, das 8h às 18h",
+  horarioCurto: "seg–sex, 8h–18h",
+  /** openingHoursSpecification do JSON-LD. Mesmo horário de cima, no formato
+   *  que o schema.org exige — derivar um do outro por parse não vale o código. */
+  horarioSchema: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "08:00",
+    closes: "18:00",
+  },
+} as const;
+
+/** Medição. Uma constante porque o id aparece em duas tags e errar uma delas
+ *  produz um site que mede metade das páginas sem avisar ninguém. */
+export const GA4 = "G-SHG12H2NZX";
+
+/** Data da última revisão dos textos legais. Sai nas duas páginas e no llms.txt;
+ *  política sem data é política que ninguém sabe se ainda vale. */
+export const LEGAL_ATUALIZADO = "2026-08-20";

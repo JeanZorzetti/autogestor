@@ -1,0 +1,123 @@
+---
+import Legal from "../layouts/Legal.astro";
+import { ATENDIMENTO, EMPRESA } from "../consts";
+---
+
+<Legal
+  titulo="Termos de Uso | Autogestor"
+  descricao="Regras de uso do site da Autogestor: o que a empresa faz e o que não faz, limites de cada solução, natureza das cotações, prazo de resposta e responsabilidades."
+  h1="Termos de Uso"
+  chamada="O que você pode esperar deste site, o que a Autogestor faz de fato em cada frente e onde estão os limites. Sem cláusula escondida em letra pequena — não há letra pequena aqui."
+  nome="Termos"
+  href="/termos"
+  tipo="WebPage"
+>
+  <h2 id="objeto">O que este site é</h2>
+  <p>
+    Este site apresenta as soluções da {EMPRESA.nomeLegal} e permite pedir cotação por um formulário de três
+    campos. Usar o site significa concordar com as regras desta página.
+  </p>
+  <p>
+    A Autogestor atua como <strong>intermediária</strong>: é corretora de seguros registrada na SUSEP sob o nº
+    {EMPRESA.susep} e, nas demais frentes, opera por credenciamento junto a administradoras, instituições
+    financeiras, operadoras de turismo e cooperativa de energia. <strong>A Autogestor não é seguradora, não é
+    administradora de consórcio, não é banco e não é distribuidora de energia.</strong> Quem emite a apólice,
+    concede o crédito, administra o grupo ou fornece a energia é o parceiro responsável por cada operação.
+  </p>
+
+  <h2 id="cotacao">Cotação não é contrato</h2>
+  <p>
+    Valores, descontos, prazos e condições apresentados neste site ou no atendimento são <strong>estimativas</strong>
+    e não substituem a proposta formal do parceiro. Toda contratação depende de análise e aceitação da seguradora,
+    administradora ou instituição financeira, e pode ser recusada ou sair em condição diferente da estimada.
+  </p>
+  <p>Cotação, simulação e análise de ficha são gratuitas. Custos existentes — taxa de administração de consórcio,
+    taxa de operação no repasse — são informados antes de qualquer assinatura.</p>
+
+  <h2 id="atendimento">Prazo de resposta</h2>
+  <p>
+    Pedidos enviados pelo formulário são respondidos por WhatsApp <strong>{ATENDIMENTO.prazo}</strong>. O
+    atendimento funciona {ATENDIMENTO.horario}; pedidos enviados fora desse horário, em fim de semana ou feriado
+    são respondidos no próximo dia útil. Esse prazo é de <strong>resposta</strong>, não de conclusão da
+    contratação — o tempo de emissão, análise ou vinculação depende de cada parceiro.
+  </p>
+
+  <h2 id="limites">Limites de cada solução</h2>
+  <ul>
+    <li>
+      <strong>Energia por compensação (Coopluz):</strong> vale apenas para imóveis atendidos pela Equatorial Goiás,
+      no estado de Goiás, com consumo médio acima de R$ 250 por mês. O primeiro crédito costuma aparecer em até 90
+      dias, prazo que depende do ciclo de leitura da distribuidora.
+    </li>
+    <li>
+      <strong>Repasse de veículos:</strong> exige pagamento à vista, e a retirada acontece nos pátios de Goiânia
+      (GO), Contagem (MG) ou Brasília (DF). O estado do veículo é o de repasse de locadora, informado antes da
+      negociação.
+    </li>
+    <li>
+      <strong>Consórcio:</strong> a contemplação ocorre por sorteio ou lance. Não existe prazo garantido de
+      contemplação, e ninguém pode prometer um.
+    </li>
+    <li>
+      <strong>Seguro e financiamento:</strong> sujeitos a análise de risco e de crédito, com coberturas, franquias
+      e taxas definidas pela seguradora ou instituição financeira.
+    </li>
+    <li>
+      <strong>Viagens:</strong> tarifas, regras de remarcação e cancelamento são das companhias aéreas, hotéis e
+      operadoras. O parcelamento depende da tarifa e da operadora.
+    </li>
+  </ul>
+
+  <h2 id="conteudo">Conteúdo do blog</h2>
+  <p>
+    Os textos publicados no blog têm caráter informativo e refletem regras vigentes na data indicada em cada
+    artigo. Regulação de energia, tributação e condições de mercado mudam — antes de decidir com base em um artigo,
+    confirme se ele ainda está atualizado. Nada no blog constitui recomendação individualizada de investimento,
+    consultoria jurídica ou consultoria tributária.
+  </p>
+
+  <h2 id="uso">Uso aceitável</h2>
+  <p>Ao usar este site, você se compromete a:</p>
+  <ul>
+    <li>fornecer dados verdadeiros e que sejam seus, ou de quem autorizou você a informá-los;</li>
+    <li>não usar envio automatizado, raspagem em massa ou qualquer tentativa de sobrecarregar o serviço;</li>
+    <li>não tentar acessar áreas, dados ou sistemas que não estejam abertos ao público.</li>
+  </ul>
+  <p>
+    Pedidos identificados como automatizados ou fraudulentos podem ser descartados sem aviso.
+  </p>
+
+  <h2 id="links">Links para parceiros</h2>
+  <p>
+    Algumas ações levam a sistemas de parceiros — cotador de seguros, agência de viagens online, site da
+    cooperativa. Esses ambientes têm termos e políticas de privacidade próprios, e o que acontece dentro deles é
+    regido por esses documentos, não por este.
+  </p>
+
+  <h2 id="propriedade">Propriedade intelectual</h2>
+  <p>
+    Marca, logotipo, textos, imagens e código deste site pertencem à Autogestor. Citar um trecho com link para a
+    fonte é permitido e bem-vindo; reproduzir a página inteira ou usar a marca sem autorização escrita, não.
+  </p>
+
+  <h2 id="responsabilidade">Responsabilidade</h2>
+  <p>
+    A Autogestor responde pelo que faz: a intermediação, a orientação prestada e o encaminhamento do seu pedido ao
+    parceiro certo. Não responde por indisponibilidade temporária do site ou de sistemas de terceiros, nem por
+    decisão de aceitação, precificação ou execução que caiba à seguradora, administradora, instituição financeira,
+    operadora ou distribuidora de energia.
+  </p>
+
+  <h2 id="dados">Dados pessoais</h2>
+  <p>
+    O tratamento dos seus dados está descrito na <a href="/privacidade">Política de Privacidade</a>, que faz parte
+    destes termos.
+  </p>
+
+  <h2 id="foro">Alterações e foro</h2>
+  <p>
+    Estes termos podem mudar; a data de última atualização no topo indica a versão vigente. Aplica-se a legislação
+    brasileira, incluindo o Código de Defesa do Consumidor, e fica eleito o foro da comarca de Goiânia (GO),
+    ressalvado o direito do consumidor de acionar o foro do seu domicílio.
+  </p>
+</Legal>

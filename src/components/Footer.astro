@@ -1,6 +1,6 @@
 ---
 import { SOLUCOES } from "../data/solucoes";
-import { EMPRESA, enderecoLinha, whatsapp } from "../consts";
+import { ATENDIMENTO, EMPRESA, enderecoLinha, whatsapp } from "../consts";
 const ano = new Date().getFullYear();
 ---
 
@@ -30,6 +30,8 @@ const ano = new Date().getFullYear();
         <li><a href="/sobre">Sobre a Autogestor</a></li>
         <li><a href="/blog">Blog</a></li>
         <li><a href="/seja-parceiro">Seja um parceiro</a></li>
+        <li><a href="/privacidade">Privacidade</a></li>
+        <li><a href="/termos">Termos de uso</a></li>
         <li><a href={whatsapp("Olá! Vim pelo site da Autogestor.")}>Falar no WhatsApp</a></li>
       </ul>
     </nav>
@@ -38,6 +40,7 @@ const ano = new Date().getFullYear();
       <h2 class="rodape__titulo">Atendimento</h2>
       <address class="rodape__texto">
         {enderecoLinha}<br />
+        Atendimento {ATENDIMENTO.horarioCurto}<br />
         <a href={`tel:${EMPRESA.telefone}`}>{EMPRESA.telefoneExibicao}</a><br />
         <a href={`mailto:${EMPRESA.email}`}>{EMPRESA.email}</a>
       </address>
