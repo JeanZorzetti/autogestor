@@ -25,15 +25,18 @@ const perguntas = [
   },
 ];
 
+const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
+const abs = (p: string) => new URL(p, site).href;
+
 const schema = [
   {
     "@type": "AboutPage",
-    "@id": "https://autogestor.roilabs.com.br/sobre#pagina-sobre",
-    mainEntity: { "@id": "https://autogestor.roilabs.com.br/#organizacao" },
+    "@id": abs("/sobre#pagina-sobre"),
+    mainEntity: { "@id": abs("/#organizacao") },
   },
   {
     "@type": "FAQPage",
-    "@id": "https://autogestor.roilabs.com.br/sobre#faq",
+    "@id": abs("/sobre#faq"),
     mainEntity: perguntas.map((q) => ({
       "@type": "Question",
       name: q.p,

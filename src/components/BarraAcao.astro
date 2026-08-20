@@ -16,9 +16,9 @@ interface Props {
 const { solucao, rotulo = "Pedir cotação", alvo = "pedir", mensagem = `Olá! Quero saber sobre ${solucao?.nome}.` } = Astro.props;
 ---
 
-<!-- No celular o cabeçalho não é sticky (tem 226px) e as páginas passam de
+{/* No celular o cabeçalho não é sticky (tem 226px) e as páginas passam de
      8.000px: da primeira rolagem até o rodapé não sobrava nenhuma ação na tela.
-     Esta barra custa 56px e some sozinha quando um formulário aparece. -->
+     Esta barra custa 56px e some sozinha quando um formulário aparece. */}
 <div class="barra">
   <a class="btn btn--primario barra__acao" href={`#${alvo}`}>{rotulo}</a>
   <a class="btn btn--contorno barra__acao" href={whatsapp(mensagem)}>

@@ -55,14 +55,14 @@ const ano = new Date().getFullYear();
     <div class="rodape__linha">
       <p>© {ano} {EMPRESA.nomeLegal}. CNPJ e condições contratuais disponíveis sob solicitação.</p>
 
-      <!-- No rodapé, não no cabeçalho: a primeira linha do cabeçalho já leva
+      {/* No rodapé, não no cabeçalho: a primeira linha do cabeçalho já leva
            logo e WhatsApp, e um quarto item quebrava para outra linha — 194px
            viravam 254px de cabeçalho fixo em toda rolagem, no celular, para um
            controle usado uma vez por visita.
            Nasce `hidden`: sem JavaScript não faria nada, e botão morto é pior
            que botão ausente. O script revela — e só se light-dark() existir.
            Rótulo visível em vez de aria-label: o texto na tela É o nome
-           acessível, e diz a ação ("Ativar…"), não o estado. -->
+           acessível, e diz a ação ("Ativar…"), não o estado. */}
       <button class="tema" type="button" hidden>
         <svg class="tema__lua" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z" />
@@ -185,4 +185,12 @@ const ano = new Date().getFullYear();
       if (!raiz.dataset.tema) sincronizar();
     });
   }
+
+  // Delegado no documento porque o link "Chamar no WhatsApp" existe em vários
+  // componentes (cabeçalho, rodapé, formulário, capa) — um listener por lugar
+  // duplicaria a mesma linha cinco vezes.
+  document.addEventListener("click", (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="https://wa.me/"]');
+    if (a) (window as any).gtag?.("event", "clique_whatsapp", { pagina: location.pathname });
+  });
 </script>

@@ -63,8 +63,8 @@ const schema = [
       <div class="post__corpo">
         <p class="olho"><a href={`/${solucao.slug}`}>{solucao.nome}</a></p>
         <h1>{post.data.titulo}</h1>
-        <!-- A regra do Fio B muda todo janeiro: sem data na tela, quem lê em
-             2027 não tem como saber se o número ainda vale. -->
+        {/* A regra do Fio B muda todo janeiro: sem data na tela, quem lê em
+             2027 não tem como saber se o número ainda vale. */}
         <p class="post__data">
           {
             post.data.atualizado ? (
@@ -104,8 +104,8 @@ const schema = [
     </div>
   </article>
 
-  <!-- No celular a lateral cai para o fim de um documento de ~5.400px: da
-       primeira rolagem até o rodapé não sobrava nenhuma ação na tela. -->
+  {/* No celular a lateral cai para o fim de um documento de ~5.400px: da
+       primeira rolagem até o rodapé não sobrava nenhuma ação na tela. */}
   <BarraAcao solucao={solucao} rotulo="Pedir análise" />
 </Base>
 

@@ -9,9 +9,9 @@ const { perguntas, titulo = "Perguntas frequentes" } = Astro.props;
 
 <section class="faq" aria-labelledby="faq-titulo">
   <h2 id="faq-titulo">{titulo}</h2>
-  <!-- <details>/<summary> nativo: teclado, estado anunciado e busca do
+  {/* <details>/<summary> nativo: teclado, estado anunciado e busca do
        navegador de graça, e o texto da resposta fica no HTML para o crawler
-       mesmo com o item fechado. Um accordion em <div> custaria isso tudo. -->
+       mesmo com o item fechado. Um accordion em <div> custaria isso tudo. */}
   <div class="faq__lista">
     {
       perguntas.map((q) => (

@@ -13,12 +13,12 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
       <Logo size={40} />
       <span class="marca__nome">Autogestor</span>
     </a>
-    <!-- Sem hambúrguer: 6 verticais cabem numa barra que quebra no celular.
+    {/* Sem hambúrguer: 6 verticais cabem numa barra que quebra no celular.
          Menu fechado esconde exatamente o que a pessoa veio procurar.
          "Sobre" não é uma solução (já vive no rodapé) — incluí-lo aqui abria
          uma linha extra só para ele.
          `order` no CSS controla o visual sozinho — DOM fica logo→nav→zap,
-         igual à ordem visual do desktop, então tab order bate com o que se vê. -->
+         igual à ordem visual do desktop, então tab order bate com o que se vê. */}
     <nav class="nav" aria-label="Soluções">
       <ul class="nav__lista" role="list">
         {

@@ -9,8 +9,8 @@ const { solucao } = Astro.props;
     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={solucao.icone} />
   </span>
   <h3 class="scard__titulo">
-    <!-- O card inteiro é clicável pelo ::after, mas o link real é o título:
-         leitor de tela anuncia "Energia Coopluz", não "leia mais". -->
+    {/* O card inteiro é clicável pelo ::after, mas o link real é o título:
+         leitor de tela anuncia "Energia Coopluz", não "leia mais". */}
     <a href={`/${solucao.slug}`}>{solucao.nome}</a>
   </h3>
   <p class="scard__resumo">{solucao.resumo}</p>

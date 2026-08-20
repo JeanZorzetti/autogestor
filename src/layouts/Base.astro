@@ -102,11 +102,11 @@ const grafo: Record<string, unknown>[] = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <!-- Antes de qualquer pintura: escolha salva vence o sistema operacional.
+    {/* Antes de qualquer pintura: escolha salva vence o sistema operacional.
          Rodando depois, a página piscaria no tema errado. `is:inline` para o
          Astro não empacotar isto num módulo com defer, que é o que anula a
          única razão de o script existir. try/catch porque localStorage lança
-         quando o armazenamento está bloqueado — e aí o erro mataria o resto. -->
+         quando o armazenamento está bloqueado — e aí o erro mataria o resto. */}
     <script is:inline>
       try {
         const t = localStorage.getItem("tema");
@@ -125,11 +125,11 @@ const grafo: Record<string, unknown>[] = [
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#002b74" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#060d19" media="(prefers-color-scheme: dark)" />
-    <!-- As duas <meta> acima seguem o sistema operacional de graça, sem JS —
+    {/* As duas <meta> acima seguem o sistema operacional de graça, sem JS —
          mas só o sistema, não a escolha manual salva. Quem salvou "escuro"
          num SO claro via a barra do navegador na cor errada até o script do
          rodapé rodar. Mesmo `data-tema` que a página já tem, aplicado às
-         metas agora, antes da pintura. -->
+         metas agora, antes da pintura. */}
     <script is:inline>
       try {
         const t = document.documentElement.dataset.tema;

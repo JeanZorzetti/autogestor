@@ -11,11 +11,36 @@ const SLUGS = [...SOLUCOES, PARCEIRO, GERAL].map((s) => s.slug);
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 
+// ponytail: Map em memória do processo — reseta a cada cold start e não é
+// compartilhado entre instâncias serverless. Barra um script batendo na mesma
+// instância, não um pool de IPs distribuído. Trocar por KV/Redis se abuso real
+// aparecer nos logs.
+const LIMITE = 5;
+const JANELA_MS = 60 * 60 * 1000;
+const tentativas = new Map<string, { n: number; expira: number }>();
+
+function limitado(ip: string): boolean {
+  const agora = Date.now();
+  const registro = tentativas.get(ip);
+  if (!registro || registro.expira < agora) {
+    tentativas.set(ip, { n: 1, expira: agora + JANELA_MS });
+    return false;
+  }
+  registro.n++;
+  return registro.n > LIMITE;
+}
+
 export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
   // Sem JS o navegador manda form-urlencoded e espera navegar; com JS o script
   // manda JSON e espera resposta. Aceitar os dois é o que faz o formulário
   // continuar funcionando quando o bundle não carrega.
   const form = !(request.headers.get("content-type") ?? "").includes("application/json");
+
+  if (clientAddress && limitado(clientAddress)) {
+    return form
+      ? redirect("/obrigado?erro=1", 303)
+      : json({ erro: "Muitas tentativas. Chame no WhatsApp que respondemos na hora." }, 429);
+  }
 
   let body: unknown;
   try {

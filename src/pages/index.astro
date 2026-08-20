@@ -30,21 +30,24 @@ const perguntas = [
   },
 ];
 
+const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
+const abs = (p: string) => new URL(p, site).href;
+
 const schema = [
   {
     "@type": "ItemList",
-    "@id": "https://autogestor.roilabs.com.br/#solucoes",
+    "@id": abs("/#solucoes"),
     name: "Soluções Autogestor",
     itemListElement: SOLUCOES.map((s, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: s.nome,
-      url: new URL(`/${s.slug}`, Astro.site ?? "https://autogestor.roilabs.com.br").href,
+      url: abs(`/${s.slug}`),
     })),
   },
   {
     "@type": "FAQPage",
-    "@id": "https://autogestor.roilabs.com.br/#faq",
+    "@id": abs("/#faq"),
     mainEntity: perguntas.map((q) => ({
       "@type": "Question",
       name: q.p,
@@ -75,9 +78,9 @@ const schema = [
             Não sei por onde começar
           </a>
         </div>
-        <!-- Dentro da coluna de texto, não abaixo da grade inteira: a coluna do
+        {/* Dentro da coluna de texto, não abaixo da grade inteira: a coluna do
              formulário é mais alta, e provas soltas depois da grade deixavam
-             ~225px de vão vazio sob os CTAs em telas ≥900px. -->
+             ~225px de vão vazio sob os CTAs em telas ≥900px. */}
         <ul class="provas" role="list">
           <li><strong>2004</strong><span>atendendo em todo o Brasil</span></li>
           <li><strong>SUSEP {EMPRESA.susep}</strong><span>corretora registrada</span></li>

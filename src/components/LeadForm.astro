@@ -17,11 +17,11 @@ const id = `lead-${solucao.slug}-${instancia}`;
 ---
 
 <div class:list={["form", destaque && "form--destaque"]}>
-  <!-- Não é landmark de propósito: a página de vertical renderiza este bloco
+  {/* Não é landmark de propósito: a página de vertical renderiza este bloco
        duas vezes, e dois <section aria-labelledby> com o mesmo nome acessível
        ("Peça sua cotação") apareciam como duas regiões indistinguíveis para
        quem navega por landmark. Fora do destaque, o h2 abaixo estrutura o
-       bloco; dentro dele, quem titula é o h2 da seção de fechamento ao lado. -->
+       bloco; dentro dele, quem titula é o h2 da seção de fechamento ao lado. */}
   {
     !destaque && (
       <>
@@ -34,15 +34,15 @@ const id = `lead-${solucao.slug}-${instancia}`;
     )
   }
 
-  <!-- O prazo desce por data-attribute porque o <script> abaixo é um módulo
+  {/* O prazo desce por data-attribute porque o <script> abaixo é um módulo
        do navegador: ele não enxerga o frontmatter. Repetir a string literal lá
-       é como as duas promessas divergem sem ninguém perceber. -->
+       é como as duas promessas divergem sem ninguém perceber. */}
   <form id={id} class="form__campos" method="post" action="/api/lead" novalidate data-prazo={ATENDIMENTO.prazo}>
     <input type="hidden" name="solucao" value={solucao.slug} />
     <input type="hidden" name="origem" value={`site:${solucao.slug}:${instancia}`} />
-    <!-- Isca para robô. Fora da tela e fora da ordem de tabulação, mas SEM
+    {/* Isca para robô. Fora da tela e fora da ordem de tabulação, mas SEM
          aria-hidden: elemento focável dentro de aria-hidden é violação de ARIA.
-         Quem usa leitor de tela ouve o rótulo, que diz para não preencher. -->
+         Quem usa leitor de tela ouve o rótulo, que diz para não preencher. */}
     <p class="isca">
       <label for={`${id}-empresa`}>Não preencha este campo</label>
       <input id={`${id}-empresa`} name="empresa" type="text" tabindex="-1" autocomplete="off" />
@@ -73,6 +73,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
       {
         solucao.campo.opcoes ? (
           <select id={`${id}-contexto`} name="contexto">
+            <option value="">Selecione</option>
             {solucao.campo.opcoes.map((o) => <option value={o}>{o}</option>)}
           </select>
         ) : (
@@ -81,10 +82,10 @@ const id = `lead-${solucao.slug}-${instancia}`;
       }
     </p>
 
-    <!-- role="status" anuncia sem roubar o foco; o script move o foco para o
+    {/* role="status" anuncia sem roubar o foco; o script move o foco para o
          campo errado, que é o que resolve a tarefa. Sem `hidden`: região viva que
          nasce escondida recebe o texto antes de existir na árvore de
-         acessibilidade, e o leitor de tela não anuncia nada. -->
+         acessibilidade, e o leitor de tela não anuncia nada. */}
     <p class="form__aviso" id={`${id}-aviso`} role="status"></p>
 
     <button class="btn btn--primario btn--bloco" type="submit">{solucao.cta}</button>
@@ -223,6 +224,7 @@ const id = `lead-${solucao.slug}-${instancia}`;
           form.reset();
           mostrar(`Recebemos. Um consultor chama você no WhatsApp ${form.dataset.prazo} — no próximo dia útil, se você enviou fora do horário de atendimento.`, true);
           botao.textContent = "Pedido enviado";
+          (window as any).gtag?.("event", "gerar_lead", { solucao: dados.solucao, origem: dados.origem });
           return;
         }
 
