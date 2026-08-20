@@ -73,7 +73,7 @@ const schema = [
           seis empresas.
         </p>
         <div class="capa__acoes">
-          <a class="btn btn--primario" href="#solucoes">Ver as seis soluções</a>
+          <a class="btn btn--contorno" href="#solucoes">Ver as seis soluções</a>
           <a
             class="btn btn--contorno externo"
             href={whatsapp("Olá! Não sei qual solução preciso, pode me orientar?")}
@@ -193,6 +193,12 @@ const schema = [
     border-top: 1px solid var(--borda);
   }
   .capa__texto { min-width: 0; }
+  /* No celular o H1 já corta na 4ª linha na primeira dobra — o olho repete
+     "todo o Brasil desde 2004" que o H1 e a chamada já dizem logo abaixo. */
+  .capa__texto .olho { display: none; }
+  @media (min-width: 600px) {
+    .capa__texto .olho { display: block; }
+  }
   .provas li { display: grid; }
   .provas strong { font-size: var(--t-xl); color: var(--marca-forte); letter-spacing: -0.02em; }
   .provas span { font-size: var(--t-sm); color: var(--texto-suave); }
