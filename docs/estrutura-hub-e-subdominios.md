@@ -142,9 +142,19 @@ depois de nome e WhatsApp.
   Nada é instalado no imóvel do cliente.
 - **O que não muda:** a Equatorial Goiás continua sendo a distribuidora, a fatura
   continua vindo dela, a titularidade permanece com o cliente.
+- **Posição da Autogestor:** parceiro autorizado da Coopluz. A cooperativa opera
+  em conjunto com o Sicoob Secovicred; a Autogestor faz a captação, o cadastro e
+  o acompanhamento do associado.
 - **Elegibilidade:** residências, comércios e pequenas indústrias com consumo
   médio acima de R$ 250/mês. Abaixo disso o desconto não compensa a operação — e
   a Autogestor diz isso antes da assinatura.
+- **Quem não pode participar:** quem tem Tarifa Social / Baixa Renda; produtor
+  rural com isenção ou desconto de ICMS; conta que não esteja no nome do titular
+  presente no atendimento. Contas com irregularidades podem precisar de
+  regularização antes do cadastro.
+- **O que o cliente precisa ter em mãos:** documento com foto do titular da
+  conta, conta de energia atualizada e o celular em mãos. O cadastro é gratuito,
+  sem consulta a SPC ou Serasa.
 - **Prazo:** o primeiro crédito costuma aparecer em até 90 dias, conforme o ciclo
   de leitura da distribuidora.
 - **Compromissos:** sem taxa de adesão, sem fidelidade, sem multa de
