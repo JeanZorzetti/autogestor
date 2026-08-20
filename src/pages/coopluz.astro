@@ -47,12 +47,23 @@ const perguntas = [
   chamada="A Coopluz é uma cooperativa de energia por compensação. Você se associa, recebe créditos de fazendas solares cooperadas e o desconto entra direto na sua fatura. Sem instalar nada, sem trocar de distribuidora e sem taxa de adesão."
   perguntas={perguntas}
 >
-  <ul class="lista-check destaques" slot="hero" role="list">
-    <li>20% de desconto todo mês, aplicado na própria fatura</li>
-    <li>Nenhuma obra, nenhum equipamento, nenhuma placa</li>
-    <li>Sem taxa de adesão e sem multa para cancelar</li>
-    <li>Sem consulta ao SPC ou Serasa e sem análise de crédito</li>
-  </ul>
+  <div class="beneficios" slot="hero">
+    <ul class="beneficios__grade" role="list">
+      <li>
+        <strong>20% de desconto</strong>
+        <span>Todos os meses na sua fatura</span>
+      </li>
+      <li>
+        <strong>Zero instalação</strong>
+        <span>Sem placas e sem obras</span>
+      </li>
+      <li class="beneficios__item--acento">
+        <strong>Sem SPC e Serasa</strong>
+        <span>Adesão sem consulta de crédito</span>
+      </li>
+    </ul>
+    <p class="nota">Sem taxa de adesão e sem multa para cancelar.</p>
+  </div>
 
   <section class="secao">
     <div class="container">
@@ -175,7 +186,32 @@ const perguntas = [
 </Vertical>
 
 <style>
-  .destaques { margin-top: var(--e-6); font-weight: 600; }
+  .beneficios { margin-top: var(--e-6); }
+  .beneficios__grade {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--e-4);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  .beneficios__grade li {
+    background: var(--superficie-alta);
+    border: 1px solid var(--borda);
+    border-radius: var(--r-3);
+    padding: var(--e-4);
+  }
+  .beneficios__grade strong { display: block; font-size: var(--t-lg); }
+  .beneficios__grade span { display: block; margin-top: var(--e-2); font-size: var(--t-sm); color: var(--texto-suave); }
+  /* SPC/Serasa é a objeção que mais trava adesão de quem já pesquisou e desistiu — ganha destaque de cor, não só de texto.
+     Fundo claro fixo nos dois temas (mesmo motivo do cartão de marcas acima: laranja-100/600 não têm variante escura),
+     por isso o subtítulo usa cinza-600 direto em vez de --texto-suave, que clareia no escuro e ficaria ilegível aqui. */
+  .beneficios__item--acento {
+    background: var(--laranja-100);
+    border-color: var(--laranja-500);
+  }
+  .beneficios__item--acento strong { color: var(--laranja-600); }
+  .beneficios__item--acento span { color: var(--cinza-600); }
   .etapas {
     display: grid;
     gap: var(--e-6);
