@@ -156,6 +156,49 @@ export const PARCEIRO: Solucao = {
   icone: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M16.6 5.3a3.2 3.2 0 0 1 0 6.2M17.7 14a6.2 6.2 0 0 1 3.5 6"/>',
 };
 
+/** As cidades do material impresso de captação, na ordem em que o parceiro
+ *  reconhece a praça (capital e região metropolitana primeiro). A lista existe
+ *  para o lead já chegar roteado por cidade, não para restringir: a Coopluz
+ *  atende toda a área de concessão da Equatorial Goiás, e é por isso que
+ *  "Outra cidade de Goiás" fecha o `<select>` em vez de ficar de fora. */
+export const CIDADES_COOPLUZ = [
+  "Goiânia",
+  "Aparecida de Goiânia",
+  "Anápolis",
+  "Rio Verde",
+  "Catalão",
+  "Itumbiara",
+  "Formosa",
+  "Ceres",
+  "Uruaçu",
+  "Iporá",
+  "Outra cidade de Goiás",
+] as const;
+
+/** Segundo pipeline de parceiro, só da energia. Slug próprio — e não uma opção
+ *  do `PARCEIRO` acima — porque é outro funil: oferta com número (comissão de
+ *  ativação + recorrente sobre a carteira), área presa a Goiás e lead
+ *  trabalhado individualmente por cidade de atuação. Misturar os dois no mesmo
+ *  slug perderia justamente o corte que faz o atendimento acontecer. */
+export const PARCEIRO_COOPLUZ: Solucao = {
+  slug: "parceiro-coopluz",
+  nome: "Parceiro Autogestor Energia",
+  curto: "Parceiro Energia",
+  resumo: "Ative contas de energia em Goiás e receba na ativação mais recorrente sobre a carteira.",
+  titulo: "Seja parceiro da energia Coopluz em Goiás | Autogestor",
+  descricao:
+    "Represente a energia Coopluz em Goiás: 50% da primeira receita de cada conta ativada e 2% recorrente sobre toda a carteira a partir de 100 contas ativas. Sem investimento, sem instalação e sem taxa de adesão.",
+  abrangencia: "GO",
+  campo: {
+    rotulo: "Sua cidade de atuação",
+    exemplo: "Goiânia",
+    opcoes: CIDADES_COOPLUZ,
+  },
+  cta: "Quero ser parceiro",
+  fechamento: "Escolha sua cidade e comece",
+  icone: ICONES.energia,
+};
+
 /** Captação da home, onde a pessoa ainda não escolheu vertical. Existe como
  *  `Solucao` para reusar o LeadForm inteiro em vez de manter um segundo
  *  formulário — e porque o /api/lead valida o slug contra esta lista. */

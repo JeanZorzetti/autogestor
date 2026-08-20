@@ -1,12 +1,12 @@
 import type { APIRoute } from "astro";
 import { parseLead } from "../../lib/lead.mjs";
 import { dbOn, gravarLead } from "../../lib/db";
-import { SOLUCOES, PARCEIRO, GERAL } from "../../data/solucoes";
+import { SOLUCOES, PARCEIRO, PARCEIRO_COOPLUZ, GERAL } from "../../data/solucoes";
 
 // Única rota dinâmica do site. O resto é HTML estático.
 export const prerender = false;
 
-const TODAS = [...SOLUCOES, PARCEIRO, GERAL];
+const TODAS = [...SOLUCOES, PARCEIRO, PARCEIRO_COOPLUZ, GERAL];
 const SLUGS = TODAS.map((s) => s.slug);
 // Sem `opcoes` o 3º campo é texto livre — vazio ainda é uma resposta válida
 // ("não sabe o modelo do carro" também é informação). Com `<select>`, vazio é

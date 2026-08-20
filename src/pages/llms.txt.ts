@@ -48,6 +48,7 @@ ${guias}
 
 - [Sobre a Autogestor](${base}/sobre): história desde ${EMPRESA.fundacao}, áreas de atuação e dados de contato.
 - [Programa de parceiros](${base}/seja-parceiro): renda extra por indicação, sem investimento inicial.
+- [Parceiro Autogestor Energia](${base}/coopluz/parceiro): programa só da energia Coopluz em Goiás, com 50% da primeira receita de cada conta ativada e 2% recorrente sobre a carteira a partir de 100 contas ativas.
 - [Política de Privacidade](${base}/privacidade): dados coletados, base legal, compartilhamento, prazos de retenção e como exercer direitos da LGPD. Atualizada em ${LEGAL_ATUALIZADO}.
 - [Termos de Uso](${base}/termos): natureza da intermediação, limites de cada solução, prazo de resposta e responsabilidades. Atualizados em ${LEGAL_ATUALIZADO}.
 
