@@ -5,9 +5,33 @@ const { solucao } = Astro.props;
 ---
 
 <li class="scard">
-  <span class="scard__icone" aria-hidden="true">
-    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={solucao.icone} />
-  </span>
+  {/* O selo é o elemento que costura. Mesmo `view-transition-name` aqui e na
+       capa de /{slug}: clicar no card faz o navegador interpolar este carimbo
+       de 96px até a marca da página que abriu. O nome sai do slug porque
+       precisa ser único no documento — a home mostra as 6, a vertical mostra
+       as outras 5 mais a própria capa, e em nenhuma delas um slug repete.
+       Inline e não numa classe: o valor muda por card. */}
+  <span
+    class="selo selo--claro selo--revela scard__selo"
+    aria-hidden="true"
+    style={`view-transition-name: costura-${solucao.slug}`}
+  ></span>
+  {/* Sem a placa arredondada de fundo: ícone de linha dentro de quadradinho
+       cinza com raio 12 é o desenho de card que todo site tem. O que dá canto
+       ao card agora é o selo, não uma moldura. */}
+  <svg
+    class="scard__icone"
+    viewBox="0 0 24 24"
+    width="28"
+    height="28"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    set:html={solucao.icone}
+  />
   <h3 class="scard__titulo">
     {/* O card inteiro é clicável pelo ::after, mas o link real é o título:
          leitor de tela anuncia "Energia Coopluz", não "leia mais". */}
@@ -20,53 +44,57 @@ const { solucao } = Astro.props;
 <style>
   .scard {
     position: relative;
+    isolation: isolate;
     overflow: clip;
     background: var(--superficie-alta);
     border: 1px solid var(--borda);
     border-radius: var(--r-3);
     padding: var(--e-6);
-    transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    transition: border-color var(--dur-rapida) ease, transform var(--dur-rapida) ease, box-shadow var(--dur-rapida) ease;
   }
   .scard:hover { border-color: var(--marca); transform: translateY(-2px); box-shadow: var(--sombra-sm); }
-  /* Eco do gesto do herói: uma lâmina só por card, saindo do mesmo canto em
-     seis ângulos — a mesma convergência do vórtice, em miniatura. Decorativa,
-     atrás do conteúdo; pivô no canto para o leque abrir de card para card. */
-  .scard::before {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    inline-size: 68%;
-    block-size: 3px;
-    background: linear-gradient(90deg, transparent, var(--marca) 55%, var(--marca) 80%, var(--marca));
-    transform-origin: 100% 0%;
-    /* Negativo = sentido anti-horário: o braço, que parte apontando para a
-       esquerda a partir do canto, desce para dentro do card em vez de subir
-       para fora dele. */
-    transform: rotate(calc(-34deg - var(--giro, 0deg)));
-    opacity: 0.35;
-    transition: opacity 200ms var(--curva);
+
+  /* Canto inferior direito: é onde o card tem folga (a seta fica à esquerda) e
+     é o mesmo canto de onde o vórtice do herói sangra. Nos cards estreitos o
+     resumo ainda passa por cima dele — daí a marca-d'água a 14%, e não um
+     objeto opaco: ali ele é textura de canto, não elemento.
+
+     Tamanho em % para acompanhar o card: nos dois cards largos da home o selo
+     ocupa o vão da direita que sobraria vazio; nos estreitos encolhe sozinho.
+
+     Inteiro dentro do padding de propósito: elemento cortado pelo `overflow:
+     clip` do pai é fotografado SEM o corte na troca de rota, e a transição
+     mostraria um carimbo do dobro do tamanho por 460ms. */
+  .scard__selo {
+    /* Negativo, e não 0: assim o selo pinta acima do fundo do card e ABAIXO do
+       texto, sem precisar posicionar cada filho — posicionar o h3 quebraria o
+       ::after que faz o card inteiro clicável, que se ancora no .scard. */
+    z-index: -1;
+    inline-size: clamp(72px, 30%, 168px);
+    inset-block-end: var(--e-2);
+    inset-inline-end: var(--e-2);
+    transition: opacity var(--dur-instante) var(--curva), translate var(--dur-instante) var(--curva);
   }
-  .scard:hover::before { opacity: 0.75; }
-  .scard:nth-child(1) { --giro: 0deg; }
-  .scard:nth-child(2) { --giro: 7deg; }
-  .scard:nth-child(3) { --giro: 14deg; }
-  .scard:nth-child(4) { --giro: 21deg; }
-  .scard:nth-child(5) { --giro: 28deg; }
-  .scard:nth-child(6) { --giro: 35deg; }
+  /* O leque: seis ângulos saindo do mesmo canto, um por card. É a mesma
+     convergência do vórtice do herói, distribuída pela grade. */
+  .scard:nth-child(1) .scard__selo { --giro: 0deg; }
+  .scard:nth-child(2) .scard__selo { --giro: 14deg; }
+  .scard:nth-child(3) .scard__selo { --giro: 28deg; }
+  .scard:nth-child(4) .scard__selo { --giro: 42deg; }
+  .scard:nth-child(5) .scard__selo { --giro: 56deg; }
+  .scard:nth-child(6) .scard__selo { --giro: 70deg; }
+
+  /* Camada de ponteiro. Mesmo verbo das outras três: o selo ATRAVESSA — dá um
+     passo na direção de onde ele vai quando a rota trocar, e acende. Não gira
+     nem escala aqui: seriam duas ideias de movimento brigando na mesma tela.
+     Enriquecimento puro; nada nesta camada é a única via para informação
+     alguma, e no toque ela não existe. */
+  @media (hover: hover) {
+    .scard:hover .scard__selo { --selo-op: 0.3; translate: -8px -8px; }
+  }
+
   .scard:has(a:focus-visible) { outline: 3px solid var(--foco); outline-offset: 2px; }
-  .scard__icone {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: var(--r-2);
-    background: var(--azul-100);
-    color: var(--marca-forte);
-    margin-bottom: var(--e-4);
-  }
+  .scard__icone { color: var(--marca); margin-bottom: var(--e-3); }
   .scard__titulo { font-size: var(--t-md); margin-bottom: var(--e-2); }
   .scard__titulo a { color: var(--marca-forte); text-decoration: none; }
   .scard__titulo a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }

@@ -73,6 +73,20 @@ const schema = [
   <section class="topo">
     <div class="container topo__grade">
       <div class="topo__texto">
+        {/* A outra ponta da costura. Mesmo `view-transition-name` do carimbo
+             que esta solução tem no card da home: o selo de 96px que a pessoa
+             clicou sobe e vira a marca desta página, sem fade e sem router —
+             o navegador interpola posição, tamanho e forma sozinho.
+
+             Em fluxo (position: relative), com espaço próprio: elemento
+             absoluto por baixo do texto seria fotografado fora do lugar, e o
+             gate de contraste não quer gradiente por trás de h1 em superfície
+             clara. */}
+        <span
+          class="selo selo--claro selo--entra capa-vertical__selo"
+          aria-hidden="true"
+          style={`view-transition-name: costura-${solucao.slug}`}
+        ></span>
         <span class="olho">{solucao.nome}</span>
         <h1>{h1}</h1>
         <p class="chamada">{chamada}</p>
@@ -119,3 +133,27 @@ const schema = [
   <BarraAcao solucao={solucao} rotulo={rotuloBarra} />
 </Base>
 
+<style>
+  .capa-vertical__selo {
+    /* `display: block` não é adorno: .selo é `position: absolute`, que
+       blocifica o <span> sozinho. Ao trazê-lo de volta para o fluxo com
+       `relative` ele volta a ser inline — e em elemento inline não-substituído
+       `inline-size` e `aspect-ratio` não se aplicam. O selo existia no DOM com
+       0x0 e a capa saiu sem marca nenhuma. */
+    display: block;
+    position: relative;
+    /* Cheio, não fantasma: aqui o selo não está por trás de texto nenhum, e é
+       o destino da transição — chegar em 0.14 faria a costura terminar num
+       borrão. É o único ponto do site onde a marca aparece opaca em tamanho
+       grande. */
+    --selo-op: 0.9;
+    --giro: -8deg;
+    /* Aqui, sim, o par completo da marca: o selo tem espaço próprio, não há
+       texto por cima e é o destino da costura — chegar num azul chapado seria
+       chegar em menos do que se clicou. */
+    --selo-a: var(--marca);
+    --selo-b: var(--acento-hover);
+    inline-size: clamp(88px, 17vw, 168px);
+    margin-bottom: var(--e-4);
+  }
+</style>

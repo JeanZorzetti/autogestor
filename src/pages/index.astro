@@ -65,8 +65,11 @@ const schema = [
   <section class="capa secao--marca">
     {/* O gesto: a própria marca ampliada até virar textura de fundo. Puramente
          decorativa e entra depois do texto pintar (`animation-delay`), então
-         nunca é o elemento de LCP. */}
-    <div class="vortice" aria-hidden="true"></div>
+         nunca é o elemento de LCP. Sem `view-transition-name`: ela sangra para
+         fora da capa e elemento cortado por `overflow: clip` é fotografado sem
+         o corte na troca de rota. Quem costura é o carimbo do card, que está
+         inteiro dentro dele. */}
+    <div class="selo selo--entra selo--migra capa__selo" aria-hidden="true"></div>
     <div class="container topo__grade capa__grade">
       <div class="capa__texto">
         <span class="olho">Hub de soluções em todo o Brasil desde {EMPRESA.fundacao}</span>
@@ -188,53 +191,86 @@ const schema = [
   }
   .capa__grade { position: relative; z-index: 2; }
 
-  /* A marca (5 arcos em vórtice) ampliada até virar textura, sangrando pelo
-     canto inferior direito. `mask` com o SVG mono em vez de <img>: o gradiente
-     da página é que pinta a marca, então ela lê --lamina/--brasa e acompanha o
-     tema — um <img> traria as cores congeladas dentro do arquivo.
-
-     A versão anterior era um conic-gradient de seis lâminas convergindo num
-     núcleo. Falhava por geometria, não por conceito: a 1440px o núcleo caía
-     atrás do cartão do formulário, e o ponto de convergência É o gesto inteiro.
-     Além disso lâmina de ângulo constante fica MAIS larga longe do centro —
-     fio de cabelo onde devia ser densa, faixa gorda onde devia ter sumido. */
-  .vortice {
+  /* Matéria do bloco de marca: dois grãos em escalas diferentes leem como
+     fibra; um só lê como ruído digital. `soft-light` porque a banda é escura —
+     em banda clara seria `overlay`. Acima do selo, abaixo do conteúdo. */
+  .capa::after {
+    content: "";
     position: absolute;
-    z-index: 0;
-    inset-block-end: -46%;
-    inset-inline-end: -2%;
-    inline-size: min(105vw, 1080px);
-    aspect-ratio: 1;
+    inset: 0;
+    z-index: 1;
     pointer-events: none;
-    background: linear-gradient(210deg, var(--lamina) 0%, var(--brasa) 85%);
-    -webkit-mask: url("/img/logo-mono.svg") no-repeat center / contain;
-            mask: url("/img/logo-mono.svg") no-repeat center / contain;
-    /* Teto de opacidade, medido no pixel mais claro do arco que passa por baixo
-       da chamada: a 0.2 o texto claro (--texto-sobre-marca) cai de 8.9:1 para
-       6.41:1 e o branco de 13.14:1 para 9.46:1 — os dois em AA com folga. A 0.35
-       a chamada chega a 4.88:1 e encosta no limite; passar disso exige trocar o
-       token do texto, não só clarear o arco. */
-    opacity: 0.2;
-    animation: vortice-assenta 800ms var(--curva) 120ms both;
+    background-image: var(--grao), var(--grao);
+    background-size: 240px 240px, 91px 91px;
+    mix-blend-mode: soft-light;
+    opacity: 0.5;
   }
-  @keyframes vortice-assenta {
-    from { transform: rotate(-8deg) scale(0.96); opacity: 0; }
-    to { transform: none; opacity: 0.2; }
+
+  /* Salto de escala: 16px de corpo para 80px de título — o eixo `wdth` do
+     Archivo é o que torna isso viável numa coluna de 640px. A 76 de largura a
+     mesma frase cabe em quatro linhas onde a largura normal pediria seis. A
+     fonte variável já estava carregada e o eixo que a diferencia nunca havia
+     sido usado num título. */
+  .capa h1 {
+    font-family: "Archivo", "Archivo capa", var(--fonte);
+    font-size: clamp(2.25rem, 1rem + 5.4vw, 5rem);
+    font-variation-settings: "wdth" 76, "wght" 830;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .vortice { animation: none; }
+
+  /* A marca (5 arcos em vórtice) ampliada até virar textura, sangrando pelo
+     canto inferior ESQUERDO — do lado do texto, não do formulário. Antes ela
+     nascia atrás do cartão branco: de 1080px de vórtice viam-se dois arcos
+     borrados espremidos na borda, e o gesto da página inteira não era visto.
+     Menor e do outro lado, a espiral volta a ler como espiral.
+
+     `mask` com o SVG mono em vez de <img>: o gradiente da página é que pinta a
+     marca, então ela lê --lamina/--brasa e acompanha o tema — um <img> traria
+     as cores congeladas dentro do arquivo.
+
+     Opacidade e giro moram em .selo (global.css), junto das duas camadas de
+     movimento: entra girando, encolhe e migra com o scroll até o formato do
+     carimbo do card. */
+  .capa__selo {
+    --giro: -10deg;
+    inline-size: min(108vw, 820px);
+    inset-block-end: -34%;
+    inset-inline-start: -14%;
   }
-  /* Sob 900px o formulário passa a ocupar a largura inteira e cobriria a marca.
-     Ancoragem em px (e não em %) porque aqui a .capa é ~3x mais alta que no
-     desktop: os mesmos -46% jogariam o arco para fora da região visível. */
+  /* Sob 900px a capa fica ~3x mais alta (o formulário passa para baixo do
+     texto), e ancorar o selo no rodapé dela o jogava ~1.400px abaixo da
+     primeira dobra: o gesto da direção não existia para a maioria do tráfego,
+     que é celular. Aqui ele é ancorado pelo TOPO, sangrando pela direita na
+     altura das ações — a faixa da primeira tela que fica vazia. */
   @media (max-width: 899px) {
-    .vortice {
-      inset-block-end: -240px;
-      inset-inline-end: -34%;
-      inline-size: min(150vw, 720px);
-      opacity: 0.16;
+    .capa__selo {
+      inline-size: min(155vw, 640px);
+      inset-block-start: 190px;
+      inset-inline-end: -52%;
+      inset-inline-start: auto;
+      inset-block-end: auto;
+      --selo-op: 0.17;
     }
     .capa { padding-block: var(--e-12) 12rem; }
+  }
+
+  /* Camada de entrada. O H1 e a chamada NÃO entram: são os dois candidatos a
+     LCP desta página (medido: `p.chamada`), e elemento de LCP que anima
+     opacidade é LCP adiado. O que chega em volta deles é a mobília — olho,
+     ações e provas — atrás do selo, que é quem abre a cena. */
+  @media (prefers-reduced-motion: no-preference) {
+    .capa__texto .olho,
+    .capa__acoes,
+    .provas {
+      animation: capa-chega var(--dur-cena) var(--ease-cena) both;
+    }
+    .capa__texto .olho { animation-delay: 60ms; }
+    .capa__acoes { animation-delay: 220ms; }
+    .provas { animation-delay: 300ms; }
+  }
+  @keyframes capa-chega {
+    from { opacity: 0; translate: 0 14px; }
   }
 
   h1 em { font-style: normal; color: var(--brasa); }
@@ -266,7 +302,20 @@ const schema = [
   }
   .provas span { font-size: var(--t-sm); color: var(--texto-sobre-marca); }
 
+  /* Seis cards iguais em 3x2 é a mesma laje que o resto da página já era, e
+     ainda por cima na seção que carrega o produto. A grade quebra em 2 + 4:
+     as duas frentes de maior volume ganham o dobro de largura e a linha de
+     baixo lê como quarteto, não como sobra da linha de cima. Abaixo de 900px
+     volta ao auto-fit de uma coluna só — assimetria em 390px é só quebra. */
   .solucoes { margin-top: var(--e-8); }
+  @media (min-width: 900px) {
+    .solucoes {
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--e-6);
+    }
+    .solucoes :global(.scard) { grid-column: span 3; }
+    .solucoes :global(.scard:nth-child(-n + 2)) { grid-column: span 6; }
+  }
   .razoes { margin-top: var(--e-8); gap: var(--e-8); }
   .razoes p { color: var(--texto-sobre-marca); }
 

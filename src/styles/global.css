@@ -1,3 +1,9 @@
+/* art-direction · costura · eixos: luz/estado/média · orçamento: 0kb JS · 2026-08-21
+   O elemento que costura é o vórtice da marca. Ele nunca sai de cena: textura do
+   herói na home, selo no canto do card, marca da capa na vertical. A troca de
+   rota interpola o selo do card para a capa da página que abriu — View
+   Transitions cross-document, nativo, sem router e sem um byte de JS. */
+
 /* Tokens do Autogestor. Cores primitivas amostradas da própria logo (hexágono em
    vórtice): azul #005CA6, azul profundo #002B74, laranja #E47A45.
 
@@ -402,3 +408,192 @@ img, svg { max-width: 100%; height: auto; display: block; }
 .topo .chamada, .topo__texto .chamada { font-size: var(--t-lg); }
 .fechamento { display: grid; gap: var(--e-8); align-items: center; }
 @media (min-width: 900px) { .fechamento { grid-template-columns: 1fr minmax(360px, 440px); } }
+
+/* =========================================================================
+   COSTURA — o vórtice como elemento contínuo
+   ========================================================================= */
+
+/* Fallback de métrica casada para o título do herói. Sem ele o H1 de 80px
+   pinta primeiro na fonte do sistema — 12% mais larga que a Archivo condensada
+   —, e quando a Archivo chega o título reflui e empurra a página inteira: CLS
+   medido saltou de 0.0016 para 0.0412 por causa de um único elemento.
+
+   0.8901 é medido, não estimado: a mesma frase, no mesmo corpo, na Archivo em
+   `wdth 76 / wght 830` contra a pilha do sistema. Ascent e descent vêm da
+   Archivo (0.88 / 0.21 do em) divididos pelo mesmo fator, para a caixa de
+   linha bater junto com a largura.
+
+   `local()` só: zero byte na rede. Roboto primeiro porque o tráfego é
+   majoritariamente Android, onde Segoe UI e Helvetica não existem. */
+@font-face {
+  font-family: "Archivo capa";
+  src: local("Roboto"), local("Segoe UI"), local("Helvetica Neue"), local("Arial");
+  size-adjust: 89.01%;
+  ascent-override: 98.9%;
+  descent-override: 23.6%;
+  line-gap-override: 0%;
+}
+
+:root {
+  /* Janelas de movimento por camada. `--curva` já existia e continua sendo a
+     curva de UI (hover, botão); `--ease-cena` é a curva longa da coreografia:
+     80% da distância nos primeiros 30% do tempo. `ease-out` comum parece
+     software; esta parece intenção. */
+  --dur-instante: 100ms;
+  --dur-rapida: 160ms;
+  --dur-base: 240ms;
+  --dur-cena: 900ms;
+  --ease-cena: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-saida: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Opacidade do selo por superfície. Teto medido, não estimado: sobre
+     --superficie-marca 0.2 mantém --texto-sobre-marca em 6.41:1; sobre
+     superfície clara o par lâmina/brasa é claro demais (brasa sobre branco dá
+     2.93:1), então lá o selo troca de tinta e cai para 0.14. */
+  --selo-op-marca: 0.2;
+  --selo-op-clara: 0.14;
+
+  /* Grão: gerado UMA vez e servido como data-uri. `feTurbulence` vivo pinta a
+     cada frame e está proibido — este é um tile de 240px que o navegador
+     desenha uma vez e repete. Custo em runtime: zero. É o que tira do bloco de
+     marca a cara de retângulo chapado de CSS. */
+  --grao: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* O selo. Uma classe, três escalas: textura do herói, carimbo do card, marca
+   da capa. A geometria (tamanho, posição, giro) é de quem chama; o que mora
+   aqui é a matéria — a marca recortando um gradiente da própria página, e não
+   um <img> com as cores congeladas dentro do arquivo.
+
+   `background`/`mask` só dentro do @supports: sem suporte a máscara o
+   gradiente pintaria um retângulo chapado por cima do herói. Sem ele, o selo
+   simplesmente não existe e a página continua composta — o fallback estático
+   é o próprio bloco de marca com o tipo grande, que já é composição. */
+.selo {
+  position: absolute;
+  z-index: 0;
+  aspect-ratio: 1;
+  pointer-events: none;
+  /* `rotate` e não `transform`: assim a camada de scroll pode animar `scale` e
+     `translate` sem sobrescrever o giro, e a de entrada pode animar `rotate`
+     sem sobrescrever a escala. Duas linhas do tempo no mesmo elemento, zero
+     conflito de propriedade. */
+  rotate: var(--giro, 0deg);
+  opacity: 0;
+}
+@supports ((-webkit-mask-image: url("/img/logo-mono.svg")) or (mask-image: url("/img/logo-mono.svg"))) {
+  .selo {
+    background: linear-gradient(210deg, var(--selo-a, var(--lamina)) 0%, var(--selo-b, var(--brasa)) 85%);
+    -webkit-mask: url("/img/logo-mono.svg") no-repeat center / contain;
+            mask: url("/img/logo-mono.svg") no-repeat center / contain;
+    opacity: var(--selo-op, var(--selo-op-marca));
+  }
+}
+/* Sobre superfície clara o par lâmina/brasa não serve: --brasa sobre branco dá
+   2.93:1 e vira um borrão bege. Aqui a marca vira marca-d'água de uma cor só —
+   azul sobre azul. Foi testado com o laranja na outra ponta e o resultado, a
+   14% sobre branco, não lia como a marca: lia como mancha de café. */
+.selo--claro {
+  --selo-a: var(--marca);
+  --selo-b: var(--marca-forte);
+  --selo-op: var(--selo-op-clara);
+}
+
+/* --- camada 1 · entrada -------------------------------------------------
+   O selo chega girando no próprio eixo e assenta. Anima só `rotate` e
+   `opacity` — `scale`/`translate` ficam livres para a camada de scroll. */
+@keyframes selo-assenta {
+  from { rotate: calc(var(--giro, 0deg) - 16deg); opacity: 0; }
+}
+/* O carimbo do card tem o próprio keyframe, e ele NÃO toca opacidade: uma
+   propriedade sob animação não obedece mais a declaração normal nenhuma, e a
+   camada de ponteiro precisa da opacidade livre para acender o selo no hover. */
+@keyframes selo-carimba {
+  from { rotate: calc(var(--giro, 0deg) - 22deg); scale: 0.72; }
+}
+@supports ((-webkit-mask-image: url("/img/logo-mono.svg")) or (mask-image: url("/img/logo-mono.svg"))) {
+  .selo--entra { animation: selo-assenta var(--dur-cena) var(--ease-cena) 120ms both; }
+}
+
+/* --- camada 2 · scroll --------------------------------------------------
+   O vórtice do herói encolhe e migra para o canto conforme a página desce,
+   chegando ao tamanho e ao lugar em que o carimbo do card já está. É esta
+   camada que faz a troca de rota parecer inevitável em vez de truque: quando
+   o clique acontece, o olho já viu a marca virar carimbo uma vez.
+
+   Medida em distância percorrida (62vh), nunca em ms — se a pessoa para de
+   rolar, o gesto para. Os valores saem de custom property para o celular
+   encurtar a migração sem redeclarar o keyframe. */
+@keyframes selo-migra {
+  to {
+    scale: var(--migra-escala, 0.22);
+    translate: var(--migra-x, 56vw) var(--migra-y, -34vh);
+  }
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Duas linhas do tempo no mesmo elemento: a entrada roda no relógio, a
+       migração roda no scroll. A lista de `animation-timeline` casa item a
+       item com a de `animation`. */
+    .selo--migra {
+      animation:
+        selo-assenta var(--dur-cena) var(--ease-cena) 120ms both,
+        selo-migra linear both;
+      animation-timeline: auto, scroll(root block);
+      animation-range: normal, 0 62vh;
+    }
+  }
+}
+@media (max-width: 899px) {
+  /* No celular a capa é ~3x mais alta e o vórtice é maior em relação à tela:
+     56vw de migração jogaria o carimbo para fora do lado. */
+  .selo--migra { --migra-x: 34vw; --migra-y: -22vh; --migra-escala: 0.3; }
+}
+
+/* Revelação do carimbo do card: o mesmo gesto da entrada do herói, em
+   miniatura, quando o card cruza a viewport. Uma ideia, duas expressões. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .selo--revela {
+      animation: selo-carimba linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+    }
+  }
+}
+
+/* --- camada 4 · transição de rota ---------------------------------------
+   Cross-document, nativo, 0kb. O selo do card e a capa da vertical carregam o
+   MESMO `view-transition-name` (montado do slug, inline em cada elemento), e o
+   navegador interpola posição, tamanho e forma sozinho. Não há keyframe nosso
+   aqui de propósito: o trabalho é escolher quem recebe o nome.
+
+   Regra dura: um nome é único por documento. Nenhuma página renderiza o mesmo
+   slug duas vezes (a vertical mostra as OUTRAS cinco), então não há colisão —
+   duas iguais abortariam a transição inteira, em silêncio. */
+@view-transition { navigation: auto; }
+
+::view-transition-group(*) {
+  animation-duration: 460ms;
+  animation-timing-function: var(--ease-cena);
+}
+::view-transition-old(root) { animation: sai-root var(--dur-base) var(--ease-saida) both; }
+::view-transition-new(root) { animation: entra-root var(--dur-base) var(--ease-cena) both; }
+@keyframes sai-root { to { opacity: 0; } }
+@keyframes entra-root { from { opacity: 0; } }
+
+/* A marca do cabeçalho atravessa TODA navegação sem se mexer: enquanto o resto
+   troca, ela é o ponto fixo. Custa uma linha. */
+.marca { view-transition-name: marca; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* O `animation-duration: 0.01ms !important` lá de cima não desliga animação
+     de linha do tempo de scroll — em timeline de progresso a duração vira
+     PROPORÇÃO, e 0.01ms grudaria o selo no estado final já no topo da página.
+     Aqui ele é desligado de verdade, e o que sobra é o estado final estático:
+     a capa composta, com o selo parado no lugar de onde ele teria partido. */
+  .selo { animation: none !important; scale: none !important; translate: none !important; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}

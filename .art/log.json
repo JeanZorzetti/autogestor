@@ -1,0 +1,18 @@
+[
+  {
+    "data": "2026-08-21",
+    "alvo": "home / + componentes compartilhados (SolucaoCard, Base, Vertical, tokens)",
+    "direcao": "costura",
+    "eixos": { "materia": "luz", "motor": "estado", "banda": "media" },
+    "estrutura": "capa dividida (texto | formulario) + grade quebrada 2+4 nas solucoes",
+    "elemento_costurado": "o vortice da marca: textura no heroi, carimbo no card, marca da capa na vertical",
+    "orcamento": { "js_kb": 0, "lcp_alvo": 2.0, "lcp_medido": 1.05, "cls_medido": 0, "faixa": "captacao" },
+    "deps": [],
+    "desvios": [
+      "nav e rodape mantidos: a spec da Costura pede 'so a marca' na nav e rodape de uma linha, mas as 6 verticais na barra sao o produto e o rodape carrega o NAP do SEO local",
+      "paleta da spec (violeta/lima) descartada: a marca ja existe e foi amostrada da logo",
+      "primitivos de cor seguem em hex com light-dark(), nao OKLCH: os pares de contraste do arquivo foram medidos nesses valores"
+    ],
+    "recusadas": ["baralho", "papel-sujo"]
+  }
+]
