@@ -83,6 +83,11 @@ no mesmo padrão do roihub. Login com sessão (não Basic auth) porque o
 histórico do lead precisa dizer *quem* moveu. `npm test` roda de dentro de
 `admin/`, separado do `npm test` da raiz.
 
+`/leads` é um quadro Kanban (uma coluna por etapa do funil), não uma tabela —
+a tabela linear foi removida. Arrastar entre colunas muda a etapa e grava
+histórico; arrastar dentro da coluna só reordena (`crm_leads.posicao`), sem
+gerar evento. Teclado e toque são via `@dnd-kit`, com anúncios traduzidos.
+
 ## O que ainda não existe
 
 - Fonte da marca própria (hoje usa a stack de fontes do sistema).

@@ -58,6 +58,8 @@ function ensure(): Promise<unknown> {
       );
       CREATE INDEX IF NOT EXISTS crm_leads_pipeline_idx ON crm_leads (pipeline, criado DESC);
       ALTER TABLE crm_eventos ADD COLUMN IF NOT EXISTS autor TEXT;
+      ALTER TABLE crm_leads ADD COLUMN IF NOT EXISTS posicao DOUBLE PRECISION NOT NULL DEFAULT extract(epoch from now());
+      UPDATE crm_leads SET posicao = extract(epoch from criado) WHERE posicao > extract(epoch from criado) + 1;
       CREATE TABLE IF NOT EXISTS admin_usuarios (
         id BIGSERIAL PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
@@ -177,10 +179,11 @@ const DESDE_EXPR = `COALESCE(
 )`;
 const DESDE_SQL = `${DESDE_EXPR} AS desde`;
 
-export type FiltroLeads = { pipeline?: string; etapa?: string; q?: string };
+export type FiltroLeads = { pipeline?: string; q?: string };
 
-/** ponytail: LIMIT 500 sem paginação — painel de corretor, não volume de call center. */
-export async function listarLeads(filtro: FiltroLeads): Promise<Lead[]> {
+/** ponytail: LIMIT 500 sem paginação — painel de corretor, não volume de call center.
+ * Saída quando doer: paginação de verdade. */
+export async function listarLeads(filtro: FiltroLeads): Promise<{ leads: Lead[]; truncado: boolean }> {
   await ensure();
   const onde: string[] = [];
   const valores: unknown[] = [];
@@ -188,20 +191,17 @@ export async function listarLeads(filtro: FiltroLeads): Promise<Lead[]> {
     valores.push(filtro.pipeline);
     onde.push(`l.pipeline = $${valores.length}`);
   }
-  if (filtro.etapa) {
-    valores.push(filtro.etapa);
-    onde.push(`l.etapa = $${valores.length}`);
-  }
   if (filtro.q) {
     valores.push(`%${filtro.q}%`);
     onde.push(`(l.nome ILIKE $${valores.length} OR l.telefone ILIKE $${valores.length})`);
   }
   const where = onde.length ? `WHERE ${onde.join(" AND ")}` : "";
   const r = await pool().query<LeadRow>(
-    `SELECT l.*, ${DESDE_SQL} FROM crm_leads l ${where} ORDER BY l.atualizado DESC, l.id DESC LIMIT 500`,
+    `SELECT l.*, ${DESDE_SQL} FROM crm_leads l ${where} ORDER BY l.posicao ASC, l.id ASC LIMIT 501`,
     valores
   );
-  return r.rows.map(lead);
+  const truncado = r.rows.length > 500;
+  return { leads: r.rows.slice(0, 500).map(lead), truncado };
 }
 
 export async function buscarLead(id: number): Promise<Lead | null> {
@@ -222,20 +222,66 @@ export async function eventosDoLead(id: number): Promise<Evento[]> {
   return r.rows.map((row) => ({ id: Number(row.id), de: row.de, para: row.para, nota: row.nota, autor: row.autor, quando: iso(row.quando) }));
 }
 
-/** Move de etapa e grava o evento com autor. Porta de moveLead do roihub, com autor. */
-export async function moverLead(id: number, etapa: string, nota: string | null, autor: string): Promise<void> {
+/** posicao de um lead, só se ele pertencer à `etapa` dada — vizinho fora da
+ * coluna de destino é tratado como ausente (o cliente pode ter visão obsoleta). */
+async function posicaoNaEtapa(id: number | null, etapa: string): Promise<number | null> {
+  if (id === null) return null;
   await ensure();
-  const atual = await pool().query<{ etapa: string }>(`SELECT etapa FROM crm_leads WHERE id = $1`, [id]);
-  const de = atual.rows[0]?.etapa;
-  if (de === undefined || de === etapa) return;
-  await pool().query(`UPDATE crm_leads SET etapa = $2, atualizado = now() WHERE id = $1`, [id, etapa]);
-  await pool().query(`INSERT INTO crm_eventos (lead_id, de, para, nota, autor) VALUES ($1, $2, $3, $4, $5)`, [
-    id,
-    de,
-    etapa,
-    nota,
-    autor,
-  ]);
+  const r = await pool().query<{ posicao: string }>(`SELECT posicao FROM crm_leads WHERE id = $1 AND etapa = $2`, [id, etapa]);
+  return r.rows[0] ? Number(r.rows[0].posicao) : null;
+}
+
+/** posicao dos vizinhos do ponto de soltura, restrita à etapa de destino. */
+export async function vizinhosNaEtapa(
+  antes: number | null,
+  depois: number | null,
+  etapa: string
+): Promise<{ antes: number | null; depois: number | null }> {
+  const [a, d] = await Promise.all([posicaoNaEtapa(antes, etapa), posicaoNaEtapa(depois, etapa)]);
+  return { antes: a, depois: d };
+}
+
+/** Move de etapa (transacional: etapa + posicao + evento) ou só reposiciona
+ * (etapa igual, sem evento — FR-022). `false` se o lead não existe. */
+export async function moverLead(id: number, etapa: string, posicao: number, nota: string | null, autor: string): Promise<boolean> {
+  await ensure();
+  const client = await pool().connect();
+  try {
+    await client.query("BEGIN");
+    const atual = await client.query<{ etapa: string }>(`SELECT etapa FROM crm_leads WHERE id = $1`, [id]);
+    const de = atual.rows[0]?.etapa;
+    if (de === undefined) {
+      await client.query("ROLLBACK");
+      return false;
+    }
+    if (de === etapa) {
+      await client.query(`UPDATE crm_leads SET posicao = $2, atualizado = now() WHERE id = $1`, [id, posicao]);
+    } else {
+      await client.query(`UPDATE crm_leads SET etapa = $2, posicao = $3, atualizado = now() WHERE id = $1`, [id, etapa, posicao]);
+      await client.query(`INSERT INTO crm_eventos (lead_id, de, para, nota, autor) VALUES ($1, $2, $3, $4, $5)`, [
+        id,
+        de,
+        etapa,
+        nota,
+        autor,
+      ]);
+    }
+    await client.query("COMMIT");
+    return true;
+  } catch (e) {
+    await client.query("ROLLBACK");
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
+/** Reordena dentro da coluna atual: só a linha movida é escrita, nunca a
+ * etapa — é o que garante que nenhum outro cartão troca de lugar. */
+export async function reposicionarLead(id: number, posicao: number): Promise<boolean> {
+  await ensure();
+  const r = await pool().query(`UPDATE crm_leads SET posicao = $2, atualizado = now() WHERE id = $1`, [id, posicao]);
+  return (r.rowCount ?? 0) > 0;
 }
 
 export async function definirValor(id: number, valor: number | null): Promise<void> {

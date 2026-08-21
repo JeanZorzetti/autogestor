@@ -69,30 +69,23 @@ etapas, teto de 500 leads por recorte. 4 histórias (P1, P1, P2, P3), 22 FRs.
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-`.specify/memory/constitution.md` está **no estado de template**, com todos os
-princípios como placeholders (`[PRINCIPLE_1_NAME]` etc.). **Não há gates de
-constituição a avaliar** — nenhum princípio ratificado existe neste projeto.
+`.specify/memory/constitution.md` foi ratificada como v1.0.0 em 2026-08-20 —
+já não está no estado de template. A avaliação informal feita quando o gate
+ainda estava vazio (tabela abaixo) foi reavaliada contra os cinco princípios
+ratificados; o veredito **não muda**: nenhum princípio é violado.
 
-Na ausência de constituição, aplicam-se as regras de projeto já escritas, que
-esta feature respeita:
-
-| Regra vigente (fonte) | Status |
+| Princípio | Avaliação |
 |---|---|
-| Português em texto de UI, variáveis e comentários (CLAUDE.md raiz) | ✅ |
-| Antes de somar dependência, ver se poucas linhas resolvem (CLAUDE.md raiz) | ✅ avaliado em [research.md](./research.md) §R1 — **1 dependência somada**, justificada por requisito de acessibilidade que exige ~centenas de linhas para replicar |
-| Simplificação deliberada marcada com `ponytail:` e teto explícito | ✅ ponto médio em float e teto de 500 leads marcados |
-| Lógica não-trivial em `.mjs` testável por `node --test` | ✅ `lib/quadro.mjs` + `test/quadro.test.mjs` |
-| Fonte única por domínio (etapas/verticais só em `pipelines.mjs`) | ✅ nenhuma constante duplicada |
-| Harness UX/UI: componente interativo novo puxa `accessibility` sempre | ✅ contrato de teclado e anúncios em [contracts/server-actions.md](./contracts/server-actions.md); `ui-verification` é gate de saída em [quickstart.md](./quickstart.md) |
+| I. HTML estático primeiro, JavaScript por exceção | ✅ não se aplica ao site Astro (não tocado); o painel `admin/` já é o contrapeso autenticado onde JavaScript compra interatividade real |
+| II. Fonte única por domínio | ✅ `ETAPAS`/`PIPELINES`/`LIMIAR_PARADO` seguem só em `admin/lib/pipelines.mjs`; nenhuma constante nova duplicada |
+| III. Simplicidade deliberada e marcada | ✅ avaliado em [research.md](./research.md) §R1 — 1 dependência somada (`@dnd-kit`), com alternativa mais simples nomeada e recusada por escrito; ponto médio em float e teto de 500 leads marcados com `ponytail:` e saída |
+| IV. Falhar fechado, nunca mentir para o usuário | ✅ `dbOn()`/`usuarioAtual()`/`etapaValida()` seguem validados no servidor ([contracts/server-actions.md](./contracts/server-actions.md)); `useOptimistic` desfaz visivelmente em falha (FR-012) |
+| V. Acessibilidade e contraste são requisito | ✅ contrato de teclado e anúncios em [contracts/server-actions.md](./contracts/server-actions.md); `accessibility` e `ui-verification` são gates de saída em [quickstart.md](./quickstart.md) |
 
 **Re-check pós-Phase 1**: nenhuma violação introduzida pelo design. Nenhuma
 abstração especulativa: sem camada de repositório, sem tabela de ordenação, sem
 grafo de transições de etapa, sem paginação, sem alternador de visão. Ver
 [Complexity Tracking](#complexity-tracking).
-
-**Recomendação (fora do escopo desta feature)**: rodar `/speckit-constitution`
-para preencher a constituição, senão toda feature futura passa por este gate
-vazio.
 
 ## Project Structure
 

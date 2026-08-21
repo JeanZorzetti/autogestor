@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --test test/pipelines.test.mjs test/auth.test.mjs"
+    "test": "node --test test/pipelines.test.mjs test/auth.test.mjs test/quadro.test.mjs"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
     "next": "^16.2.10",
     "pg": "^8.22.0",
     "react": "^19.2.7",

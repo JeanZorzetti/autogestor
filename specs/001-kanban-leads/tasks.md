@@ -38,8 +38,8 @@ retrocompatível com a app não alterada).
 
 **Purpose**: dependências e registro do novo alvo de teste.
 
-- [ ] T001 Instalar `@dnd-kit/core@^6.3.1` e `@dnd-kit/sortable@^10.0.0` como dependências em `admin/package.json` (rodar `npm install` de dentro de `admin/`; confirmar que o peer dep aceita React 19.2 sem `--force`)
-- [ ] T002 Registrar `test/quadro.test.mjs` no script `test` de `admin/package.json` (`node --test test/pipelines.test.mjs test/auth.test.mjs test/quadro.test.mjs`)
+- [X] T001 Instalar `@dnd-kit/core@^6.3.1` e `@dnd-kit/sortable@^10.0.0` como dependências em `admin/package.json` (rodar `npm install` de dentro de `admin/`; confirmar que o peer dep aceita React 19.2 sem `--force`)
+- [X] T002 Registrar `test/quadro.test.mjs` no script `test` de `admin/package.json` (`node --test test/pipelines.test.mjs test/auth.test.mjs test/quadro.test.mjs`)
 
 ---
 
@@ -49,12 +49,12 @@ retrocompatível com a app não alterada).
 
 **⚠️ CRITICAL**: nenhuma história começa antes desta fase fechar.
 
-- [ ] T003 Adicionar a coluna de posição ao bloco `ensure()` em `admin/lib/db.ts`: `ALTER TABLE crm_leads ADD COLUMN IF NOT EXISTS posicao DOUBLE PRECISION NOT NULL DEFAULT extract(epoch from now())`, ao lado do `ALTER TABLE crm_eventos ADD COLUMN IF NOT EXISTS autor TEXT` que já está lá
-- [ ] T004 [P] Escrever `admin/test/quadro.test.mjs` **antes** da implementação e confirmar que falha: `posicaoEntre()` nos 4 casos (meio, topo, fundo, coluna vazia) e `agruparPorEtapa()` (sempre 5 chaves, nenhum lead duplicado, nenhum sumido, ordem preservada)
-- [ ] T005 Criar `admin/lib/quadro.mjs` com `posicaoEntre(anterior, proximo)` e `agruparPorEtapa(leads)` — ESM puro, sem JSX, sem React, sem `pg`; rodar `npm test` em `admin/` e ver T004 passar
-- [ ] T006 Adicionar o backfill idempotente das linhas existentes ao `ensure()` em `admin/lib/db.ts`, alinhando `posicao` com `extract(epoch from criado)` conforme [data-model.md](./data-model.md) (depende de T003)
-- [ ] T007 Alterar `listarLeads()` em `admin/lib/db.ts` para `ORDER BY l.posicao ASC, l.id ASC` e `LIMIT 501`, e retornar o sinal de truncamento (a 501ª linha) para o chamador (depende de T003)
-- [ ] T008 Adicionar o tipo de retorno `Resultado` e as guardas comuns (`dbOn()` → `"db"`, `usuarioAtual()` nulo → `"sessao"`, id/etapa inválidos → `"invalido"`, erro do Postgres → `"falhou"`) em `admin/app/leads/actions.ts`, conforme [contracts/server-actions.md](./contracts/server-actions.md)
+- [X] T003 Adicionar a coluna de posição ao bloco `ensure()` em `admin/lib/db.ts`: `ALTER TABLE crm_leads ADD COLUMN IF NOT EXISTS posicao DOUBLE PRECISION NOT NULL DEFAULT extract(epoch from now())`, ao lado do `ALTER TABLE crm_eventos ADD COLUMN IF NOT EXISTS autor TEXT` que já está lá
+- [X] T004 [P] Escrever `admin/test/quadro.test.mjs` **antes** da implementação e confirmar que falha: `posicaoEntre()` nos 4 casos (meio, topo, fundo, coluna vazia) e `agruparPorEtapa()` (sempre 5 chaves, nenhum lead duplicado, nenhum sumido, ordem preservada)
+- [X] T005 Criar `admin/lib/quadro.mjs` com `posicaoEntre(anterior, proximo)` e `agruparPorEtapa(leads)` — ESM puro, sem JSX, sem React, sem `pg`; rodar `npm test` em `admin/` e ver T004 passar
+- [X] T006 Adicionar o backfill idempotente das linhas existentes ao `ensure()` em `admin/lib/db.ts`, alinhando `posicao` com `extract(epoch from criado)` conforme [data-model.md](./data-model.md) (depende de T003)
+- [X] T007 Alterar `listarLeads()` em `admin/lib/db.ts` para `ORDER BY l.posicao ASC, l.id ASC` e `LIMIT 501`, e retornar o sinal de truncamento (a 501ª linha) para o chamador (depende de T003)
+- [X] T008 Adicionar o tipo de retorno `Resultado` e as guardas comuns (`dbOn()` → `"db"`, `usuarioAtual()` nulo → `"sessao"`, id/etapa inválidos → `"invalido"`, erro do Postgres → `"falhou"`) em `admin/app/leads/actions.ts`, conforme [contracts/server-actions.md](./contracts/server-actions.md)
 
 **Checkpoint**: `npm test` passa em `admin/`; o banco tem `posicao`; a leitura já sai ordenada. As histórias podem começar.
 
@@ -68,14 +68,14 @@ retrocompatível com a app não alterada).
 
 ### Implementation for User Story 1
 
-- [ ] T009 [P] [US1] Criar `admin/app/leads/cartao.tsx` como componente estático: nome com `Link` para `/leads/{id}`, vertical via `nomeDoPipeline()`, contexto de `metadata.contexto`, dias parados ("hoje" / "há Nd"), e link de WhatsApp reusando a função `linkWhatsApp()` que hoje vive em `admin/app/leads/page.tsx`
-- [ ] T010 [P] [US1] Adicionar ao cartão em `admin/app/leads/cartao.tsx` o destaque de parado além do limiar, lendo `LIMIAR_PARADO` de `admin/lib/pipelines.mjs` — com **ícone ou rótulo além da cor** (constituição, Princípio V: status nunca só por cor)
-- [ ] T011 [P] [US1] Criar `admin/app/leads/quadro.tsx` renderizando as 5 colunas na ordem de `ETAPAS`, cada uma com nome da etapa, contagem, e estado vazio explícito quando não houver cartões (FR-006)
-- [ ] T012 [P] [US1] Adicionar os estilos do quadro a `admin/app/globals.css`: `.quadro` (5 trilhas, rolagem horizontal), `.coluna` (rolagem vertical própria, cabeçalho `sticky`), `.cartao` — reusando os tokens que já existem (`--surface`, `--border`, `--grid`, `--muted`, `--crit-ink`)
-- [ ] T013 [US1] Reescrever `admin/app/leads/page.tsx`: continua Server Component, lê `searchParams`, chama `listarLeads()`, passa por `agruparPorEtapa()` e renderiza `<Quadro>` no lugar da `<table>` — removendo `Linha` e a tabela inteira (FR-018) (depende de T009–T012)
-- [ ] T014 [US1] Remover o campo `<select name="etapa">` da barra de filtros em `admin/app/leads/page.tsx` e remover `etapa` do tipo `FiltroLeads` em `admin/lib/db.ts`, de modo que `?etapa=` em endereços antigos seja **ignorado sem erro e sem redirect** (FR-018 + premissa do spec)
-- [ ] T015 [US1] Exibir em `admin/app/leads/quadro.tsx` o aviso explícito de truncamento quando o recorte passar de 500 leads, usando o sinal de T007 (edge case "volume acima do teto de leitura")
-- [ ] T016 [US1] Confirmar em `admin/app/leads/page.tsx` que o banner de "Leads sem persistência" continua sendo exibido e que o quadro renderiza as 5 colunas vazias sem quebrar quando `dbOn()` é falso (FR-017)
+- [X] T009 [P] [US1] Criar `admin/app/leads/cartao.tsx` como componente estático: nome com `Link` para `/leads/{id}`, vertical via `nomeDoPipeline()`, contexto de `metadata.contexto`, dias parados ("hoje" / "há Nd"), e link de WhatsApp reusando a função `linkWhatsApp()` que hoje vive em `admin/app/leads/page.tsx`
+- [X] T010 [P] [US1] Adicionar ao cartão em `admin/app/leads/cartao.tsx` o destaque de parado além do limiar, lendo `LIMIAR_PARADO` de `admin/lib/pipelines.mjs` — com **ícone ou rótulo além da cor** (constituição, Princípio V: status nunca só por cor)
+- [X] T011 [P] [US1] Criar `admin/app/leads/quadro.tsx` renderizando as 5 colunas na ordem de `ETAPAS`, cada uma com nome da etapa, contagem, e estado vazio explícito quando não houver cartões (FR-006)
+- [X] T012 [P] [US1] Adicionar os estilos do quadro a `admin/app/globals.css`: `.quadro` (5 trilhas, rolagem horizontal), `.coluna` (rolagem vertical própria, cabeçalho `sticky`), `.cartao` — reusando os tokens que já existem (`--surface`, `--border`, `--grid`, `--muted`, `--crit-ink`)
+- [X] T013 [US1] Reescrever `admin/app/leads/page.tsx`: continua Server Component, lê `searchParams`, chama `listarLeads()`, passa por `agruparPorEtapa()` e renderiza `<Quadro>` no lugar da `<table>` — removendo `Linha` e a tabela inteira (FR-018) (depende de T009–T012)
+- [X] T014 [US1] Remover o campo `<select name="etapa">` da barra de filtros em `admin/app/leads/page.tsx` e remover `etapa` do tipo `FiltroLeads` em `admin/lib/db.ts`, de modo que `?etapa=` em endereços antigos seja **ignorado sem erro e sem redirect** (FR-018 + premissa do spec)
+- [X] T015 [US1] Exibir em `admin/app/leads/quadro.tsx` o aviso explícito de truncamento quando o recorte passar de 500 leads, usando o sinal de T007 (edge case "volume acima do teto de leitura")
+- [X] T016 [US1] Confirmar em `admin/app/leads/page.tsx` que o banner de "Leads sem persistência" continua sendo exibido e que o quadro renderiza as 5 colunas vazias sem quebrar quando `dbOn()` é falso (FR-017)
 
 **Checkpoint**: quickstart V1, V2, V10 e V11 passam. O quadro já substitui a tabela e é útil sozinho — a etapa ainda muda pelo `<select>` que já existe no detalhe do lead.
 
@@ -91,19 +91,19 @@ retrocompatível com a app não alterada).
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Tornar `moverLead()` transacional em `admin/lib/db.ts` (`BEGIN … COMMIT`): `UPDATE crm_leads SET etapa, posicao, atualizado` **e** `INSERT INTO crm_eventos` na mesma transação, para que um lead nunca fique com etapa nova e histórico sem o evento; quando a etapa não muda, gravar **só** `posicao` e **nenhum** evento (FR-022, US2 cenário 4)
-- [ ] T018 [US2] Adicionar a `admin/lib/db.ts` a leitura dos `posicao` dos leads vizinhos (`antes`/`depois`) restrita à etapa de destino, ignorando ids que não estejam nela — o cliente pode estar com visão obsoleta ([contracts/server-actions.md](./contracts/server-actions.md))
-- [ ] T019 [US2] Reescrever a server action `mover()` em `admin/app/leads/actions.ts` com a assinatura `MoverEntrada` do contrato, calculando `posicao` **no servidor** via `posicaoEntre()` a partir dos vizinhos lidos em T018 — o cliente nunca envia número de posição (constituição, Princípio IV) (depende de T017, T018)
-- [ ] T020 [US2] Manter em `admin/app/leads/actions.ts` a assinatura antiga `mover(fd: FormData)` como fallback sem JS, delegando para a nova com `antes: null, depois: null` (o lead cai no fim da coluna de destino)
-- [ ] T021 [US2] Envolver o quadro em `<DndContext>` em `admin/app/leads/quadro.tsx` com `PointerSensor`, `TouchSensor` (com delay de ativação, para não conflitar com a rolagem da coluna) e `KeyboardSensor` — marcar o arquivo `"use client"`; é a única ilha cliente da tela
-- [ ] T022 [US2] Tornar o cartão arrastável em `admin/app/leads/cartao.tsx` com `useSortable` e cada coluna um alvo de soltura em `admin/app/leads/quadro.tsx` (depende de T021)
-- [ ] T023 [US2] Aplicar `useOptimistic` em `admin/app/leads/quadro.tsx` para mover o cartão no ato do gesto, sem esperar o round-trip ao Postgres (SC-003: < 1 s) (depende de T021)
-- [ ] T024 [US2] Tratar o retorno `{ ok: false }` em `admin/app/leads/quadro.tsx`: reverter visivelmente o cartão para a coluna de origem e exibir a mensagem correspondente ao `erro` (FR-012, US2 cenário 5) (depende de T023)
-- [ ] T025 [US2] Tratar `erro: "sessao"` em `admin/app/leads/quadro.tsx` navegando para `/entrar` depois de reverter o cartão (edge case "sessão expirada durante o arraste") (depende de T024)
-- [ ] T026 [US2] Traduzir os `accessibility.announcements` do `@dnd-kit` para português em `admin/app/leads/quadro.tsx` (pego / sobre / movido / cancelado / não salvo), com os textos exatos da tabela de acessibilidade em [contracts/server-actions.md](./contracts/server-actions.md) (depende de T021)
-- [ ] T027 [US2] Escrever os textos de erro e de estado do quadro em `admin/app/leads/quadro.tsx` seguindo a skill `ux-writing` — o usuário precisa saber **o que não foi salvo** e o que fazer, não só que "algo deu errado"
-- [ ] T028 [US2] Adicionar ao cartão em `admin/app/leads/cartao.tsx` o controle compacto de mudança de etapa (fallback que reusa a action `mover(FormData)` de T020), garantindo que em tela estreita seja possível mudar a etapa sem arrastar entre colunas fora da tela (FR-008, edge case de tela estreita)
-- [ ] T029 [US2] Verificar em `admin/app/leads/actions.ts` que `revalidatePath("/leads")`, `revalidatePath("/")` e `revalidatePath("/leads/{id}")` continuam sendo chamados em sucesso, para que o Painel e o detalhe do lead não sirvam dado velho
+- [X] T017 [US2] Tornar `moverLead()` transacional em `admin/lib/db.ts` (`BEGIN … COMMIT`): `UPDATE crm_leads SET etapa, posicao, atualizado` **e** `INSERT INTO crm_eventos` na mesma transação, para que um lead nunca fique com etapa nova e histórico sem o evento; quando a etapa não muda, gravar **só** `posicao` e **nenhum** evento (FR-022, US2 cenário 4)
+- [X] T018 [US2] Adicionar a `admin/lib/db.ts` a leitura dos `posicao` dos leads vizinhos (`antes`/`depois`) restrita à etapa de destino, ignorando ids que não estejam nela — o cliente pode estar com visão obsoleta ([contracts/server-actions.md](./contracts/server-actions.md))
+- [X] T019 [US2] Reescrever a server action `mover()` em `admin/app/leads/actions.ts` com a assinatura `MoverEntrada` do contrato, calculando `posicao` **no servidor** via `posicaoEntre()` a partir dos vizinhos lidos em T018 — o cliente nunca envia número de posição (constituição, Princípio IV) (depende de T017, T018)
+- [X] T020 [US2] Manter em `admin/app/leads/actions.ts` a assinatura antiga `mover(fd: FormData)` como fallback sem JS, delegando para a nova com `antes: null, depois: null` (o lead cai no fim da coluna de destino)
+- [X] T021 [US2] Envolver o quadro em `<DndContext>` em `admin/app/leads/quadro.tsx` com `PointerSensor`, `TouchSensor` (com delay de ativação, para não conflitar com a rolagem da coluna) e `KeyboardSensor` — marcar o arquivo `"use client"`; é a única ilha cliente da tela
+- [X] T022 [US2] Tornar o cartão arrastável em `admin/app/leads/cartao.tsx` com `useSortable` e cada coluna um alvo de soltura em `admin/app/leads/quadro.tsx` (depende de T021)
+- [X] T023 [US2] Aplicar `useOptimistic` em `admin/app/leads/quadro.tsx` para mover o cartão no ato do gesto, sem esperar o round-trip ao Postgres (SC-003: < 1 s) (depende de T021)
+- [X] T024 [US2] Tratar o retorno `{ ok: false }` em `admin/app/leads/quadro.tsx`: reverter visivelmente o cartão para a coluna de origem e exibir a mensagem correspondente ao `erro` (FR-012, US2 cenário 5) (depende de T023)
+- [X] T025 [US2] Tratar `erro: "sessao"` em `admin/app/leads/quadro.tsx` navegando para `/entrar` depois de reverter o cartão (edge case "sessão expirada durante o arraste") (depende de T024)
+- [X] T026 [US2] Traduzir os `accessibility.announcements` do `@dnd-kit` para português em `admin/app/leads/quadro.tsx` (pego / sobre / movido / cancelado / não salvo), com os textos exatos da tabela de acessibilidade em [contracts/server-actions.md](./contracts/server-actions.md) (depende de T021)
+- [X] T027 [US2] Escrever os textos de erro e de estado do quadro em `admin/app/leads/quadro.tsx` seguindo a skill `ux-writing` — o usuário precisa saber **o que não foi salvo** e o que fazer, não só que "algo deu errado"
+- [X] T028 [US2] Adicionar ao cartão em `admin/app/leads/cartao.tsx` o controle compacto de mudança de etapa (fallback que reusa a action `mover(FormData)` de T020), garantindo que em tela estreita seja possível mudar a etapa sem arrastar entre colunas fora da tela (FR-008, edge case de tela estreita)
+- [X] T029 [US2] Verificar em `admin/app/leads/actions.ts` que `revalidatePath("/leads")`, `revalidatePath("/")` e `revalidatePath("/leads/{id}")` continuam sendo chamados em sucesso, para que o Painel e o detalhe do lead não sirvam dado velho
 
 **Checkpoint**: quickstart V3, V4, V5, V6 e V7 passam. Parar aqui já entrega um quadro utilizável — é o corte mínimo com valor se o escopo precisar encolher.
 
@@ -119,10 +119,10 @@ retrocompatível com a app não alterada).
 
 ### Implementation for User Story 3
 
-- [ ] T030 [US3] Confirmar em `admin/app/leads/quadro.tsx` que a contagem do cabeçalho de cada coluna é derivada do array já filtrado, e não de um total global — para que a soma das 5 contagens seja sempre igual ao número de leads do recorte (FR-014, SC-005)
-- [ ] T031 [US3] Implementar em `admin/app/leads/quadro.tsx` o estado vazio de busca sem resultado: as 5 colunas aparecem vazias, com uma mensagem explicando que o filtro não retornou leads (US3 cenário 3)
-- [ ] T032 [US3] Adicionar um link de "limpar filtro" em um clique (para `/leads`, sem query) em `admin/app/leads/page.tsx`, visível quando houver qualquer filtro aplicado (US3 cenário 3)
-- [ ] T033 [US3] Tratar `pipeline` inválido em `admin/app/leads/page.tsx` como ausente (validando com `pipelineValido()`), sem erro e sem redirect (constituição, Princípio IV: validar contra a lista fixa, nunca contra o payload)
+- [X] T030 [US3] Confirmar em `admin/app/leads/quadro.tsx` que a contagem do cabeçalho de cada coluna é derivada do array já filtrado, e não de um total global — para que a soma das 5 contagens seja sempre igual ao número de leads do recorte (FR-014, SC-005)
+- [X] T031 [US3] Implementar em `admin/app/leads/quadro.tsx` o estado vazio de busca sem resultado: as 5 colunas aparecem vazias, com uma mensagem explicando que o filtro não retornou leads (US3 cenário 3)
+- [X] T032 [US3] Adicionar um link de "limpar filtro" em um clique (para `/leads`, sem query) em `admin/app/leads/page.tsx`, visível quando houver qualquer filtro aplicado (US3 cenário 3)
+- [X] T033 [US3] Tratar `pipeline` inválido em `admin/app/leads/page.tsx` como ausente (validando com `pipelineValido()`), sem erro e sem redirect (constituição, Princípio IV: validar contra a lista fixa, nunca contra o payload)
 
 **Checkpoint**: quickstart V9 passa. US1, US2 e US3 funcionam.
 
@@ -138,12 +138,12 @@ retrocompatível com a app não alterada).
 
 ### Implementation for User Story 4
 
-- [ ] T034 [US4] Criar `reposicionarLead(id, posicao)` em `admin/lib/db.ts`: um único `UPDATE crm_leads SET posicao, atualizado WHERE id`. **Nenhuma outra linha da coluna é escrita** — é o que garante o edge case "nenhum outro cartão troca de lugar por consequência"
-- [ ] T035 [US4] Criar a server action `reposicionar()` em `admin/app/leads/actions.ts` com a assinatura `ReposicionarEntrada` do contrato, reusando as guardas de T008 e o cálculo de vizinhos de T018 restrito à etapa **atual** do lead; nunca toca `etapa`, nunca grava evento (FR-022) (depende de T034)
-- [ ] T036 [US4] Envolver cada coluna em `<SortableContext>` com estratégia vertical em `admin/app/leads/quadro.tsx`, para que o arraste dentro da coluna reordene em vez de só mudar de coluna (depende de T021)
-- [ ] T037 [US4] Rotear o fim do gesto em `admin/app/leads/quadro.tsx`: mesma coluna → `reposicionar()`; coluna diferente → `mover()`; fora de qualquer coluna → nada (US2 cenário 4) (depende de T035, T036)
-- [ ] T038 [US4] Estender os anúncios de acessibilidade em `admin/app/leads/quadro.tsx` para incluir a nova **posição dentro da coluna** ("posição i de n"), de modo que reordenar por teclado seja anunciado (FR-021, US4 cenário 5)
-- [ ] T039 [US4] Verificar manualmente o invariante de SC-009: anotar `SELECT count(*) FROM crm_eventos`, reordenar N vezes dentro da coluna, e confirmar que a contagem **não mudou** (quickstart V8 passos 1 e 5)
+- [X] T034 [US4] Criar `reposicionarLead(id, posicao)` em `admin/lib/db.ts`: um único `UPDATE crm_leads SET posicao, atualizado WHERE id`. **Nenhuma outra linha da coluna é escrita** — é o que garante o edge case "nenhum outro cartão troca de lugar por consequência"
+- [X] T035 [US4] Criar a server action `reposicionar()` em `admin/app/leads/actions.ts` com a assinatura `ReposicionarEntrada` do contrato, reusando as guardas de T008 e o cálculo de vizinhos de T018 restrito à etapa **atual** do lead; nunca toca `etapa`, nunca grava evento (FR-022) (depende de T034)
+- [X] T036 [US4] Envolver cada coluna em `<SortableContext>` com estratégia vertical em `admin/app/leads/quadro.tsx`, para que o arraste dentro da coluna reordene em vez de só mudar de coluna (depende de T021)
+- [X] T037 [US4] Rotear o fim do gesto em `admin/app/leads/quadro.tsx`: mesma coluna → `reposicionar()`; coluna diferente → `mover()`; fora de qualquer coluna → nada (US2 cenário 4) (depende de T035, T036)
+- [X] T038 [US4] Estender os anúncios de acessibilidade em `admin/app/leads/quadro.tsx` para incluir a nova **posição dentro da coluna** ("posição i de n"), de modo que reordenar por teclado seja anunciado (FR-021, US4 cenário 5)
+- [X] T039 [US4] Verificar manualmente o invariante de SC-009: anotar `SELECT count(*) FROM crm_eventos`, reordenar N vezes dentro da coluna, e confirmar que a contagem **não mudou** (quickstart V8 passos 1 e 5)
 
 **Checkpoint**: quickstart V8 passa. As quatro histórias funcionam.
 
@@ -153,16 +153,16 @@ retrocompatível com a app não alterada).
 
 **Purpose**: o que a constituição torna portão de conclusão, e a documentação que ela exige.
 
-- [ ] T040 [P] Ajustar `admin/app/globals.css` para tela estreita (360px): nenhuma coluna inalcançável, rolagem horizontal do quadro sem estourar a página, área de toque de todo controle do cartão ≥ 44×44 px (edge case de tela estreita; skill `responsive-design`)
-- [ ] T041 [P] Adicionar guarda `@media (prefers-reduced-motion: reduce)` em `admin/app/globals.css` desligando as transições de arraste, mantendo o arraste funcional (edge case "usuário com movimento reduzido"; constituição, Princípio V)
-- [ ] T042 [P] Conferir contraste WCAG AA de todo texto e borda novos do quadro em `admin/app/globals.css`, em especial o destaque de parado sobre `--surface` (constituição, Princípio V)
-- [ ] T043 Rodar `npm test` na raiz **e** em `admin/`, e ver a saída dos dois passar (constituição: "Portão de conclusão" — afirmação de sucesso sem evidência é violação)
-- [ ] T044 Executar os cenários V1–V12 de [quickstart.md](./quickstart.md) contra `http://localhost:3000/leads` com o Postgres local, e registrar o que falhou
-- [ ] T045 Rodar a skill `ui-verification` contra `/leads`: árvore de acessibilidade, passagem completa de teclado, três larguras (360 / 768 / 1440), console limpo e LCP, com screenshot antes/depois (quickstart V13; constituição, Princípio V)
-- [ ] T046 [P] Registrar em `README.md` da raiz, na seção "Decisões que não são óbvias no código", as duas decisões desta feature: por que `@dnd-kit` em vez de DnD nativo, e por que a ordem é ponto médio em vez de renumeração (constituição: "Decisão não óbvia vira documentação")
-- [ ] T047 [P] Atualizar a seção "admin/ — painel Next.js separado" em `CLAUDE.md` da raiz para dizer que `/leads` é um quadro Kanban, não uma tabela
-- [ ] T048 [P] Adicionar os comentários `ponytail:` exigidos pela constituição (Princípio III) com **teto e caminho de saída**: precisão do `double precision` em `admin/lib/quadro.mjs` (saída: renumerar a coluna com `row_number() * 1000`) e o teto de 500 leads em `admin/lib/db.ts`
-- [ ] T049 [P] Atualizar a seção "Constitution Check" de [plan.md](./plan.md), que hoje diz "constituição no estado de template, sem gates" — a constituição v1.0.0 foi ratificada em 2026-08-20 e passa a ter cinco princípios avaliáveis (o veredito da avaliação informal já feita não muda)
+- [X] T040 [P] Ajustar `admin/app/globals.css` para tela estreita (360px): nenhuma coluna inalcançável, rolagem horizontal do quadro sem estourar a página, área de toque de todo controle do cartão ≥ 44×44 px (edge case de tela estreita; skill `responsive-design`)
+- [X] T041 [P] Adicionar guarda `@media (prefers-reduced-motion: reduce)` em `admin/app/globals.css` desligando as transições de arraste, mantendo o arraste funcional (edge case "usuário com movimento reduzido"; constituição, Princípio V)
+- [X] T042 [P] Conferir contraste WCAG AA de todo texto e borda novos do quadro em `admin/app/globals.css`, em especial o destaque de parado sobre `--surface` (constituição, Princípio V)
+- [X] T043 Rodar `npm test` na raiz **e** em `admin/`, e ver a saída dos dois passar (constituição: "Portão de conclusão" — afirmação de sucesso sem evidência é violação)
+- [X] T044 Executar os cenários V1–V12 de [quickstart.md](./quickstart.md) contra `http://localhost:3000/leads` com o Postgres local, e registrar o que falhou
+- [X] T045 Rodar a skill `ui-verification` contra `/leads`: árvore de acessibilidade, passagem completa de teclado, três larguras (360 / 768 / 1440), console limpo e LCP, com screenshot antes/depois (quickstart V13; constituição, Princípio V)
+- [X] T046 [P] Registrar em `README.md` da raiz, na seção "Decisões que não são óbvias no código", as duas decisões desta feature: por que `@dnd-kit` em vez de DnD nativo, e por que a ordem é ponto médio em vez de renumeração (constituição: "Decisão não óbvia vira documentação")
+- [X] T047 [P] Atualizar a seção "admin/ — painel Next.js separado" em `CLAUDE.md` da raiz para dizer que `/leads` é um quadro Kanban, não uma tabela
+- [X] T048 [P] Adicionar os comentários `ponytail:` exigidos pela constituição (Princípio III) com **teto e caminho de saída**: precisão do `double precision` em `admin/lib/quadro.mjs` (saída: renumerar a coluna com `row_number() * 1000`) e o teto de 500 leads em `admin/lib/db.ts`
+- [X] T049 [P] Atualizar a seção "Constitution Check" de [plan.md](./plan.md), que hoje diz "constituição no estado de template, sem gates" — a constituição v1.0.0 foi ratificada em 2026-08-20 e passa a ter cinco princípios avaliáveis (o veredito da avaliação informal já feita não muda)
 
 ---
 

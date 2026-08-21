@@ -111,6 +111,20 @@ src/
 - **`/obrigado` é renderizada no servidor.** Precisa ler `?erro=1` do redirect do
   endpoint; se fosse estática, quem enviou sem JavaScript e errou o telefone leria
   "pedido recebido" — a página mentiria justamente para quem não foi atendido.
+- **O Kanban de `/leads` (`admin/`) usa `@dnd-kit`, não HTML5 Drag and Drop
+  nativo.** FR-008/FR-021 exigem que toda movimentação com mouse também exista
+  por teclado e toque, com anúncio por leitor de tela — e o DnD nativo do
+  navegador não dispara em toque em nenhum navegador móvel e não tem modo de
+  teclado. Replicar sensores, modo de teclado, `aria-live` e auto-scroll à mão
+  seriam algumas centenas de linhas de acessibilidade sutil; `@dnd-kit` já
+  entrega isso, por ~30 kB gzip no bundle de um painel autenticado.
+- **A ordem dentro da coluna do Kanban é ponto médio em float, não
+  renumeração.** `crm_leads.posicao` guarda um `double precision`; ao soltar um
+  cartão, só a linha movida é escrita, com `(anterior + proximo) / 2`.
+  Renumerar a coluna inteira a partir da visão do cliente escreveria N linhas e
+  sobrescreveria a movimentação que um colega acabou de fazer em outro cartão —
+  o edge case "duas pessoas reordenando a mesma coluna" exige que nenhum outro
+  cartão troque de lugar por consequência.
 
 ## Virar subdomínios depois
 
