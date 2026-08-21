@@ -80,7 +80,13 @@ const id = `lead-${solucao.slug}-${instancia}`;
       <label for={`${id}-contexto`}>{solucao.campo.rotulo}</label>
       {
         solucao.campo.opcoes ? (
-          <select id={`${id}-contexto`} name="contexto" required>
+          <select
+            id={`${id}-contexto`}
+            name="contexto"
+            required
+            data-aviso-opcao={solucao.campo.avisoPara?.opcao}
+            data-aviso-texto={solucao.campo.avisoPara?.texto}
+          >
             <option value="">Selecione</option>
             {solucao.campo.opcoes.map((o) => <option value={o}>{o}</option>)}
           </select>
@@ -216,6 +222,17 @@ const id = `lead-${solucao.slug}-${instancia}`;
       if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
       else el.removeAttribute("aria-describedby");
     };
+
+    // Aviso não-bloqueante: a opção escolhida provavelmente não compensa (ex.:
+    // conta de luz abaixo do mínimo da Coopluz), mas a pessoa decide se envia
+    // mesmo assim — isto só antecipa a ressalva que já está no FAQ.
+    const select = form.querySelector<HTMLSelectElement>("select[data-aviso-opcao]");
+    if (select) {
+      select.addEventListener("change", () => {
+        const emAviso = select.value === select.dataset.avisoOpcao;
+        mostrar(emAviso ? select.dataset.avisoTexto ?? "" : "", false);
+      });
+    }
 
     // Recusa que a pessoa consegue corrigir: aviso + campo marcado + foco nele.
     // Serve para as duas origens — a validação local e a resposta do servidor.

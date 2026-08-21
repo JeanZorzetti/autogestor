@@ -102,9 +102,15 @@ const perguntas = [
         </li>
         <li>
           <h3>A fatura chega menor</h3>
-          <p>A Equatorial reconhece os créditos e a mesma conta de sempre passa a chegar com 20% de desconto.</p>
+          <p>A Equatorial reconhece os créditos e a mesma conta de sempre passa a chegar com 20% de desconto, em até 90 dias.</p>
         </li>
       </ol>
+      <ul class="conta lista-limpa" role="list">
+        <li><span>Conta de R$ 450</span><strong>R$ 90/mês de desconto</strong></li>
+        <li><span>Conta de R$ 700</span><strong>R$ 140/mês de desconto</strong></li>
+        <li><span>Conta de R$ 1.200</span><strong>R$ 240/mês de desconto</strong></li>
+      </ul>
+      <p class="nota">20% de qualquer uma dessas contas dá mais de R$ 1.000 de volta no ano.</p>
     </div>
   </section>
 
@@ -233,7 +239,7 @@ const perguntas = [
   .beneficios__grade strong { display: block; font-size: var(--t-lg); }
   .beneficios__grade span { display: block; margin-top: var(--e-2); font-size: var(--t-sm); color: var(--texto-suave); }
   /* SPC/Serasa é a objeção que mais trava adesão de quem já pesquisou e desistiu — ganha destaque de cor, não só de texto.
-     Fundo claro fixo nos dois temas (mesmo motivo do cartão de marcas acima: laranja-100/600 não têm variante escura),
+     Fundo claro fixo nos dois temas (mesmo motivo do cartão de marcas abaixo: laranja-100 não tem variante escura),
      por isso o subtítulo usa cinza-600 direto em vez de --texto-suave, que clareia no escuro e ficaria ilegível aqui.
      Seletor qualificado com `.beneficios__grade li` na frente: sem isso `.beneficios__grade li` (0,1,1) vence
      `.beneficios__item--acento` (0,1,0) sozinho, e o destaque nunca aplica. */
@@ -241,7 +247,10 @@ const perguntas = [
     background: var(--laranja-100);
     border-color: var(--laranja-500);
   }
-  .beneficios__item--acento strong { color: var(--laranja-600); }
+  /* --laranja-600 dá 3,64:1 sobre --laranja-100 fixo — reprova AA mesmo em
+     texto grande (limite 3:1, só 0,21 de folga). #b85520 é o mesmo degrau já
+     usado no cartão de marcas logo abaixo, com 4,25:1. */
+  .beneficios__item--acento strong { color: #b85520; }
   .beneficios__item--acento span { color: var(--cinza-600); }
   .etapas {
     display: grid;
@@ -255,6 +264,19 @@ const perguntas = [
   .etapas li { counter-increment: etapa; border-top: 3px solid var(--laranja-500); padding-top: var(--e-4); }
   .etapas li::before { content: "0" counter(etapa); display: block; font-weight: 700; color: var(--laranja-400); margin-bottom: var(--e-2); }
   .etapas p { color: var(--texto-sobre-marca); font-size: var(--t-sm); }
+  .conta {
+    display: grid;
+    gap: var(--e-3);
+    margin: var(--e-8) 0 0;
+    padding-top: var(--e-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .conta li { display: flex; justify-content: space-between; gap: var(--e-4); flex-wrap: wrap; }
+  .conta span { color: var(--texto-sobre-marca); }
+  .conta strong { color: var(--laranja-400); }
+  /* Único .nota que mora em --secao--marca: o token padrão (--texto-suave) dá
+     2,1:1 sobre o azul-900 e reprova AA — precisa do par claro da seção. */
+  .secao--marca .nota { color: var(--texto-sobre-marca-suave); }
   .fora li { padding-left: var(--e-6); position: relative; color: var(--texto-suave); }
   .fora li::before { content: "—"; position: absolute; left: 0; color: var(--cinza-400); }
   .nota { font-size: var(--t-sm); color: var(--texto-suave); margin-top: var(--e-4); }

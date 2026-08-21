@@ -17,9 +17,17 @@ export type Solucao = {
    *  Coopluz é restrita: depende da área de concessão da Equatorial Goiás.
    *  O resto do hub atende o Brasil inteiro. */
   abrangencia: "BR" | "GO";
+  /** Nome de quem presta o serviço, quando não é a própria Autogestor (ex.:
+   *  Coopluz — a Autogestor é representante credenciada, não a cooperativa).
+   *  Vira `provider` no JSON-LD; a Autogestor entra como `broker`. Omitido nas
+   *  verticais onde a Autogestor é a prestadora direta (seguro, viagens...). */
+  provedor?: string;
   /** Rótulo e placeholder do 3º campo do formulário. Nome e WhatsApp são os
-   *  outros dois; e-mail foi cortado porque o canal de atendimento é WhatsApp. */
-  campo: { rotulo: string; exemplo: string; opcoes?: readonly string[] };
+   *  outros dois; e-mail foi cortado porque o canal de atendimento é WhatsApp.
+   *  `avisoPara` mostra um aviso (não bloqueia envio) quando a opção escolhida
+   *  é essa — serve para antecipar uma ressalva que já está no FAQ, antes da
+   *  pessoa preencher o resto do formulário à toa. */
+  campo: { rotulo: string; exemplo: string; opcoes?: readonly string[]; avisoPara?: { opcao: string; texto: string } };
   cta: string;
   /** H2 do bloco final, logo acima do formulário de fechamento. Escrito à mão:
    *  derivar do `cta` por regex produzia "Peça agora: simular meu crédito". */
@@ -48,10 +56,15 @@ export const SOLUCOES: readonly Solucao[] = [
     descricao:
       "Associe-se à Coopluz e pague 20% menos na conta da Equatorial Goiás. Sem instalar placa solar, sem obra, sem taxa de adesão e sem multa para sair.",
     abrangencia: "GO",
+    provedor: "Coopluz",
     campo: {
       rotulo: "Valor médio da sua conta de luz",
       exemplo: "ex.: R$ 450",
       opcoes: ["Até R$ 250", "R$ 251 a R$ 500", "R$ 501 a R$ 1.000", "Acima de R$ 1.000"],
+      avisoPara: {
+        opcao: "Até R$ 250",
+        texto: "Abaixo de R$ 250 o desconto não compensa a operação — a gente prefere dizer isso antes de você preencher o resto.",
+      },
     },
     cta: "Quero pagar 20% menos",
     fechamento: "Peça a análise da sua conta de luz",

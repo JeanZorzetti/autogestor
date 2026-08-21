@@ -41,7 +41,12 @@ const schema = [
     name: solucao.nome,
     description: solucao.descricao,
     url,
-    provider: { "@id": new URL("/#organizacao", site).href },
+    // Coopluz é quem presta o serviço; a Autogestor é representante credenciada
+    // (broker), não a prestadora. Marcar as duas como `provider` contradiz a
+    // copy da página, e dado estruturado que contradiz o texto visível é o
+    // tipo de coisa que motor de resposta para de citar.
+    provider: solucao.provedor ? { name: solucao.provedor } : { "@id": new URL("/#organizacao", site).href },
+    ...(solucao.provedor && { broker: { "@id": new URL("/#organizacao", site).href } }),
     areaServed: AREA_SERVIDA[solucao.abrangencia],
   },
   {
