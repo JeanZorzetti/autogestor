@@ -71,6 +71,14 @@
   --ok-fundo: #e7f4ec;
   --ok-texto: #14532d;
 
+  /* --- gesto: o vórtice do herói e seu eco nos cards ---
+     Fixas nos dois temas (não passam por light-dark()) porque só existem
+     sobre --superficie-marca, cujo papel já é o mesmo escuro-sobre-claro nos
+     dois esquemas. --brasa é o acento do acento: só o gesto usa. 6.33:1 sobre
+     azul-900, 6.45:1 sobre #022c69 — nunca colocar sobre branco (2.93:1). */
+  --brasa: #fe9d41;
+  --lamina: #6ca4f9;
+
   /* --- escala de espaço: base 4, nada entre os passos --- */
   --e-1: 0.25rem;
   --e-2: 0.5rem;
@@ -84,6 +92,10 @@
 
   /* --- tipografia --- */
   --fonte: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Display: título e número grande. Corpo continua na stack de sistema —
+     o contraste vem do salto de peso/largura entre as duas, não de trocar
+     tudo. Eixo `wdth` só é usado onde o gesto pede (herói, provas, cards). */
+  --display: "Archivo", var(--fonte);
   --t-sm: 0.875rem;
   --t-base: 1rem;
   --t-md: 1.125rem;
@@ -103,6 +115,9 @@
   --sombra-md: 0 2px 4px rgba(11, 27, 43, 0.08), 0 12px 28px rgba(11, 27, 43, 0.1);
 
   --largura: 1120px;
+
+  /* Curva única do sistema: entrada com leve overshoot na saída, sem repique. */
+  --curva: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* --- tema escuro ---------------------------------------------------------
@@ -198,10 +213,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 var(--e-4); text-wrap: balance; }
-h1 { font-size: var(--t-3xl); }
-h2 { font-size: var(--t-2xl); }
-h3 { font-size: var(--t-lg); }
+/* Archivo como display em todo título — a "fonte da marca própria" que
+   faltava. Só o eixo `wght` muda aqui; `wdth` condensado fica reservado para
+   o gesto (herói da home, números grandes, cards de solução). */
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 var(--e-4); text-wrap: balance; }
+h1 { font-size: var(--t-3xl); font-variation-settings: "wght" 800; }
+h2 { font-size: var(--t-2xl); font-variation-settings: "wght" 700; }
+h3 { font-size: var(--t-lg); font-variation-settings: "wght" 700; }
 p { margin: 0 0 var(--e-4); text-wrap: pretty; }
 p:last-child { margin-bottom: 0; }
 
@@ -240,7 +258,7 @@ img, svg { max-width: 100%; height: auto; display: block; }
   color: var(--marca);
   margin-bottom: var(--e-2);
 }
-.secao--marca .olho { color: var(--laranja-400); }
+.secao--marca .olho { color: var(--brasa); }
 
 .chamada { font-size: var(--t-md); color: var(--texto-suave); max-width: 62ch; }
 .secao--marca .chamada { color: var(--texto-sobre-marca); }

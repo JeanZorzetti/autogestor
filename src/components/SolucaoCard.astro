@@ -20,6 +20,7 @@ const { solucao } = Astro.props;
 <style>
   .scard {
     position: relative;
+    overflow: clip;
     background: var(--superficie-alta);
     border: 1px solid var(--borda);
     border-radius: var(--r-3);
@@ -27,6 +28,33 @@ const { solucao } = Astro.props;
     transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
   }
   .scard:hover { border-color: var(--marca); transform: translateY(-2px); box-shadow: var(--sombra-sm); }
+  /* Eco do gesto do herói: uma lâmina só por card, saindo do mesmo canto em
+     seis ângulos — a mesma convergência do vórtice, em miniatura. Decorativa,
+     atrás do conteúdo; pivô no canto para o leque abrir de card para card. */
+  .scard::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inline-size: 68%;
+    block-size: 3px;
+    background: linear-gradient(90deg, transparent, var(--marca) 55%, var(--marca) 80%, var(--marca));
+    transform-origin: 100% 0%;
+    /* Negativo = sentido anti-horário: o braço, que parte apontando para a
+       esquerda a partir do canto, desce para dentro do card em vez de subir
+       para fora dele. */
+    transform: rotate(calc(-34deg - var(--giro, 0deg)));
+    opacity: 0.35;
+    transition: opacity 200ms var(--curva);
+  }
+  .scard:hover::before { opacity: 0.75; }
+  .scard:nth-child(1) { --giro: 0deg; }
+  .scard:nth-child(2) { --giro: 7deg; }
+  .scard:nth-child(3) { --giro: 14deg; }
+  .scard:nth-child(4) { --giro: 21deg; }
+  .scard:nth-child(5) { --giro: 28deg; }
+  .scard:nth-child(6) { --giro: 35deg; }
   .scard:has(a:focus-visible) { outline: 3px solid var(--foco); outline-offset: 2px; }
   .scard__icone {
     display: inline-flex;

@@ -62,18 +62,23 @@ const schema = [
   descricao="Seguro de carro, moto e caminhão, passagens aéreas, financiamento, consórcio e repasse de veículos — em todo o Brasil, desde 2004. Energia com 20% de desconto em Goiás."
   schema={schema}
 >
-  <section class="capa">
-    <div class="container topo__grade">
+  <section class="capa secao--marca">
+    {/* O gesto: a logo (seis arcos convergindo) explodido em escala de página.
+         Puramente decorativo — mask + gradiente cônico, sem imagem nem JS — e
+         entra depois do texto pintar (`animation-delay`), então nunca é o
+         elemento de LCP. */}
+    <div class="vortice" aria-hidden="true"></div>
+    <div class="container topo__grade capa__grade">
       <div class="capa__texto">
         <span class="olho">Hub de soluções em todo o Brasil desde {EMPRESA.fundacao}</span>
-        <h1>Seis frentes que pesam no seu mês. Um consultor só para resolver.</h1>
+        <h1>Seis frentes que pesam no seu mês. <em>Um consultor só</em> para resolver.</h1>
         <p class="chamada capa__chamada">
           Seguro de veículo, desconto na conta de luz, passagem aérea, financiamento, consórcio e compra de seminovo
           direto de locadora. A Autogestor cota, compara e acompanha o contrato — você fala com uma pessoa, não com
           seis empresas.
         </p>
         <div class="capa__acoes">
-          <a class="btn btn--contorno" href="#solucoes">Ver as seis soluções</a>
+          <a class="btn btn--primario" href="#solucoes">Ver as seis soluções</a>
           <a
             class="btn btn--contorno externo"
             href={whatsapp("Olá! Não sei qual solução preciso, pode me orientar?")}
@@ -177,9 +182,61 @@ const schema = [
 
 <style>
   .capa {
-    background: linear-gradient(180deg, var(--capa-topo) 0%, var(--fundo) 100%);
-    padding-block: var(--e-16) var(--e-12);
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding-block: var(--e-16) 8rem;
   }
+  .capa__grade { position: relative; z-index: 2; }
+
+  /* O gesto: seis lâminas convergindo num núcleo em brasa, ancoradas no canto
+     onde a coluna de texto termina e sobrava vazio. `mask` radial dissolve as
+     lâminas antes de encostar no formulário; `--lamina-ang` é a espessura de
+     cada uma. Some por trás de tudo (z-index: 0) e nunca é o LCP: entra depois
+     do texto pintar (`animation-delay`). */
+  .vortice {
+    position: absolute;
+    z-index: 0;
+    inset-block-end: -46%;
+    inset-inline-end: -24%;
+    inline-size: min(150vw, 1180px);
+    aspect-ratio: 1;
+    pointer-events: none;
+    --lamina-ang: 2.4deg;
+    background: conic-gradient(
+      from -21deg at 50% 50%,
+      var(--brasa) 0 var(--lamina-ang), transparent var(--lamina-ang) 60deg,
+      var(--lamina) 60deg calc(60deg + var(--lamina-ang)), transparent calc(60deg + var(--lamina-ang)) 120deg,
+      var(--lamina) 120deg calc(120deg + var(--lamina-ang)), transparent calc(120deg + var(--lamina-ang)) 180deg,
+      var(--lamina) 180deg calc(180deg + var(--lamina-ang)), transparent calc(180deg + var(--lamina-ang)) 240deg,
+      var(--lamina) 240deg calc(240deg + var(--lamina-ang)), transparent calc(240deg + var(--lamina-ang)) 300deg,
+      var(--lamina) 300deg calc(300deg + var(--lamina-ang)), transparent calc(300deg + var(--lamina-ang)) 360deg
+    );
+    -webkit-mask: radial-gradient(circle at 50% 50%, #000 2%, #000 26%, transparent 56%);
+            mask: radial-gradient(circle at 50% 50%, #000 2%, #000 26%, transparent 56%);
+    opacity: 0.7;
+    animation: vortice-assenta 800ms var(--curva) 120ms both;
+  }
+  .vortice::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, rgb(254 157 65 / 0.85) 0, rgb(254 157 65 / 0.22) 5%, rgb(254 157 65 / 0) 17%);
+  }
+  @keyframes vortice-assenta {
+    from { transform: rotate(-14deg) scale(0.94); opacity: 0; }
+    to { transform: none; opacity: 0.7; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vortice { animation: none; }
+  }
+  @media (max-width: 899px) {
+    .vortice { inset-block-end: -58%; inset-inline-end: -56%; opacity: 0.6; }
+    .capa { padding-block: var(--e-12) 12rem; }
+  }
+
+  h1 em { font-style: normal; color: var(--brasa); }
   .capa__chamada { font-size: var(--t-lg); }
   .capa__acoes { display: flex; flex-wrap: wrap; gap: var(--e-3); margin-top: var(--e-8); }
   .provas {
@@ -189,7 +246,7 @@ const schema = [
     list-style: none;
     margin: var(--e-12) 0 0;
     padding: var(--e-6) 0 0;
-    border-top: 1px solid var(--borda);
+    border-top: 1px solid rgb(255 255 255 / 0.18);
   }
   .capa__texto { min-width: 0; }
   /* No celular o H1 já corta na 4ª linha na primeira dobra — o olho repete
@@ -199,8 +256,14 @@ const schema = [
     .capa__texto .olho { display: block; }
   }
   .provas li { display: grid; }
-  .provas strong { font-size: var(--t-xl); color: var(--marca-forte); letter-spacing: -0.02em; }
-  .provas span { font-size: var(--t-sm); color: var(--texto-suave); }
+  .provas strong {
+    font-family: var(--display);
+    font-variation-settings: "wdth" 68, "wght" 900;
+    font-size: 2.75rem;
+    line-height: 1;
+    color: var(--texto-invertido);
+  }
+  .provas span { font-size: var(--t-sm); color: var(--texto-sobre-marca); }
 
   .solucoes { margin-top: var(--e-8); }
   .razoes { margin-top: var(--e-8); gap: var(--e-8); }
