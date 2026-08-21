@@ -249,6 +249,16 @@ img, svg { max-width: 100%; height: auto; display: block; }
 .secao--marca h2, .secao--marca h3 { color: var(--texto-invertido); }
 .secao--marca a { color: var(--link-sobre-marca); }
 
+/* O cartão do LeadForm é uma superfície CLARA dentro do herói .secao--marca, e
+   as três regras de texto invertido acima vazavam para dentro dele: rótulo
+   branco sobre branco (1:1), link em --link-sobre-marca (1.25:1) e anel de foco
+   branco (invisível) — o formulário principal do site sem rótulo e sem foco
+   visível. A exceção mora aqui, colada nas regras que a causam, e não em .form:
+   quem herda o texto invertido é a seção, então é a seção que precisa parar. */
+.secao--marca .form { color: var(--texto); }
+.secao--marca .form a { color: var(--link); }
+.secao--marca .form :focus-visible { outline-color: var(--foco); }
+
 .olho {
   display: block;
   font-size: var(--t-sm);

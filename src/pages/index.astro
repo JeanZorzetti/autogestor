@@ -63,10 +63,9 @@ const schema = [
   schema={schema}
 >
   <section class="capa secao--marca">
-    {/* O gesto: a logo (seis arcos convergindo) explodido em escala de página.
-         Puramente decorativo — mask + gradiente cônico, sem imagem nem JS — e
-         entra depois do texto pintar (`animation-delay`), então nunca é o
-         elemento de LCP. */}
+    {/* O gesto: a própria marca ampliada até virar textura de fundo. Puramente
+         decorativa e entra depois do texto pintar (`animation-delay`), então
+         nunca é o elemento de LCP. */}
     <div class="vortice" aria-hidden="true"></div>
     <div class="container topo__grade capa__grade">
       <div class="capa__texto">
@@ -189,50 +188,52 @@ const schema = [
   }
   .capa__grade { position: relative; z-index: 2; }
 
-  /* O gesto: seis lâminas convergindo num núcleo em brasa, ancoradas no canto
-     onde a coluna de texto termina e sobrava vazio. `mask` radial dissolve as
-     lâminas antes de encostar no formulário; `--lamina-ang` é a espessura de
-     cada uma. Some por trás de tudo (z-index: 0) e nunca é o LCP: entra depois
-     do texto pintar (`animation-delay`). */
+  /* A marca (5 arcos em vórtice) ampliada até virar textura, sangrando pelo
+     canto inferior direito. `mask` com o SVG mono em vez de <img>: o gradiente
+     da página é que pinta a marca, então ela lê --lamina/--brasa e acompanha o
+     tema — um <img> traria as cores congeladas dentro do arquivo.
+
+     A versão anterior era um conic-gradient de seis lâminas convergindo num
+     núcleo. Falhava por geometria, não por conceito: a 1440px o núcleo caía
+     atrás do cartão do formulário, e o ponto de convergência É o gesto inteiro.
+     Além disso lâmina de ângulo constante fica MAIS larga longe do centro —
+     fio de cabelo onde devia ser densa, faixa gorda onde devia ter sumido. */
   .vortice {
     position: absolute;
     z-index: 0;
     inset-block-end: -46%;
-    inset-inline-end: -24%;
-    inline-size: min(150vw, 1180px);
+    inset-inline-end: -2%;
+    inline-size: min(105vw, 1080px);
     aspect-ratio: 1;
     pointer-events: none;
-    --lamina-ang: 2.4deg;
-    background: conic-gradient(
-      from -21deg at 50% 50%,
-      var(--brasa) 0 var(--lamina-ang), transparent var(--lamina-ang) 60deg,
-      var(--lamina) 60deg calc(60deg + var(--lamina-ang)), transparent calc(60deg + var(--lamina-ang)) 120deg,
-      var(--lamina) 120deg calc(120deg + var(--lamina-ang)), transparent calc(120deg + var(--lamina-ang)) 180deg,
-      var(--lamina) 180deg calc(180deg + var(--lamina-ang)), transparent calc(180deg + var(--lamina-ang)) 240deg,
-      var(--lamina) 240deg calc(240deg + var(--lamina-ang)), transparent calc(240deg + var(--lamina-ang)) 300deg,
-      var(--lamina) 300deg calc(300deg + var(--lamina-ang)), transparent calc(300deg + var(--lamina-ang)) 360deg
-    );
-    -webkit-mask: radial-gradient(circle at 50% 50%, #000 2%, #000 26%, transparent 56%);
-            mask: radial-gradient(circle at 50% 50%, #000 2%, #000 26%, transparent 56%);
-    opacity: 0.7;
+    background: linear-gradient(210deg, var(--lamina) 0%, var(--brasa) 85%);
+    -webkit-mask: url("/img/logo-mono.svg") no-repeat center / contain;
+            mask: url("/img/logo-mono.svg") no-repeat center / contain;
+    /* Teto de opacidade, medido no pixel mais claro do arco que passa por baixo
+       da chamada: a 0.2 o texto claro (--texto-sobre-marca) cai de 8.9:1 para
+       6.41:1 e o branco de 13.14:1 para 9.46:1 — os dois em AA com folga. A 0.35
+       a chamada chega a 4.88:1 e encosta no limite; passar disso exige trocar o
+       token do texto, não só clarear o arco. */
+    opacity: 0.2;
     animation: vortice-assenta 800ms var(--curva) 120ms both;
   }
-  .vortice::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle at 50% 50%, rgb(254 157 65 / 0.85) 0, rgb(254 157 65 / 0.22) 5%, rgb(254 157 65 / 0) 17%);
-  }
   @keyframes vortice-assenta {
-    from { transform: rotate(-14deg) scale(0.94); opacity: 0; }
-    to { transform: none; opacity: 0.7; }
+    from { transform: rotate(-8deg) scale(0.96); opacity: 0; }
+    to { transform: none; opacity: 0.2; }
   }
   @media (prefers-reduced-motion: reduce) {
     .vortice { animation: none; }
   }
+  /* Sob 900px o formulário passa a ocupar a largura inteira e cobriria a marca.
+     Ancoragem em px (e não em %) porque aqui a .capa é ~3x mais alta que no
+     desktop: os mesmos -46% jogariam o arco para fora da região visível. */
   @media (max-width: 899px) {
-    .vortice { inset-block-end: -58%; inset-inline-end: -56%; opacity: 0.6; }
+    .vortice {
+      inset-block-end: -240px;
+      inset-inline-end: -34%;
+      inline-size: min(150vw, 720px);
+      opacity: 0.16;
+    }
     .capa { padding-block: var(--e-12) 12rem; }
   }
 
