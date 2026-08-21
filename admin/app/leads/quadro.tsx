@@ -14,13 +14,11 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { ETAPAS } from "@/lib/pipelines.mjs";
+import { ETAPAS, nomeDaEtapa } from "@/lib/pipelines.mjs";
 import { agruparPorEtapa } from "@/lib/quadro.mjs";
 import type { Lead } from "@/lib/db";
 import { mover, reposicionar, type Resultado } from "./actions";
 import { Cartao } from "./cartao";
-
-const NOMES_ETAPA: Record<string, string> = { novo: "Novo", contato: "Contato", proposta: "Proposta", ganho: "Ganho", perdido: "Perdido" };
 
 const MENSAGENS_ERRO: Record<Extract<Resultado, { ok: false }>["erro"], string> = {
   sessao: "Sua sessão expirou.",
@@ -117,26 +115,26 @@ export function Quadro({ leads, truncado, semResultado }: { leads: Lead[]; trunc
       if (!etapa) return "";
       const cartoes = grupos.get(etapa) ?? [];
       const i = cartoes.findIndex((l) => l.id === id);
-      return `Cartão ${nomeDoLead(id)} pego, etapa ${NOMES_ETAPA[etapa]}, posição ${i + 1} de ${cartoes.length}.`;
+      return `Cartão ${nomeDoLead(id)} pego, etapa ${nomeDaEtapa(etapa)}, posição ${i + 1} de ${cartoes.length}.`;
     },
     onDragOver({ active, over }: { active: { id: string | number }; over: { id: string | number } | null }) {
       if (!over) return "";
       const alvo = alvoDoSolto(over.id, grupos);
       if (!alvo) return "";
       const cartoes = (grupos.get(alvo.etapa) ?? []).filter((l) => l.id !== Number(active.id));
-      return `${nomeDoLead(Number(active.id))} sobre ${NOMES_ETAPA[alvo.etapa]}, posição ${Math.min(alvo.index + 1, cartoes.length + 1)} de ${cartoes.length + 1}.`;
+      return `${nomeDoLead(Number(active.id))} sobre ${nomeDaEtapa(alvo.etapa)}, posição ${Math.min(alvo.index + 1, cartoes.length + 1)} de ${cartoes.length + 1}.`;
     },
     onDragEnd({ active, over }: { active: { id: string | number }; over: { id: string | number } | null }) {
       const nome = nomeDoLead(Number(active.id));
       const alvo = over ? alvoDoSolto(over.id, grupos) : null;
       if (!alvo) return `Movimentação de ${nome} cancelada.`;
       const cartoes = (grupos.get(alvo.etapa) ?? []).filter((l) => l.id !== Number(active.id));
-      return `${nome} movido para ${NOMES_ETAPA[alvo.etapa]}, posição ${alvo.index + 1} de ${cartoes.length + 1}.`;
+      return `${nome} movido para ${nomeDaEtapa(alvo.etapa)}, posição ${alvo.index + 1} de ${cartoes.length + 1}.`;
     },
     onDragCancel({ active }: { active: { id: string | number } }) {
       const etapa = etapaDoLead(Number(active.id));
       const nome = nomeDoLead(Number(active.id));
-      return `Movimentação de ${nome} cancelada.${etapa ? ` Cartão voltou para ${NOMES_ETAPA[etapa]}.` : ""}`;
+      return `Movimentação de ${nome} cancelada.${etapa ? ` Cartão voltou para ${nomeDaEtapa(etapa)}.` : ""}`;
     },
   };
 
@@ -236,10 +234,11 @@ export function Quadro({ leads, truncado, semResultado }: { leads: Lead[]; trunc
 
 function Coluna({ etapa, cartoes, onMudarEtapa }: { etapa: string; cartoes: Lead[]; onMudarEtapa: (id: number, etapa: string) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id: idColuna(etapa) });
+  const tituloId = `coluna-titulo-${etapa}`;
   return (
-    <div className={`coluna${isOver ? " coluna-sobre" : ""}`}>
+    <section className={`coluna${isOver ? " coluna-sobre" : ""}`} aria-labelledby={tituloId}>
       <div className="coluna-cabecalho">
-        <span>{NOMES_ETAPA[etapa]}</span>
+        <h2 id={tituloId}>{nomeDaEtapa(etapa)}</h2>
         <span className="pill">{cartoes.length}</span>
       </div>
       <SortableContext items={cartoes.map((l) => l.id)} strategy={verticalListSortingStrategy}>
@@ -250,6 +249,6 @@ function Coluna({ etapa, cartoes, onMudarEtapa }: { etapa: string; cartoes: Lead
           ))}
         </ul>
       </SortableContext>
-    </div>
+    </section>
   );
 }

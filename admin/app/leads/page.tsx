@@ -21,8 +21,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
   const { leads, truncado } = on ? await listarLeads({ pipeline, q }) : { leads: [], truncado: false };
 
   return (
-    <main className="page">
+    <main className="page page-largo">
       <Tabs active="leads" nome={usuario?.nome ?? ""} />
+      <h1 className="sr-only">Leads</h1>
 
       {!on && (
         <div className="banner" role="alert">
@@ -30,31 +31,34 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
         </div>
       )}
 
-      <form method="get" className="card filtros">
-        <div className="campo">
-          <label htmlFor="pipeline">Vertical</label>
-          <select id="pipeline" name="pipeline" defaultValue={pipeline ?? ""} className="ag-in">
-            <option value="">Todas</option>
-            {PIPELINES.map((p) => (
-              <option key={p.slug} value={p.slug}>
-                {p.nome}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="campo">
-          <label htmlFor="q">Buscar</label>
-          <input id="q" name="q" defaultValue={q ?? ""} placeholder="nome ou telefone" className="ag-in" />
-        </div>
-        <button className="ag-btn" type="submit">
-          Filtrar
-        </button>
-        {filtrado && (
-          <Link href="/leads" className="ag-btn secundario">
-            Limpar filtro
-          </Link>
-        )}
-      </form>
+      <details className="filtros-wrap">
+        <summary className="filtros-resumo">Filtros{filtrado ? " (ativos)" : ""}</summary>
+        <form method="get" className="card filtros">
+          <div className="campo">
+            <label htmlFor="pipeline">Vertical</label>
+            <select id="pipeline" name="pipeline" defaultValue={pipeline ?? ""} className="ag-in">
+              <option value="">Todas</option>
+              {PIPELINES.map((p) => (
+                <option key={p.slug} value={p.slug}>
+                  {p.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="campo">
+            <label htmlFor="q">Buscar</label>
+            <input id="q" name="q" defaultValue={q ?? ""} placeholder="nome ou telefone" className="ag-in" />
+          </div>
+          <button className="ag-btn" type="submit">
+            Filtrar
+          </button>
+          {filtrado && (
+            <Link href="/leads" className="ag-btn secundario">
+              Limpar filtro
+            </Link>
+          )}
+        </form>
+      </details>
 
       <Quadro leads={leads} truncado={truncado} semResultado={filtrado && leads.length === 0} />
     </main>

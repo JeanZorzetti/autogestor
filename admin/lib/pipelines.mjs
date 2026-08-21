@@ -6,6 +6,8 @@
 
 export const ETAPAS = ["novo", "contato", "proposta", "ganho", "perdido"];
 
+export const NOMES_ETAPA = { novo: "Novo", contato: "Contato", proposta: "Proposta", ganho: "Ganho", perdido: "Perdido" };
+
 export const PIPELINES = [
   { slug: "coopluz", nome: "Energia Coopluz" },
   { slug: "seguro", nome: "Seguro" },
@@ -22,6 +24,10 @@ export const LIMIAR_PARADO = { novo: 1, contato: 5, proposta: 7 };
 
 export function nomeDoPipeline(slug) {
   return PIPELINES.find((p) => p.slug === slug)?.nome ?? slug;
+}
+
+export function nomeDaEtapa(etapa) {
+  return NOMES_ETAPA[etapa] ?? etapa;
 }
 
 export function pipelineValido(slug) {
