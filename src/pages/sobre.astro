@@ -3,7 +3,7 @@ import Base from "../layouts/Base.astro";
 import Faq from "../components/Faq.astro";
 import SolucaoCard from "../components/SolucaoCard.astro";
 import BarraAcao from "../components/BarraAcao.astro";
-import { SOLUCOES } from "../data/solucoes";
+import { SOLUCOES, hrefSolucao } from "../data/solucoes";
 import { EMPRESA, enderecoLinha, whatsapp } from "../consts";
 
 const perguntas = [
@@ -123,7 +123,7 @@ const schema = [
       <div>
         <h3>Ir direto para uma solução</h3>
         <ul class="lista-check" role="list">
-          {SOLUCOES.map((s) => <li><a href={`/${s.slug}`}>{s.nome}</a></li>)}
+          {SOLUCOES.map((s) => <li><a href={hrefSolucao(s)}>{s.nome}</a></li>)}
         </ul>
       </div>
     </div>

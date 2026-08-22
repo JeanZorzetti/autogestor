@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { SOLUCOES } from "../data/solucoes";
+import { SOLUCOES, hrefSolucao } from "../data/solucoes";
 import { ATENDIMENTO, EMPRESA, whatsapp } from "../consts";
 
 // Renderizada no servidor porque precisa ler ?erro=1 do redirect do endpoint.
@@ -71,7 +71,7 @@ const motivo = (campo && MOTIVO[campo]) || "Pode ter sido o WhatsApp com um díg
       <ul class="lista-check" role="list">
         {SOLUCOES.map((s) => (
           <li>
-            <a href={`/${s.slug}`}>{s.nome}</a> — {s.resumo}
+            <a href={hrefSolucao(s)}>{s.nome}</a> — {s.resumo}
           </li>
         ))}
       </ul>

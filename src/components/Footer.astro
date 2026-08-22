@@ -1,5 +1,5 @@
 ---
-import { SOLUCOES } from "../data/solucoes";
+import { SOLUCOES, hrefSolucao } from "../data/solucoes";
 import { ATENDIMENTO, EMPRESA, enderecoLinha, whatsapp } from "../consts";
 const ano = new Date().getFullYear();
 ---
@@ -20,7 +20,7 @@ const ano = new Date().getFullYear();
     <nav aria-label="Soluções (rodapé)">
       <h2 class="rodape__titulo">Soluções</h2>
       <ul class="rodape__links" role="list">
-        {SOLUCOES.map((s) => <li><a href={`/${s.slug}`}>{s.nome}</a></li>)}
+        {SOLUCOES.map((s) => <li><a href={hrefSolucao(s)}>{s.nome}</a></li>)}
       </ul>
     </nav>
 

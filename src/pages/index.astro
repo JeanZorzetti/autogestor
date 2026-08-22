@@ -42,7 +42,7 @@ const schema = [
       "@type": "ListItem",
       position: i + 1,
       name: s.nome,
-      url: abs(`/${s.slug}`),
+      url: s.externo ?? abs(`/${s.slug}`),
     })),
   },
   {

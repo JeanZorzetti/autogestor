@@ -4,6 +4,12 @@ import Base from "../../layouts/Base.astro";
 import { porSlug } from "../../data/solucoes";
 
 const posts = (await getCollection("blog")).sort((a, b) => +b.data.publicado - +a.data.publicado);
+const vazio = posts.length === 0;
+
+/** Para onde o cluster de energia foi. Sai daqui e não de uma string solta no
+ *  markup porque a mesma URL já é o destino do 301 em astro.config.mjs — se um
+ *  dia o domínio mudar, os dois precisam mudar juntos. */
+const BLOG_COOPLUZ = "https://coopluz.roilabs.com.br/blog";
 
 const site = Astro.site ?? new URL("https://autogestor.roilabs.com.br");
 const abs = (p: string) => new URL(p, site).href;
@@ -37,10 +43,21 @@ const schema = [
 
 {/* Título e descrição descrevem os posts que EXISTEM. A versão anterior
     prometia seguro, viagens e crédito para uma página só de energia — quem
-    clicasse na busca saía. Reescrever quando o segundo cluster entrar. */}
+    clicasse na busca saía. Reescrever quando o segundo cluster entrar.
+
+    O cluster de energia migrou inteiro para o site próprio da Coopluz, e com
+    ele os dois únicos posts que este blog tinha. Enquanto não houver post
+    aqui, a página sai do índice e diz para onde o conteúdo foi: um índice
+    vazio servindo 200 é exatamente o tipo de página que promete e não
+    entrega, e o Princípio IV vale para busca também. */}
 <Base
-  titulo="Guias da Autogestor — conta de luz e energia em Goiás"
-  descricao="Como funcionam o desconto na conta da Equatorial Goiás, a Lei 14.300 e a compensação de energia por cooperativa. Guias da equipe da Autogestor."
+  titulo={vazio ? "Blog | Autogestor" : "Guias da Autogestor — conta de luz e energia em Goiás"}
+  descricao={
+    vazio
+      ? "Os guias sobre conta de luz e energia em Goiás passaram a ser publicados no site da Coopluz."
+      : "Como funcionam o desconto na conta da Equatorial Goiás, a Lei 14.300 e a compensação de energia por cooperativa. Guias da equipe da Autogestor."
+  }
+  noindex={vazio}
   schema={schema}
   trilha={[
     { nome: "Início", href: "/" },
@@ -51,10 +68,29 @@ const schema = [
     <div class="container">
       <span class="olho">Blog</span>
       <h1>Guias da Autogestor</h1>
-      <p class="chamada">
-        O que muda na sua conta de luz em Goiás, explicado por quem atende esses casos todo dia — sem promessa que a
-        fatura não confirma.
-      </p>
+      {
+        vazio ? (
+          <>
+            <p class="chamada">
+              Os guias sobre conta de luz, Lei 14.300 e compensação de energia passaram a ser publicados no site da
+              Coopluz, junto com o resto do conteúdo de energia.
+            </p>
+            <p class="chamada">
+              <a class="externo" href={BLOG_COOPLUZ} target="_blank" rel="noopener">
+                Ler os guias no site da Coopluz<span class="visualmente-oculto"> — abre em nova aba</span>
+              </a>
+            </p>
+            <p class="chamada">
+              Os próximos clusters — seguro, financiamento, consórcio e repasse — continuam sendo publicados aqui.
+            </p>
+          </>
+        ) : (
+          <p class="chamada">
+            O que muda na sua conta de luz em Goiás, explicado por quem atende esses casos todo dia — sem promessa que
+            a fatura não confirma.
+          </p>
+        )
+      }
       <ul class="blog-lista lista-limpa" role="list">
         {
           posts.map((post) => (

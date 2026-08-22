@@ -3,7 +3,7 @@ import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import LeadForm from "../../components/LeadForm.astro";
 import BarraAcao from "../../components/BarraAcao.astro";
-import { porSlug } from "../../data/solucoes";
+import { porSlug, hrefSolucao } from "../../data/solucoes";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -95,7 +95,7 @@ const schema = [
   <article class="secao post">
     <div class="container post__grade">
       <div class="post__corpo">
-        <p class="olho"><a href={`/${solucao.slug}`}>{solucao.nome}</a></p>
+        <p class="olho"><a href={hrefSolucao(solucao)}>{solucao.nome}</a></p>
         <h1>{post.data.titulo}</h1>
         {/* A regra do Fio B muda todo janeiro: sem data na tela, quem lê em
              2027 não tem como saber se o número ainda vale. */}

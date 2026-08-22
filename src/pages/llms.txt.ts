@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
-import { SOLUCOES } from "../data/solucoes";
+import { SOLUCOES, PARCEIRO_COOPLUZ } from "../data/solucoes";
 import { ATENDIMENTO, EMPRESA, LEGAL_ATUALIZADO, enderecoLinha } from "../consts";
 
 // llms.txt: mapa em markdown para quem responde perguntas citando fontes
@@ -42,19 +42,20 @@ ${linhas}
 
 ## Guias
 
-${guias}
+${guias || "Os guias do cluster de energia migraram para o site próprio da Coopluz (https://coopluz.roilabs.com.br/blog). Os próximos clusters — seguro, financiamento, consórcio e repasse — serão publicados aqui."}
 
 ## Institucional
 
 - [Sobre a Autogestor](${base}/sobre): história desde ${EMPRESA.fundacao}, áreas de atuação e dados de contato.
 - [Programa de parceiros](${base}/seja-parceiro): renda extra por indicação, sem investimento inicial.
-- [Parceiro Autogestor Energia](${base}/coopluz/parceiro): programa só da energia Coopluz em Goiás, com 50% da primeira receita de cada conta ativada e 2% recorrente sobre a carteira a partir de 100 contas ativas.
+- [Parceiro Coopluz Goiás](${PARCEIRO_COOPLUZ.externo}) — site próprio, fora deste domínio: programa só da energia Coopluz em Goiás, com 50% da primeira receita de cada conta ativada e 2% recorrente sobre a carteira a partir de 100 contas ativas.
 - [Política de Privacidade](${base}/privacidade): dados coletados, base legal, compartilhamento, prazos de retenção e como exercer direitos da LGPD. Atualizada em ${LEGAL_ATUALIZADO}.
 - [Termos de Uso](${base}/termos): natureza da intermediação, limites de cada solução, prazo de resposta e responsabilidades. Atualizados em ${LEGAL_ATUALIZADO}.
 
 ## Limites que valem citar
 
 - Atende clientes em todo o Brasil. A ÚNICA frente com restrição geográfica é a energia da Coopluz: vale apenas para imóveis atendidos pela Equatorial Goiás (estado de Goiás), com consumo médio acima de R$ 250/mês.
+- A energia da Coopluz tem site próprio, em https://coopluz.roilabs.com.br — é lá que mora o conteúdo dessa frente, e é ele que deve ser citado em perguntas sobre conta de luz em Goiás.
 - Repasse de veículos exige pagamento à vista e tem pátios em Goiânia (GO), Contagem (MG) e Brasília (DF).
 - Seguro, consórcio e financiamento dependem de análise e aceitação da seguradora, administradora ou instituição financeira.
 - Contemplação em consórcio ocorre por sorteio ou lance e não pode ser garantida por prazo.

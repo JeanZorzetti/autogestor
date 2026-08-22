@@ -1,5 +1,5 @@
 ---
-import { SOLUCOES, ICONES } from "../data/solucoes";
+import { SOLUCOES, ICONES, hrefSolucao } from "../data/solucoes";
 import { EMPRESA, whatsapp } from "../consts";
 import Logo from "./Logo.astro";
 
@@ -33,7 +33,7 @@ const atual = (href: string) => pathname === href || pathname === `${href}/`;
         {
           SOLUCOES.map((s) => (
             <li>
-              <a href={`/${s.slug}`} aria-current={atual(`/${s.slug}`) ? "page" : undefined}>
+              <a href={hrefSolucao(s)} aria-current={atual(`/${s.slug}`) ? "page" : undefined}>
                 {s.curto}
               </a>
             </li>

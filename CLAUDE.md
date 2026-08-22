@@ -38,9 +38,10 @@ O schema (`crm_leads`, `crm_eventos`) é criado sozinho na primeira gravação
 
 **Fonte única de verdade por domínio**, cada uma num arquivo:
 - [src/consts.ts](src/consts.ts) — NAP (nome/endereço/telefone), links de WhatsApp, prazos de atendimento. Sai em rodapé, JSON-LD e página de contato; divergir entre eles é o erro clássico que derruba SEO local.
-- [src/data/solucoes.ts](src/data/solucoes.ts) — as 6 verticais (`SOLUCOES`) mais três pseudo-verticais fora da nav: `PARCEIRO` (indicação nas seis frentes, `/seja-parceiro`), `PARCEIRO_COOPLUZ` (credenciamento só da energia, `/coopluz/parceiro` — funil próprio, com comissão de ativação e cidade de atuação no 3º campo) e `GERAL` (captação da home). Cada `Solucao` carrega slug, textos, campo do formulário e `abrangencia` (BR ou GO — só as duas da Coopluz são restritas à área da Equatorial Goiás). `/api/lead` valida o `solucao` recebido contra a lista de slugs desses quatro grupos.
+- [src/data/solucoes.ts](src/data/solucoes.ts) — as 6 verticais (`SOLUCOES`) mais três pseudo-verticais fora da nav: `PARCEIRO` (indicação nas seis frentes, `/seja-parceiro`), `PARCEIRO_COOPLUZ` (credenciamento só da energia) e `GERAL` (captação da home). Cada `Solucao` carrega slug, textos, campo do formulário e `abrangencia` (BR ou GO — só as duas da Coopluz são restritas à área da Equatorial Goiás). `/api/lead` valida o `solucao` recebido contra a lista de slugs desses quatro grupos.
+  - **`externo`**: vertical que já mora em domínio próprio. `COOPLUZ` e `PARCEIRO_COOPLUZ` têm — as páginas `/coopluz` e `/coopluz/parceiro` **não existem mais aqui**. Todo link de solução MUST sair de `hrefSolucao(s)`, nunca de `/${s.slug}` cru, senão o hub manda o próprio visitante para um redirect.
 - [src/layouts/Base.astro](src/layouts/Base.astro) — `<head>`, canonical, Open Graph, tema claro/escuro pré-pintura, e o `@graph` de JSON-LD (Organization + WebSite + WebPage/subtipo + BreadcrumbList opcional).
-- [src/layouts/Vertical.astro](src/layouts/Vertical.astro) — esqueleto compartilhado das páginas de solução: hero + form, FAQ, seção de fechamento com segundo form, grade das outras 5 soluções, barra de ação fixa mobile. Cada página de vertical (`src/pages/coopluz.astro` etc.) só passa `h1`, `chamada` e `perguntas`.
+- [src/layouts/Vertical.astro](src/layouts/Vertical.astro) — esqueleto compartilhado das páginas de solução: hero + form, FAQ, seção de fechamento com segundo form, grade das outras 5 soluções, barra de ação fixa mobile. Cada página de vertical (`src/pages/seguro.astro` etc.) só passa `h1`, `chamada` e `perguntas`.
 
 **O único código dinâmico** é [src/pages/api/lead.ts](src/pages/api/lead.ts)
 (`prerender = false`). Todo o resto é HTML estático gerado no build. O
@@ -61,6 +62,14 @@ frontmatter `vertical` aponta para o slug de `SOLUCOES` que ganha o CTA final;
 `pilar: boolean` controla a nav interna simples (spoke aponta pro pilar, pilar
 não aponta pra si). Ver [docs/pesquisa-blog-seo.md](docs/pesquisa-blog-seo.md)
 para a pesquisa de clusters e a ordem de ataque.
+
+> **Hoje a coleção está VAZIA.** Os dois únicos posts eram do cluster de
+> energia e migraram para o site da Coopluz junto com o resto da vertical. Por
+> isso o build imprime `The collection "blog" does not exist or is empty` três
+> vezes — é aviso correto, não bug: `/blog` se declara `noindex`, sai do
+> sitemap sozinho (o `astro.config.mjs` lê o diretório para decidir) e diz para
+> onde o conteúdo foi. Tudo volta ao normal quando o primeiro post do próximo
+> cluster entrar; não "conserte" o aviso re-adicionando post.
 
 **GEO/AEO**: [src/pages/llms.txt.ts](src/pages/llms.txt.ts) e
 [src/pages/robots.txt.ts](src/pages/robots.txt.ts) são endpoints (não arquivos
@@ -87,6 +96,32 @@ histórico do lead precisa dizer *quem* moveu. `npm test` roda de dentro de
 a tabela linear foi removida. Arrastar entre colunas muda a etapa e grava
 histórico; arrastar dentro da coluna só reordena (`crm_leads.posicao`), sem
 gerar evento. Teclado e toque são via `@dnd-kit`, com anúncios traduzidos.
+
+## Verticais em domínio próprio
+
+A energia da Coopluz é a primeira vertical com site próprio
+(`coopluz.roilabs.com.br`, repositório `C:\dev\coopluz`). O hub **não publica
+mais** as quatro URLs dela; cada uma responde 301, declarado em
+[astro.config.mjs](astro.config.mjs):
+
+| Saiu daqui | Vai para |
+|---|---|
+| `/coopluz` | `https://coopluz.roilabs.com.br/` |
+| `/coopluz/parceiro` | `https://coopluz.roilabs.com.br/parceiro` |
+| `/blog/reduzir-conta-equatorial-sem-placa-solar` | mesmo caminho, lá |
+| `/blog/fio-b-60-por-cento-2026-conta-equatorial-goias` | mesmo caminho, lá |
+
+A regra que isso implementa: **uma URL, um domínio.** Quando uma vertical migra,
+o conteúdo SAI daqui e a origem responde 301 — `canonical` cruzada não serve,
+porque mantém as duas páginas servindo 200 e depende de o buscador acatar uma
+dica. As duas versões conviveram desde a spec 002 e era canibalização literal.
+
+O que NÃO mudou: a vertical continua na nav e na grade da home (só o destino do
+link mudou), e `/api/lead` continua aceitando os slugs `coopluz` e
+`parceiro-coopluz` — leads já gravados usam esses valores e o painel os lê.
+
+Quando a segunda vertical migrar, o caminho é o mesmo: `externo` em
+`solucoes.ts`, remover as páginas, somar as rotas em `redirects`.
 
 ## O que ainda não existe
 

@@ -1,5 +1,6 @@
 ---
 import type { Solucao } from "../data/solucoes";
+import { hrefSolucao } from "../data/solucoes";
 interface Props { solucao: Solucao }
 const { solucao } = Astro.props;
 ---
@@ -35,7 +36,7 @@ const { solucao } = Astro.props;
   <h3 class="scard__titulo">
     {/* O card inteiro é clicável pelo ::after, mas o link real é o título:
          leitor de tela anuncia "Energia Coopluz", não "leia mais". */}
-    <a href={`/${solucao.slug}`}>{solucao.nome}</a>
+    <a href={hrefSolucao(solucao)}>{solucao.nome}</a>
   </h3>
   <p class="scard__resumo">{solucao.resumo}</p>
   <span class="scard__seta" aria-hidden="true">Ver solução →</span>

@@ -34,7 +34,26 @@ export type Solucao = {
   fechamento: string;
   /** Conteúdo interno do <svg viewBox="0 0 24 24">, traçado em currentColor. */
   icone: string;
+  /** URL absoluta quando a vertical JÁ MORA em domínio próprio. Presente =
+   *  esta vertical não tem página no hub; o card, a nav e o rodapé apontam
+   *  para fora, e o hub deixa de publicar `/${slug}`.
+   *
+   *  Existe porque o hub e o site da vertical estavam publicando o MESMO
+   *  conteúdo em dois domínios — canibalização literal, não risco teórico
+   *  (spec 003-identidade-coopluz do repositório coopluz). A alternativa
+   *  (deixar o link interno e confiar no 301) faria o hub mandar o próprio
+   *  visitante para um redirect a cada clique.
+   *
+   *  A oferta continua na navegação e na grade da home: o que muda é o
+   *  destino do link, não a existência da vertical. */
+  externo?: string;
 };
+
+/** Para onde o link de uma solução aponta. Todo lugar que monta esse link —
+ *  nav, rodapé, card, grade da home, JSON-LD, /obrigado — passa por aqui, e
+ *  não por `/${slug}` cru: uma vertical que migrou precisa migrar em todos os
+ *  lugares de uma vez, senão sobra um link para uma página que não existe. */
+export const hrefSolucao = (s: Solucao): string => s.externo ?? `/${s.slug}`;
 
 export const ICONES = {
   zap: '<path d="M12 3.5c-4.7 0-8.5 3.3-8.5 7.4 0 2.4 1.3 4.5 3.3 5.9l-.8 3.2 3.5-1.6c.8.2 1.6.3 2.5.3 4.7 0 8.5-3.3 8.5-7.4s-3.8-7.4-8.5-7.4z"/>',
@@ -69,6 +88,9 @@ export const SOLUCOES: readonly Solucao[] = [
     cta: "Quero pagar 20% menos",
     fechamento: "Peça a análise da sua conta de luz",
     icone: ICONES.energia,
+    // Primeira vertical a ganhar site próprio. A página `/coopluz` deste hub
+    // foi removida e responde 301 para cá (redirects em astro.config.mjs).
+    externo: "https://coopluz.roilabs.com.br/",
   },
   {
     slug: "seguro",
@@ -214,6 +236,7 @@ export const PARCEIRO_COOPLUZ: Solucao = {
   cta: "Quero ser parceiro",
   fechamento: "Escolha sua cidade e comece",
   icone: ICONES.energia,
+  externo: "https://coopluz.roilabs.com.br/parceiro",
 };
 
 /** Captação da home, onde a pessoa ainda não escolheu vertical. Existe como
