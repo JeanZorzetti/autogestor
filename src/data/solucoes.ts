@@ -110,14 +110,16 @@ export const SOLUCOES: readonly Solucao[] = [
     slug: "viagens",
     nome: "Viagens e passagens",
     curto: "Viagens",
-    resumo: "Passagem aérea, hotel e resort com tarifa de agência e parcelamento em até 12x.",
-    titulo: "Passagens aéreas e hotéis com tarifa de agência | Autogestor Viagens",
+    resumo: "Voo, hotel, pacote e carro na mesma busca, comprados por você em até 12x.",
+    titulo: "Passagens aéreas, hotéis e pacotes em até 12x | Autogestor Viagens",
     descricao:
-      "Agência online 24h para passagens aéreas nacionais e internacionais, hotéis e resorts com tarifas exclusivas e pagamento em até 12x no cartão.",
+      "Busque, compare e emita você mesmo: passagens aéreas nacionais e internacionais, hotéis, pacotes e aluguel de carro, com promoções diárias e pagamento em até 12x no cartão.",
     abrangencia: "BR",
+    // Única vertical self-service: a página não capta lead, leva direto para a
+    // busca. `campo` fica porque a home ainda oferece "Viagens" como assunto.
     campo: { rotulo: "Para onde você quer ir?", exemplo: "ex.: Maceió em janeiro, 2 adultos" },
-    cta: "Quero uma cotação de viagem",
-    fechamento: "Peça sua cotação de viagem",
+    cta: "Buscar minha viagem",
+    fechamento: "Sua próxima viagem começa aqui",
     icone: ICONES.aviao,
   },
   {

@@ -75,8 +75,9 @@ const { solucao, rotulo = "Pedir cotação", alvo = "pedir", mensagem = `Olá! Q
 <script>
   // Some enquanto qualquer formulário ou o par de CTAs do herói está na tela:
   // parada aí, a barra cobriria o botão de enviar ou o próprio CTA que repete.
+  // `.cta-busca` é a âncora das verticais self-service, que não têm formulário.
   const barra = document.querySelector<HTMLElement>(".barra");
-  const alvos = [...document.querySelectorAll(".form, .capa__acoes")];
+  const alvos = [...document.querySelectorAll(".form, .capa__acoes, .cta-busca")];
 
   if (barra && alvos.length) {
     const visiveis = new Set<Element>();

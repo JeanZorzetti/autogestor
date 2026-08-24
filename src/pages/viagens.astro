@@ -1,112 +1,284 @@
 ---
 import Vertical from "../layouts/Vertical.astro";
-import { porSlug } from "../data/solucoes";
-import { EXTERNOS } from "../consts";
+import { porSlug, ICONES } from "../data/solucoes";
+import { EXTERNOS, EMPRESA, whatsapp } from "../consts";
 
 const solucao = porSlug("viagens");
+const BUSCA = EXTERNOS.agenciaViagens;
+const AJUDA = whatsapp("Olá! Estou comprando pelo site de viagens e preciso de ajuda.");
+
+/** Os quatro produtos da busca, na ordem de volume. Substituem o formulário no
+ *  herói: numa vertical self-service o que precisa estar ao lado do título é a
+ *  porta de entrada da plataforma, não um pedido de cotação. */
+const produtos = [
+  { nome: "Passagens aéreas", nota: "Nacionais e internacionais", icone: ICONES.aviao },
+  {
+    nome: "Hotéis e resorts",
+    nota: "Brasil e exterior",
+    icone: '<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"/><path d="M15 10h4a1 1 0 0 1 1 1v10"/><path d="M7.5 8h1M7.5 12h1M7.5 16h1M11.5 8h1M11.5 12h1M11.5 16h1"/><path d="M2.5 21h19"/>',
+  },
+  {
+    nome: "Pacotes",
+    nota: "Voo e hospedagem no mesmo preço",
+    icone: '<rect x="3.5" y="8" width="17" height="12" rx="2"/><path d="M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8"/><path d="M9.5 12v4M14.5 12v4"/>',
+  },
+  { nome: "Aluguel de carro", nota: "Retirada no aeroporto do destino", icone: ICONES.carro },
+];
 
 const perguntas = [
   {
-    p: "Por que comprar com agência se eu compro sozinho no site?",
-    r: "Pelo que acontece depois. Voo cancelado, conexão perdida, bagagem extraviada ou remarcação viram horas de chat automático quando a compra é direta. Com agência, existe um consultor com acesso ao sistema de reservas resolvendo por você.",
+    p: "Por que comprar aqui e não direto no site da companhia aérea?",
+    r: "Porque numa busca só você vê as companhias lado a lado, com as tarifas de agência que nem sempre aparecem no balcão público, e parcela em até 12x mesmo quando a companhia oferece menos. Se o site dela estiver mais barato, compre lá — a busca existe justamente para você conferir isso em segundos.",
   },
   {
-    p: "As tarifas são as mesmas do site da companhia?",
-    r: "Nem sempre. Trabalhamos com tarifas de consolidador e acordos de agência, que em muitas rotas ficam abaixo do balcão público — especialmente em internacional, em datas longas e em grupos. Quando o site da companhia estiver mais barato, a gente fala.",
+    p: "As tarifas batem com as da CVC, Decolar, Booking e Hotéis.com?",
+    r: "Nem sempre, e é exatamente por isso que vale abrir os dois. As promoções entram todo dia e mudam por rota e por data: a mesma viagem pode sair mais barata aqui numa semana e mais cara na outra. Pesquise onde quiser e compare aqui antes de fechar — leva menos de um minuto.",
   },
   {
-    p: "Dá para parcelar?",
-    r: "Sim, em até 12x no cartão de crédito, tanto em passagem quanto em pacote e hospedagem. As condições exatas dependem da tarifa e da operadora.",
+    p: "Dá para parcelar em até 12x mesmo?",
+    r: "Sim, no cartão de crédito, em passagem, hotel, pacote e aluguel de carro. Quantas parcelas saem sem juros depende da tarifa e da operadora, e o número exato aparece na tela de pagamento antes de você confirmar a compra.",
   },
   {
-    p: "Fazem só passagem ou a viagem inteira?",
-    r: "Passagens aéreas nacionais e internacionais, hotéis e resorts da rede parceira, e pacotes montados sob medida. Se você já tem o voo e precisa só da hospedagem, também resolvemos.",
+    p: "É seguro comprar sozinho, sem falar com ninguém?",
+    r: `A emissão sai pelo mesmo sistema de reservas que as agências usam, o pagamento passa por gateway com dados de cartão criptografados e o bilhete cai no seu e-mail na hora. Se algo travar no meio da compra, o WhatsApp ${EMPRESA.telefoneExibicao} responde — não é obrigatório usar, é a rede de segurança de quem prefere.`,
   },
   {
-    p: "Preciso ir até o escritório?",
-    r: "Não. Cotação, escolha, pagamento e emissão acontecem por WhatsApp e e-mail. O escritório no Jardim Europa está aberto para quem prefere resolver presencialmente.",
+    p: "Dá para decidir junto com quem vai viajar?",
+    r: "Dá. A busca deixa você montar o carrinho — voo, quarto, datas, número de pessoas — e compartilhar o link com quem vai junto antes de qualquer pagamento. Cada um abre, vê o mesmo preço e a mesma reserva, e só depois alguém fecha.",
+  },
+  {
+    p: "E se o voo atrasar ou for cancelado depois que eu comprei?",
+    r: `Remarcação e reacomodação seguem a regra da companhia aérea, e o canal direto dela costuma ser o caminho mais rápido. Quando o atendimento automático não resolve, chame o ${EMPRESA.telefoneExibicao}: a gente localiza a regra da sua tarifa e aciona a operadora por você.`,
   },
   {
     p: "Vendem seguro viagem?",
-    r: "Sim. Como somos corretora registrada na SUSEP, o seguro viagem sai com a mesma análise que fazemos em seguro de veículo — cobertura médica, bagagem e cancelamento comparadas antes da compra.",
+    r: "Sim. Como a Autogestor é corretora registrada na SUSEP, o seguro viagem sai com a mesma análise que fazemos em seguro de veículo — cobertura médica, bagagem e cancelamento comparadas antes da compra, e não empurradas no checkout.",
   },
 ];
 ---
 
 <Vertical
   solucao={solucao}
-  h1="Passagem aérea e hotel com tarifa de agência e um consultor quando o voo atrasa"
-  chamada="Agência online 24 horas para voos nacionais e internacionais, rede de hotéis e resorts com tarifa exclusiva e parcelamento em até 12x. E gente de verdade no WhatsApp quando a viagem sai do roteiro."
+  h1="Compare e compre sua viagem em minutos, em até 12x"
+  chamada="Passagem aérea, hotel, pacote e aluguel de carro no Brasil e no exterior, na mesma busca. Promoções novas todo dia e a compra fechada por você — sem esperar cotação de ninguém."
   perguntas={perguntas}
+  rotuloBarra="Buscar viagem"
 >
   <div slot="hero">
     <ul class="lista-check destaques" role="list">
-      <li>Voos nacionais e internacionais em até 12x no cartão</li>
-      <li>Hotéis e resorts com tarifa de agência</li>
-      <li>Remarcação e imprevisto resolvidos por consultor</li>
+      <li>Busca aberta 24 horas, com o mesmo inventário das grandes agências</li>
+      <li>Até 12x no cartão em voo, hotel, pacote e carro</li>
+      <li>Bilhete emitido na hora, direto no seu e-mail</li>
     </ul>
-    <p class="atalho">
-      Quer pesquisar você mesmo primeiro?
-      <a class="externo" href={EXTERNOS.agenciaViagens} target="_blank" rel="noopener" aria-label="Abra nossa busca online 24h — site do parceiro, abre em nova aba">Abra nossa busca online 24h</a>.
+  </div>
+
+  {/* Substitui o formulário de cotação: a porta de entrada da plataforma, com
+       os quatro produtos visíveis. Cada item é um link — a busca abre no
+       produto certo em vez de na home dela. */}
+  <div slot="form" class="cta-busca">
+    <h2 class="cta-busca__titulo">Escolha seu destino agora</h2>
+    <p class="cta-busca__sub">Veja em segundos o que está saindo hoje:</p>
+    <ul class="produtos lista-limpa" role="list">
+      {
+        produtos.map((p) => (
+          <li>
+            <a class="produto externo" href={BUSCA} target="_blank" rel="noopener">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                set:html={p.icone}
+              />
+              <span>
+                <strong>{p.nome}</strong>
+                <small>{p.nota}</small>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="btn btn--primario btn--bloco externo" href={BUSCA} target="_blank" rel="noopener">
+      Buscar minha viagem
+      <span class="visualmente-oculto">— nossa busca online, abre em nova aba</span>
+    </a>
+    <p class="cta-busca__nota">
+      Grátis para pesquisar, sem cadastro para ver preço. Dúvida no meio da compra?
+      <a class="externo" href={AJUDA} target="_blank" rel="noopener">
+        Chame no WhatsApp<span class="visualmente-oculto"> — abre em nova aba</span></a>.
     </p>
   </div>
 
-  <section class="secao">
+  <section class="secao secao--marca">
     <div class="container">
-      <span class="olho">Duas formas de comprar</span>
-      <h2>Busca por conta própria ou consultor montando para você</h2>
-      <div class="grade grade--2">
-        <div class="cartao">
-          <h3>Você pesquisa</h3>
+      <span class="olho">Pesquise onde quiser</span>
+      <h2>Compare com a Autogestor antes de fechar</h2>
+      <p class="chamada">
+        Você já ia abrir a CVC, o Decolar, o Booking e o Hotéis.com de qualquer jeito. Abra — e antes de clicar em
+        comprar, rode a mesma busca aqui. É um minuto para descobrir se a mesma viagem sai por menos.
+      </p>
+      <div class="grade grade--3 razoes">
+        <div>
+          <h3>Promoção nova todo dia</h3>
           <p>
-            Nossa plataforma fica aberta 24 horas, com o mesmo inventário de voos e hotéis que um site de busca
-            grande. Você compara, escolhe e emite sozinho, com promoções exclusivas de agência.
-          </p>
-          <p>
-            <a class="btn btn--contorno externo" href={EXTERNOS.agenciaViagens} target="_blank" rel="noopener">
-              Abrir a busca online
-              <span class="visualmente-oculto">— site do parceiro, abre em nova aba</span>
-            </a>
+            Passagem e hotel entram e saem de promoção diariamente, por rota e por data. Quem compara no dia da
+            compra paga menos que quem decidiu na semana passada.
           </p>
         </div>
-        <div class="cartao">
-          <h3>A gente monta</h3>
+        <div>
+          <h3>Tarifa que o balcão público não mostra</h3>
           <p>
-            Você diz para onde, quando e com quantas pessoas. O consultor volta com duas ou três combinações de voo
-            e hospedagem, já com o total parcelado — incluindo aquelas que não aparecem em busca automática, como
-            escala mais longa que corta o preço pela metade.
+            Trabalhamos com inventário de consolidador e acordos de agência. Em internacional, em data longa e em
+            grupo, é onde a diferença costuma aparecer.
           </p>
-          <p><a class="btn btn--primario" href="#conteudo">Pedir uma cotação</a></p>
+        </div>
+        <div>
+          <h3>O parcelamento entra na conta</h3>
+          <p>
+            Nem sempre a passagem mais barata é a que cabe no mês. Até 12x no cartão muda qual opção é realmente a
+            melhor — e isso só aparece quando você compara o total parcelado.
+          </p>
         </div>
       </div>
+      <p class="acao-secao">
+        <a class="btn btn--contorno externo" href={BUSCA} target="_blank" rel="noopener">
+          Buscar minha viagem
+          <span class="visualmente-oculto">— nossa busca online, abre em nova aba</span>
+        </a>
+      </p>
     </div>
   </section>
 
-  <section class="secao secao--marca">
+  <section class="secao">
     <div class="container">
-      <span class="olho">Onde a agência salva a viagem</span>
-      <h2>As situações em que comprar sozinho custa caro</h2>
-      <div class="grade grade--3 casos">
-        <div>
-          <h3>Voo cancelado na véspera</h3>
-          <p>Reacomodação em outra companhia depende de conhecer a regra e ter acesso ao sistema. É o que o consultor faz enquanto você ainda está no aeroporto.</p>
-        </div>
-        <div>
-          <h3>Viagem em grupo</h3>
-          <p>Família grande, formatura, viagem de empresa: tarifa de grupo raramente aparece em busca pública, e o bloqueio de assentos precisa ser negociado.</p>
-        </div>
-        <div>
-          <h3>Internacional com conexão</h3>
-          <p>Bilhete emitido em partes separadas não protege sua conexão. Emitido junto, atraso no primeiro trecho vira obrigação da companhia.</p>
-        </div>
-      </div>
+      <span class="olho">Como funciona</span>
+      <h2>Três passos, do jeito que você já compra tudo</h2>
+      <ol class="passos" role="list">
+        <li>
+          <h3>Diga para onde e quando</h3>
+          <p>
+            Origem, destino, datas e quantas pessoas. A busca volta com voos, hotéis, pacotes e carros disponíveis,
+            com o preço final já na tela — sem cadastro para ver valor.
+          </p>
+        </li>
+        <li>
+          <h3>Compare e monte o carrinho</h3>
+          <p>
+            Filtre por horário, escala, categoria de quarto ou companhia. Dá para juntar voo e hospedagem no mesmo
+            carrinho e mandar o link para quem vai junto decidir com você.
+          </p>
+        </li>
+        <li>
+          <h3>Pague em até 12x e receba o bilhete</h3>
+          <p>
+            Cartão em até 12x, pagamento criptografado e emissão automática. O voucher e o bilhete chegam no seu
+            e-mail em seguida, sem depender de ninguém confirmar do outro lado.
+          </p>
+        </li>
+      </ol>
     </div>
   </section>
+
+  <div slot="fechamento">
+    <span class="olho">Próximo passo</span>
+    <h2>Sua próxima viagem começa aqui</h2>
+    <p class="chamada">
+      Autogestor Viagens é a frente de turismo do grupo, que atua desde {EMPRESA.fundacao} e é corretora registrada
+      na SUSEP. A busca é sua; quando precisar de gente, o {EMPRESA.telefoneExibicao} atende.
+    </p>
+  </div>
+  <div slot="fechamento" class="cta-busca cta-busca--fim">
+    {/* <p> e não <h2>: o h2 desta seção é o do bloco ao lado. Dois headings
+         irmãos com o mesmo texto do herói quebrariam a navegação por headings. */}
+    <p class="cta-busca__titulo">Escolha seu destino agora</p>
+    <p class="cta-busca__sub">Voos, hotéis, pacotes e carros — Brasil e exterior, em até 12x.</p>
+    <a class="btn btn--primario btn--bloco externo" href={BUSCA} target="_blank" rel="noopener">
+      Buscar minha viagem
+      <span class="visualmente-oculto">— nossa busca online, abre em nova aba</span>
+    </a>
+    <p class="cta-busca__nota">
+      Ou fale com um especialista:
+      <a class="externo" href={AJUDA} target="_blank" rel="noopener">
+        {EMPRESA.telefoneExibicao} no WhatsApp<span class="visualmente-oculto"> — abre em nova aba</span></a>.
+    </p>
+  </div>
 </Vertical>
 
 <style>
   .destaques { margin-top: var(--e-6); font-weight: 600; }
-  .atalho { margin-top: var(--e-6); font-size: var(--t-sm); color: var(--texto-suave); }
-  .casos { margin-top: var(--e-8); gap: var(--e-8); }
-  .casos p { color: var(--texto-sobre-marca); font-size: var(--t-sm); }
+
+  /* Ocupa a coluna onde o formulário ficava nas outras verticais — mesmo peso
+     visual de cartão, para o herói não desequilibrar na grade de 2 colunas. */
+  .cta-busca {
+    background: var(--superficie-alta);
+    border: 1px solid var(--borda);
+    border-radius: var(--r-3);
+    padding: var(--e-6);
+    box-shadow: var(--sombra-sm);
+  }
+  .cta-busca--fim { box-shadow: var(--sombra-md); }
+  .cta-busca__titulo {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--t-xl);
+    margin: 0 0 var(--e-2);
+    color: var(--texto);
+  }
+  .cta-busca__sub { font-size: var(--t-sm); color: var(--texto-suave); margin-bottom: var(--e-4); }
+  .cta-busca__nota { margin: var(--e-4) 0 0; font-size: var(--t-sm); color: var(--texto-suave); }
+
+  .produtos { margin-bottom: var(--e-6); gap: var(--e-2); }
+  .produto {
+    display: flex;
+    align-items: center;
+    gap: var(--e-3);
+    min-height: 56px;
+    padding: var(--e-3);
+    border: 1px solid var(--borda);
+    border-radius: var(--r-2);
+    color: var(--marca-forte);
+    text-decoration: none;
+    transition: border-color var(--dur-rapida) ease, background var(--dur-rapida) ease;
+  }
+  .produto:hover { border-color: var(--marca); background: var(--azul-100); }
+  .produto svg { color: var(--marca); flex: none; }
+  .produto span { display: grid; }
+  .produto strong { font-size: var(--t-sm); }
+  .produto small { color: var(--texto-suave); font-size: var(--t-sm); }
+
+  /* Dentro de .secao--marca o botão de contorno já herda a cor invertida. */
+  .razoes { margin-top: var(--e-8); gap: var(--e-8); }
+  .razoes p { color: var(--texto-sobre-marca); }
+  .acao-secao { margin-top: var(--e-8); }
+
+  .passos {
+    display: grid;
+    gap: var(--e-8);
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    margin: var(--e-8) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: passo;
+  }
+  .passos li { counter-increment: passo; }
+  .passos li::before {
+    content: counter(passo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-full);
+    background: var(--acento);
+    color: var(--acento-texto);
+    font-weight: 700;
+    margin-bottom: var(--e-4);
+  }
+  .passos p { color: var(--texto-suave); }
 </style>

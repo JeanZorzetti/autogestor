@@ -92,8 +92,11 @@ const schema = [
         <p class="chamada">{chamada}</p>
         <slot name="hero" />
       </div>
+      {/* Vertical self-service (viagens) não capta lead: o produto é a própria
+           busca, e um formulário de cotação ao lado dela contradiz a página.
+           Slot preenchido = a vertical assume as duas âncoras de ação. */}
       <div class="topo__form">
-        <LeadForm solucao={solucao} titulo={tituloForm} instancia="topo" />
+        {Astro.slots.has("form") ? <slot name="form" /> : <LeadForm solucao={solucao} titulo={tituloForm} instancia="topo" />}
       </div>
     </div>
   </section>
@@ -108,15 +111,23 @@ const schema = [
 
   <section class="secao" id="pedir" tabindex="-1">
     <div class="container fechamento">
-      <div>
-        <span class="olho">Próximo passo</span>
-        <h2>{solucao.fechamento}</h2>
-        <p class="chamada">
-          Um consultor da Autogestor responde no seu WhatsApp {ATENDIMENTO.prazo}. Corretora desde {EMPRESA.fundacao}, registro
-          SUSEP {EMPRESA.susep}, com sede em {EMPRESA.endereco.cidade} e atendimento em todo o Brasil.
-        </p>
-      </div>
-      <LeadForm solucao={solucao} titulo={tituloForm} destaque instancia="fim" />
+      {
+        Astro.slots.has("fechamento") ? (
+          <slot name="fechamento" />
+        ) : (
+          <Fragment>
+            <div>
+              <span class="olho">Próximo passo</span>
+              <h2>{solucao.fechamento}</h2>
+              <p class="chamada">
+                Um consultor da Autogestor responde no seu WhatsApp {ATENDIMENTO.prazo}. Corretora desde {EMPRESA.fundacao},
+                registro SUSEP {EMPRESA.susep}, com sede em {EMPRESA.endereco.cidade} e atendimento em todo o Brasil.
+              </p>
+            </div>
+            <LeadForm solucao={solucao} titulo={tituloForm} destaque instancia="fim" />
+          </Fragment>
+        )
+      }
     </div>
   </section>
 
