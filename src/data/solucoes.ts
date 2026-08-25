@@ -105,6 +105,11 @@ export const SOLUCOES: readonly Solucao[] = [
     cta: "Quero minha cotação",
     fechamento: "Peça sua cotação de seguro",
     icone: ICONES.escudo,
+    // Segunda vertical a ganhar site próprio (repositório C:\dev\seguros). A
+    // página `/seguro` deste hub foi removida e responde 301 para lá
+    // (redirects em astro.config.mjs). O slug continua "seguro" — é o pipeline
+    // que /api/lead aceita e que o /admin lê; o subdomínio é que é "seguros".
+    externo: "https://seguros.roilabs.com.br/",
   },
   {
     slug: "viagens",

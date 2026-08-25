@@ -99,17 +99,20 @@ gerar evento. Teclado e toque são via `@dnd-kit`, com anúncios traduzidos.
 
 ## Verticais em domínio próprio
 
-A energia da Coopluz é a primeira vertical com site próprio
-(`coopluz.roilabs.com.br`, repositório `C:\dev\coopluz`). O hub **não publica
-mais** as quatro URLs dela; cada uma responde 301, declarado em
-[astro.config.mjs](astro.config.mjs):
+Duas das seis verticais já moram fora. O hub **não publica mais** essas URLs;
+cada uma responde 301, declarado em [astro.config.mjs](astro.config.mjs):
 
-| Saiu daqui | Vai para |
-|---|---|
-| `/coopluz` | `https://coopluz.roilabs.com.br/` |
-| `/coopluz/parceiro` | `https://coopluz.roilabs.com.br/parceiro` |
-| `/blog/reduzir-conta-equatorial-sem-placa-solar` | mesmo caminho, lá |
-| `/blog/fio-b-60-por-cento-2026-conta-equatorial-goias` | mesmo caminho, lá |
+| Saiu daqui | Vai para | Repositório |
+|---|---|---|
+| `/coopluz` | `https://coopluz.roilabs.com.br/` | `C:\dev\coopluz` |
+| `/coopluz/parceiro` | `https://coopluz.roilabs.com.br/parceiro` | idem |
+| `/blog/reduzir-conta-equatorial-sem-placa-solar` | mesmo caminho, lá | idem |
+| `/blog/fio-b-60-por-cento-2026-conta-equatorial-goias` | mesmo caminho, lá | idem |
+| `/seguro` | `https://seguros.roilabs.com.br/` | `C:\dev\seguros` |
+
+**Atenção ao slug da vertical de seguro:** o subdomínio é `seguros`, o slug
+continua `seguro`. O `/api/lead` daqui e o Kanban do `admin/` leem `seguro`;
+"arrumar" a nomenclatura quebraria o funil sem quebrar build nenhum.
 
 A regra que isso implementa: **uma URL, um domínio.** Quando uma vertical migra,
 o conteúdo SAI daqui e a origem responde 301 — `canonical` cruzada não serve,
@@ -120,8 +123,11 @@ O que NÃO mudou: a vertical continua na nav e na grade da home (só o destino d
 link mudou), e `/api/lead` continua aceitando os slugs `coopluz` e
 `parceiro-coopluz` — leads já gravados usam esses valores e o painel os lê.
 
-Quando a segunda vertical migrar, o caminho é o mesmo: `externo` em
-`solucoes.ts`, remover as páginas, somar as rotas em `redirects`.
+Quando a próxima vertical migrar, o caminho é o mesmo, e são sempre as três
+metades juntas: `externo` em `solucoes.ts`, remover as páginas, somar as rotas
+em `redirects`. Fazer só a primeira deixa o hub mandando o visitante para um
+redirect; fazer só a última deixa as duas versões servindo 200, que é a
+canibalização que a spec 003 existiu para matar.
 
 ## O que ainda não existe
 

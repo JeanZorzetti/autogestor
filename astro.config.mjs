@@ -29,9 +29,9 @@ export default defineConfig({
     }),
   ],
   trailingSlash: "never",
-  // As quatro URLs da vertical de energia migraram para o site próprio da
-  // Coopluz. Elas SAÍRAM daqui — este hub não as publica mais — e cada uma
-  // responde 301 para o caminho equivalente lá.
+  // URLs de verticais que migraram para site próprio. Elas SAÍRAM daqui —
+  // este hub não as publica mais — e cada uma responde 301 para o caminho
+  // equivalente lá. Hoje são duas verticais: energia (Coopluz) e seguro.
   //
   // Por que 301 e não `canonical` cruzada: canonical mantém as duas páginas
   // servindo 200 e depende de o buscador acatar uma dica. 301 é instrução,
@@ -56,6 +56,10 @@ export default defineConfig({
       status: 301,
       destination: "https://coopluz.roilabs.com.br/blog/fio-b-60-por-cento-2026-conta-equatorial-goias",
     },
+    // Segunda vertical a migrar (agosto/2026). Uma URL só: a página `/seguro`
+    // era a única desta frente aqui — não havia post de blog no cluster de
+    // seguro, então não há o que redirecionar além dela.
+    "/seguro": { status: 301, destination: "https://seguros.roilabs.com.br/" },
   },
   markdown: { rehypePlugins: [escopoDeCabecalho] },
   build: { inlineStylesheets: "always" },
