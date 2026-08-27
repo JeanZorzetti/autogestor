@@ -60,6 +60,10 @@ export default defineConfig({
     // era a única desta frente aqui — não havia post de blog no cluster de
     // seguro, então não há o que redirecionar além dela.
     "/seguro": { status: 301, destination: "https://seguros.roilabs.com.br/" },
+    // Terceira vertical a migrar (agosto/2026). Também uma URL só: não havia
+    // post de blog no cluster de turismo. Aqui o slug e o subdomínio batem
+    // (`viagens` nos dois), diferente do seguro — não há armadilha de nome.
+    "/viagens": { status: 301, destination: "https://viagens.roilabs.com.br/" },
   },
   markdown: { rehypePlugins: [escopoDeCabecalho] },
   build: { inlineStylesheets: "always" },

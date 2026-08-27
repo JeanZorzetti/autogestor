@@ -126,6 +126,10 @@ export const SOLUCOES: readonly Solucao[] = [
     cta: "Buscar minha viagem",
     fechamento: "Sua próxima viagem começa aqui",
     icone: ICONES.aviao,
+    // Terceira vertical a migrar (agosto/2026), depois da energia e do seguro.
+    // A página `/viagens` NÃO existe mais aqui e responde 301 — ver `redirects`
+    // em astro.config.mjs. Repositório: C:\dev\viagens.
+    externo: "https://viagens.roilabs.com.br/",
   },
   {
     slug: "financiamento",

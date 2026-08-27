@@ -92,11 +92,13 @@ const schema = [
         <p class="chamada">{chamada}</p>
         <slot name="hero" />
       </div>
-      {/* Vertical self-service (viagens) não capta lead: o produto é a própria
-           busca, e um formulário de cotação ao lado dela contradiz a página.
-           Slot preenchido = a vertical assume as duas âncoras de ação. */}
+      {/* Todas as verticais que sobraram aqui captam lead. O slot "form", que
+           deixava a vertical self-service trocar o formulário pela própria
+           busca, saiu junto com `/viagens` em agosto/2026 — era um slot sem
+           nenhum preenchedor. Se uma nova vertical self-service aparecer, o
+           padrão a copiar é o site em C:/dev/viagens, não este layout. */}
       <div class="topo__form">
-        {Astro.slots.has("form") ? <slot name="form" /> : <LeadForm solucao={solucao} titulo={tituloForm} instancia="topo" />}
+        <LeadForm solucao={solucao} titulo={tituloForm} instancia="topo" />
       </div>
     </div>
   </section>

@@ -35,11 +35,13 @@ export function whatsapp(mensagem: string): string {
 
 /** Destinos externos que já operam hoje. Mantidos fora das páginas para não
  *  caçar URL em 6 arquivos quando um parceiro trocar de link. */
+// A busca da agência NÃO mora mais aqui: ela é o CTA do site próprio da
+// vertical (C:/dev/viagens, `EXTERNOS.busca` lá). Linkar o hub direto na
+// plataforma pularia o site que existe para produzir esse clique.
 export const EXTERNOS = {
   cotacaoVeiculo: "https://www.corretor-online.com.br/canalcliente/index.htm?Pw=WUtjNkJwM05vNC9iZ1RhblcyT3RMUT09",
   cotacaoMoto: "https://www.corretor-online.com.br/canalcliente/index.htm?Pw=bkZCWmtZUHRFZE00ZTdtZml6bkV1QT09",
   cotacaoCaminhao: "https://www.corretor-online.com.br/canalcliente/index.htm?Pw=QlhjVzV2QjlKdjFHc05ua1ZSU2YrUT09",
-  agenciaViagens: "https://br.onertravel.com/autogestorviagens/home",
   /** Consulta pública de corretores da SUSEP. A página de seguro afirma um
    *  registro; sem o caminho para conferir, é só um número na tela — e é o
    *  tipo de alegação que motor de resposta não cita sem fonte. */
