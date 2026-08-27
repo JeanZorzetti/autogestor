@@ -99,7 +99,7 @@ gerar evento. Teclado e toque são via `@dnd-kit`, com anúncios traduzidos.
 
 ## Verticais em domínio próprio
 
-Duas das seis verticais já moram fora. O hub **não publica mais** essas URLs;
+Três das seis verticais já moram fora. O hub **não publica mais** essas URLs;
 cada uma responde 301, declarado em [astro.config.mjs](astro.config.mjs):
 
 | Saiu daqui | Vai para | Repositório |
@@ -109,6 +109,13 @@ cada uma responde 301, declarado em [astro.config.mjs](astro.config.mjs):
 | `/blog/reduzir-conta-equatorial-sem-placa-solar` | mesmo caminho, lá | idem |
 | `/blog/fio-b-60-por-cento-2026-conta-equatorial-goias` | mesmo caminho, lá | idem |
 | `/seguro` | `https://seguros.roilabs.com.br/` | `C:\dev\seguros` |
+| `/viagens` | `https://viagens.roilabs.com.br/` | `C:\dev\viagens` |
+
+A de viagens **não capta lead** e por isso o site dela não tem `/api/lead`,
+nem `pg`, nem `DATABASE_URL`: a compra acontece inteira na busca da OnerTravel.
+Foi junto com ela o slot `form` de [src/layouts/Vertical.astro](src/layouts/Vertical.astro),
+que existia só para essa vertical trocar o formulário pela própria busca, e a
+constante `EXTERNOS.agenciaViagens` — a URL da busca agora mora lá.
 
 **Atenção ao slug da vertical de seguro:** o subdomínio é `seguros`, o slug
 continua `seguro`. O `/api/lead` daqui e o Kanban do `admin/` leem `seguro`;
