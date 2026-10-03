@@ -284,6 +284,13 @@ export async function reposicionarLead(id: number, posicao: number): Promise<boo
   return (r.rowCount ?? 0) > 0;
 }
 
+/** Apaga de vez, com o histórico junto (crm_eventos é ON DELETE CASCADE) —
+ * exclusão de verdade, não flag, que é o que a LGPD pede quando o titular sai. */
+export async function excluirLead(id: number): Promise<void> {
+  await ensure();
+  await pool().query(`DELETE FROM crm_leads WHERE id = $1`, [id]);
+}
+
 export async function definirValor(id: number, valor: number | null): Promise<void> {
   await ensure();
   await pool().query(`UPDATE crm_leads SET valor = $2, atualizado = now() WHERE id = $1`, [id, valor]);

@@ -1,18 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import {
   dbOn,
   moverLead,
   reposicionarLead,
   vizinhosNaEtapa,
   buscarLead,
+  excluirLead,
   definirValor as salvarValor,
   type Usuario,
 } from "@/lib/db";
 import { etapaValida } from "@/lib/pipelines.mjs";
 import { posicaoEntre } from "@/lib/quadro.mjs";
-import { usuarioAtual } from "@/lib/auth";
+import { usuarioAtual, ehDono } from "@/lib/auth";
 
 export type Resultado = { ok: true } | { ok: false; erro: "sessao" | "db" | "invalido" | "falhou" };
 
@@ -98,6 +100,18 @@ export async function reposicionar(entrada: ReposicionarEntrada): Promise<Result
 
   revalidarLead(entrada.id);
   return { ok: true };
+}
+
+/** Só o dono. A página esconde o botão dos corretores, mas a trava que vale é
+ * esta — server action é endpoint, qualquer sessão consegue chamar. */
+export async function excluir(fd: FormData): Promise<void> {
+  const id = Number(fd.get("id"));
+  const g = await guardar(id);
+  if (!g.ok || !ehDono(g.usuario)) return;
+
+  await excluirLead(id);
+  revalidarLead(id);
+  redirect("/leads?excluido=1");
 }
 
 export async function definirValor(fd: FormData): Promise<void> {

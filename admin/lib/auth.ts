@@ -12,3 +12,12 @@ export async function usuarioAtual(): Promise<Usuario | null> {
   if (!sessao) return null;
   return usuarioPorId(sessao.id);
 }
+
+/** Só o dono — a conta de ADMIN_SEED_EMAIL, a primeira do painel — exclui
+ * lead; corretor não. Sem a variável ninguém é dono (falha fechado).
+ * ponytail: dono por e-mail do seed, sem coluna de papel — vira papel em
+ * admin_usuarios quando uma segunda pessoa precisar do mesmo poder. */
+export function ehDono(usuario: Usuario | null): boolean {
+  const dono = process.env.ADMIN_SEED_EMAIL?.trim().toLowerCase();
+  return !!dono && usuario?.email.toLowerCase() === dono;
+}

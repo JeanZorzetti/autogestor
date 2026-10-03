@@ -7,7 +7,11 @@ import { Quadro } from "./quadro";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ pipeline?: string; q?: string }> }) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ pipeline?: string; q?: string; excluido?: string }>;
+}) {
   const usuario = await usuarioAtual();
   const sp = await searchParams;
   const on = dbOn();
@@ -28,6 +32,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
       {!on && (
         <div className="banner" role="alert">
           Leads sem persistência — configure <code>DATABASE_URL</code> (Postgres) no ambiente e redeploy.
+        </div>
+      )}
+      {sp.excluido && (
+        <div className="banner ok" role="status">
+          Lead excluído.
         </div>
       )}
 

@@ -98,6 +98,12 @@ a tabela linear foi removida. Arrastar entre colunas muda a etapa e grava
 histórico; arrastar dentro da coluna só reordena (`crm_leads.posicao`), sem
 gerar evento. Teclado e toque são via `@dnd-kit`, com anúncios traduzidos.
 
+**Excluir lead é só do dono**: a conta cujo e-mail é `ADMIN_SEED_EMAIL`
+(`ehDono` em [admin/lib/auth.ts](admin/lib/auth.ts)). Não há coluna de papel;
+os demais corretores não veem o botão e a server action recusa a chamada deles.
+Trocar o valor dessa variável na Vercel troca quem é o dono. A exclusão é de
+verdade (o histórico vai junto, por cascade) e não deixa rastro.
+
 ## Verticais em domínio próprio
 
 Três das seis verticais já moram fora. O hub **não publica mais** essas URLs;

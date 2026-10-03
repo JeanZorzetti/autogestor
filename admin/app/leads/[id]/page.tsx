@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import { dbOn, buscarLead, eventosDoLead } from "@/lib/db";
-import { usuarioAtual } from "@/lib/auth";
+import { usuarioAtual, ehDono } from "@/lib/auth";
 import { nomeDoPipeline } from "@/lib/pipelines.mjs";
 import { Tabs } from "../../tabs";
-import { definirValor } from "../actions";
+import { definirValor, excluir } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -95,6 +95,21 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           )}
         </section>
       </div>
+
+      {ehDono(usuario) && (
+        <section className="card ag-section excluir">
+          <details>
+            <summary>Excluir lead</summary>
+            <p>Apaga {lead.nome} e todo o histórico. Não dá para desfazer.</p>
+            <form action={excluir}>
+              <input type="hidden" name="id" value={lead.id} />
+              <button className="ag-btn perigo" type="submit">
+                Excluir {lead.nome}
+              </button>
+            </form>
+          </details>
+        </section>
+      )}
     </main>
   );
 }
