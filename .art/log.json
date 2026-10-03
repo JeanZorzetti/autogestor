@@ -1,18 +1,66 @@
 [
   {
+    "data": "2026-10-03",
+    "alvo": "admin / (Painel) — só esta rota; Leads e Equipe seguem no globals.css herdado do roihub",
+    "direcao": "costura (propagação da home ao admin)",
+    "eixos": {
+      "materia": "luz",
+      "motor": "estado",
+      "banda": "media"
+    },
+    "estrutura": "capa de marca com a resposta + fila sobreposta à borda da capa + evidências 6/3/3 + linha de contexto",
+    "elemento_costurado": "o vórtice da marca parado no canto da capa (SVG inline, não máscara), mesma entrada da home",
+    "orcamento": {
+      "js_kb": 0,
+      "lcp_alvo": 1.5,
+      "lcp_medido": 1.42,
+      "lcp_medido_frio": 2.64,
+      "cls_medido": 0,
+      "faixa": "trabalho (tela diária do dono e dos corretores)",
+      "medicao": "next build + start, 390px, 4G lento (150ms, 1,6 Mbps) + CPU 4x; frio = 1º acesso, TTFB do banco"
+    },
+    "deps": [
+      "next/font/google Archivo (eixo wdth) — já era a display da home; nenhum pacote novo"
+    ],
+    "desvios": [
+      "eixos repetem a entrada anterior (G32): é propagação da direção aprovada, escolhida pelo dono numa trinca em que B e C traziam eixos novos",
+      "primitivos em hex, não OKLCH: os mesmos valores amostrados da logo e medidos na home",
+      "laranja de dado é o --laranja-600 (3.05:1 no trilho), não o -500 da home (2.45:1)",
+      "sem camada de scroll (tela curta; o gesto longo fica na home) e sem transição de rota (costurar o nome do lead até /leads/[id] fica para a propagação)",
+      "next/font ignora adjustFontFallback:false no Turbopack: o CLS da troca de fonte foi zerado com largura fixa em em (número da capa e coluna de espera), não com fallback de métrica"
+    ],
+    "recusadas": [
+      "custom:regua-de-espera (geometria/autonomo/clara)",
+      "custom:quadro-de-partidas (pigmento/estado/escura)"
+    ]
+  },
+  {
     "data": "2026-08-21",
     "alvo": "home / + componentes compartilhados (SolucaoCard, Base, Vertical, tokens)",
     "direcao": "costura",
-    "eixos": { "materia": "luz", "motor": "estado", "banda": "media" },
+    "eixos": {
+      "materia": "luz",
+      "motor": "estado",
+      "banda": "media"
+    },
     "estrutura": "capa dividida (texto | formulario) + grade quebrada 2+4 nas solucoes",
     "elemento_costurado": "o vortice da marca: textura no heroi, carimbo no card, marca da capa na vertical",
-    "orcamento": { "js_kb": 0, "lcp_alvo": 2.0, "lcp_medido": 1.05, "cls_medido": 0, "faixa": "captacao" },
+    "orcamento": {
+      "js_kb": 0,
+      "lcp_alvo": 2,
+      "lcp_medido": 1.05,
+      "cls_medido": 0,
+      "faixa": "captacao"
+    },
     "deps": [],
     "desvios": [
       "nav e rodape mantidos: a spec da Costura pede 'so a marca' na nav e rodape de uma linha, mas as 6 verticais na barra sao o produto e o rodape carrega o NAP do SEO local",
       "paleta da spec (violeta/lima) descartada: a marca ja existe e foi amostrada da logo",
       "primitivos de cor seguem em hex com light-dark(), nao OKLCH: os pares de contraste do arquivo foram medidos nesses valores"
     ],
-    "recusadas": ["baralho", "papel-sujo"]
+    "recusadas": [
+      "baralho",
+      "papel-sujo"
+    ]
   }
 ]

@@ -1,0 +1,25 @@
+{
+  "telas": [
+    {
+      "data": "2026-10-03",
+      "rota": "admin /",
+      "pergunta": "Quem está esperando a equipe agora, e há quanto tempo?",
+      "forma": "fila ordenada por excesso sobre o prazo, com régua de espera (0–7 d, tique do prazo da etapa) + número de nível 1 na capa",
+      "descartada": "três tiles (hoje/7d/30d) + tabelas por vertical e por etapa: respondiam consulta, não pergunta; e kanban, que já existe em /leads e mostra estado, não espera",
+      "fonte": "pg autogestor · crm_leads + crm_eventos (entrada na etapa) · apurado a cada abertura",
+      "granularidade": "hora (fila), semana seg–dom em Brasília (entrada), 30 dias por entrada na etapa (fechados)",
+      "latencia": "ao vivo (force-dynamic)",
+      "estados": [
+        "com dado",
+        "zero real",
+        "fora da janela (entrada)",
+        "sem dado (banco vazio)",
+        "erro na fonte por bloco",
+        "sem DATABASE_URL"
+      ],
+      "pior_caso": "real em 03/10: 11 leads, 3 na fila todos além do prazo, maior espera 4d 9h, nome mais longo na fila 18 chars (34 no banco); 8 frentes, 3 com lead",
+      "gates": "32/32",
+      "obs": "5 dos 7 perdidos em 30 dias parecem leads de teste (nomes Teste…, origem teste027) e inflam o bloco Fechados; resumo() usava atualizado, que muda a cada reordenação no quadro — trocado pela data de entrada na etapa"
+    }
+  ]
+}

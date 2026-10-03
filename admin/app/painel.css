@@ -1,0 +1,544 @@
+/* art-direction · costura (propagação da home ao Painel do admin) · eixos: luz/estado/média · orçamento: 0kb JS · 2026-10-03 */
+/* information-design · fila com régua de espera · responde: quem está esperando a equipe agora, e há quanto tempo? · fonte: crm_leads + crm_eventos · 2026-10-03 */
+
+/* Tudo aqui mora sob [data-art="costura"]. CSS importado por uma página do App
+   Router continua carregado quando se navega para outra rota — sem o escopo,
+   estas regras vazariam para Leads e Equipe, que ainda vestem o globals.css.
+
+   Primitivos em hex, não OKLCH, pelo mesmo motivo da home (src/styles/global.css
+   do hub): são os valores amostrados da logo, e os pares de contraste foram
+   medidos neles. Os pares que decidiram escolha, medidos:
+   --alem (#d26831) sobre o trilho 3.05:1 e sobre branco 3.64:1 — o laranja-500
+   da home dá 2.45:1 sobre o trilho e reprova como marca que carrega dado;
+   --atraso-texto sobre branco 6.79:1; --brasa sobre azul-900 6.33:1;
+   --sobre-marca sobre azul-900 8.90:1; --lamina sobre azul-900 5.20:1;
+   --fechado (cinza-500) sobre branco 3.47:1. */
+
+[data-art="costura"] {
+  /* --- primitivos (os mesmos da home) --- */
+  --azul-900: #002b74;
+  --azul-700: #004898;
+  --azul-600: #005ca6;
+  --azul-100: #e2ecf6;
+  --laranja-600: #d26831;
+  --brasa: #fe9d41;
+  --lamina: #6ca4f9;
+  --tinta: #0b1b2b;
+  --cinza-50: #f5f7fa;
+  --cinza-200: #d3dbe5;
+  --cinza-500: #7d8b9d;
+  --cinza-600: #516275;
+
+  /* --- semânticos --- */
+  --fundo: var(--cinza-50);
+  /* Papel e texto sobre a marca nunca são branco de croma 0: puxam meio passo
+     para o azul da marca. Contraste medido igual ao do branco (±0.03). */
+  --superficie: #fcfdff;
+  --sobre-marca-forte: #fbfcff;
+  --fio-sobre-marca: rgb(251 252 255 / 0.14);
+  --contorno-sobre-marca: rgb(251 252 255 / 0.35);
+  --realce-sobre-marca: rgb(251 252 255 / 0.1);
+  --eixo: var(--cinza-500);
+  --realce-linha: rgb(var(--sombra-rgb) / 0.03);
+  --texto: var(--tinta);
+  --texto-suave: var(--cinza-600);
+  --marca: var(--azul-900);
+  --sobre-marca: #c8d6e6;
+  --dado: var(--azul-600);
+  --fechado: var(--cinza-500);
+  --trilho: var(--azul-100);
+  --alem: var(--laranja-600);
+  --atraso-texto: #9a3f12;
+  --linha: var(--cinza-200);
+  --display: var(--fonte-display), system-ui, sans-serif;
+
+  /* Sombra com o matiz da marca, nunca preta: duas camadas, uma curta densa e
+     uma difusa ampla, como as de --sombra-md da home. */
+  --sombra-rgb: 0 43 116;
+  --sombra-fila: 0 2px 4px rgb(var(--sombra-rgb) / 0.08), 0 14px 32px rgb(var(--sombra-rgb) / 0.12);
+  --sombra-bloco: 0 1px 2px rgb(var(--sombra-rgb) / 0.06), 0 6px 16px rgb(var(--sombra-rgb) / 0.07);
+
+  --dur-rapida: 160ms;
+  --dur-base: 240ms;
+  --dur-cena: 900ms;
+  --ease-cena: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* O grão da capa da home: tile de 240px gerado uma vez, nunca animado. */
+  --grao: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Teto da home: a 0.2 sobre azul-900 o texto da capa mantém 6.41:1. */
+  --selo-op: 0.2;
+
+  display: block;
+  min-height: 100dvh;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+[data-art="costura"] .painel-largura {
+  position: relative;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* =========================================================================
+   Capa — o bloco de marca da home, com grão e o vórtice parado no canto
+   ========================================================================= */
+
+[data-art="costura"] .capa {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: var(--marca);
+  color: var(--sobre-marca-forte);
+  padding-bottom: 120px;
+}
+[data-art="costura"] .capa::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: var(--grao), var(--grao);
+  background-size: 240px 240px, 91px 91px;
+  mix-blend-mode: soft-light;
+  opacity: 0.5;
+}
+[data-art="costura"] .capa > .painel-largura { z-index: 2; }
+
+/* O vórtice: a própria marca pintada com o gradiente lâmina→brasa da home.
+   Aqui é SVG inline (app/selo.tsx), não máscara CSS: assim ele não entra na
+   conta do LCP e não depende de uma segunda requisição. Se o SVG não pintar,
+   a capa continua composta — o número grande sobre o azul com grão já é a tela. */
+[data-art="costura"] .selo {
+  position: absolute;
+  z-index: 0;
+  inline-size: 560px;
+  block-size: auto;
+  aspect-ratio: 1;
+  inset-inline-end: -120px;
+  inset-block-start: -90px;
+  rotate: -12deg;
+  opacity: var(--selo-op);
+  pointer-events: none;
+}
+[data-art="costura"] .selo-a { stop-color: var(--lamina); }
+[data-art="costura"] .selo-b { stop-color: var(--brasa); }
+
+/* As abas (componente compartilhado) vestidas para a capa sem mudar o
+   componente: Leads e Equipe continuam com a barra clara de sempre. */
+[data-art="costura"] .capa .topbar {
+  align-items: center;
+  margin: 0;
+  padding-block: 16px;
+  border-bottom: 1px solid var(--fio-sobre-marca);
+}
+[data-art="costura"] .capa .topbar-left { align-items: center; }
+[data-art="costura"] .capa .brand { color: var(--sobre-marca-forte); }
+[data-art="costura"] .capa .brand span { color: var(--lamina); }
+[data-art="costura"] .capa .tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 0;
+  font-size: 14px;
+  color: var(--sobre-marca);
+  transition: color var(--dur-rapida) ease-out, background-color var(--dur-rapida) ease-out;
+}
+[data-art="costura"] .capa .tab:hover { color: var(--sobre-marca-forte); background: var(--realce-sobre-marca); text-decoration: none; }
+[data-art="costura"] .capa .tab.active { color: var(--sobre-marca-forte); background: none; box-shadow: inset 0 -3px 0 var(--brasa); }
+[data-art="costura"] .capa .topbar-meta { color: var(--sobre-marca); }
+[data-art="costura"] .capa .topbar-user { color: var(--sobre-marca); }
+[data-art="costura"] .capa .topbar-sair { min-height: 36px; color: var(--sobre-marca-forte); border-color: var(--contorno-sobre-marca); }
+[data-art="costura"] .capa .topbar-sair:hover { background: var(--realce-sobre-marca); }
+/* O anel azul do globals.css some sobre o azul-900 (1.49:1). Aqui ele é branco. */
+[data-art="costura"] .capa :focus-visible { outline-color: var(--sobre-marca-forte); }
+[data-art="costura"] .capa .banner { margin: 20px 0 0; }
+
+/* A resposta: o número grande e o título lado a lado, a frase de prazo embaixo
+   do título. O número é aria-hidden; o h1 o repete em sr-only. */
+[data-art="costura"] .resposta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 28px;
+  align-items: end;
+  padding-top: 52px;
+}
+[data-art="costura"] .olho {
+  grid-column: 1 / -1;
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brasa);
+}
+[data-art="costura"] .grande {
+  font-family: var(--display);
+  font-size: 168px;
+  font-weight: 900;
+  font-variation-settings: "wdth" 68;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--sobre-marca-forte);
+  /* Caixa do tamanho dos dígitos na Archivo (0.436em cada, medido), não do
+     texto: o fallback pinta mais largo e, com largura automática, a troca de
+     fonte empurrava o título 7px para a esquerda (CLS 0.0027). */
+  inline-size: calc(var(--digitos, 1) * 0.44em);
+}
+[data-art="costura"] .resposta h1 {
+  grid-column: 2;
+  margin: 0 0 4px;
+  max-width: 16ch;
+  font-family: var(--display);
+  font-size: 44px;
+  font-weight: 800;
+  font-variation-settings: "wdth" 76;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+/* Sem número (sem banco, fila com erro) o título ocupa a linha inteira. */
+[data-art="costura"] .resposta .olho + h1 { grid-column: 1 / -1; max-width: 22ch; }
+/* O destaque em linha própria: "todos além do prazo" não se parte no meio. */
+[data-art="costura"] .resposta h1 em { display: block; font-style: normal; color: var(--brasa); }
+[data-art="costura"] .resposta .sub {
+  grid-column: 2;
+  margin: 14px 0 0;
+  max-width: 56ch;
+  font-size: 17px;
+  color: var(--sobre-marca);
+}
+[data-art="costura"] .resposta .olho + h1 + .sub { grid-column: 1 / -1; }
+
+/* =========================================================================
+   Corpo — a fila sobe por cima da borda da capa
+   ========================================================================= */
+
+[data-art="costura"] .corpo {
+  z-index: 3;
+  margin-top: -84px;
+  padding-bottom: 48px;
+}
+[data-art="costura"] .fila {
+  background: var(--superficie);
+  border-radius: 16px;
+  box-shadow: var(--sombra-fila);
+}
+[data-art="costura"] .fila-cab,
+[data-art="costura"] .item,
+[data-art="costura"] .fila-eixo {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) minmax(0, 2fr) 180px;
+  gap: 24px;
+  align-items: center;
+  padding-inline: 24px;
+}
+[data-art="costura"] .fila-cab {
+  padding-block: 14px;
+  border-bottom: 1px solid var(--linha);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+[data-art="costura"] .fila-lista { list-style: none; margin: 0; padding: 0; }
+[data-art="costura"] .item {
+  position: relative;
+  padding-block: 18px;
+  border-bottom: 1px solid var(--linha);
+  transition: background-color var(--dur-rapida) ease-out, box-shadow var(--dur-rapida) ease-out;
+}
+[data-art="costura"] .item p { margin: 0; }
+[data-art="costura"] .espera b {
+  display: block;
+  font-family: var(--display);
+  font-size: 40px;
+  font-weight: 860;
+  font-variation-settings: "wdth" 72;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+[data-art="costura"] .espera span,
+[data-art="costura"] .lead span { display: block; font-size: 14px; color: var(--texto-suave); }
+[data-art="costura"] .espera span { font-size: 13px; margin-top: 4px; }
+/* Esperas se comparam na vertical: alinhadas pela direita, "12d 3h" e "4d 8h"
+   ficam com dia sobre dia. No celular a espera é a primeira coisa da linha. */
+@media (min-width: 900px) {
+  [data-art="costura"] .espera,
+  [data-art="costura"] .fila-cab span:first-child { text-align: right; }
+}
+[data-art="costura"] .lead a {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--marca);
+  overflow-wrap: anywhere;
+}
+/* A linha inteira é o alvo do clique; o nome continua sendo o link. */
+[data-art="costura"] .lead a::after { content: ""; position: absolute; inset: 0; }
+[data-art="costura"] .situacao { font-weight: 700; color: var(--texto-suave); }
+[data-art="costura"] .atrasado .situacao { color: var(--atraso-texto); }
+
+/* A régua: dias na etapa, de 0 a 7, a mesma escala para todo mundo. O azul é o
+   tempo dentro do prazo; o laranja, só o que passou dele. */
+[data-art="costura"] .regua {
+  position: relative;
+  height: 14px;
+  margin-top: 16px;
+  border-radius: 99px;
+  background: var(--trilho);
+}
+[data-art="costura"] .regua-ok,
+[data-art="costura"] .regua-alem {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform-origin: left center;
+}
+[data-art="costura"] .regua-ok {
+  left: 0;
+  width: calc(min(var(--v), var(--p)) / var(--escala) * 100%);
+  border-radius: 99px;
+  background: var(--dado);
+}
+[data-art="costura"] .atrasado .regua-ok { border-radius: 99px 0 0 99px; }
+[data-art="costura"] .regua-alem {
+  left: calc(var(--p) / var(--escala) * 100%);
+  width: calc((var(--v) - var(--p)) / var(--escala) * 100%);
+  border-radius: 0 99px 99px 0;
+  background: var(--alem);
+}
+[data-art="costura"] .regua-prazo {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: calc(var(--p) / var(--escala) * 100%);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--texto);
+}
+[data-art="costura"] .regua-prazo span {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: -4px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+[data-art="costura"] .regua-prazo.no-fim span { left: auto; right: -2px; }
+[data-art="costura"] .fila-eixo { padding-block: 0 16px; }
+[data-art="costura"] .eixo { grid-column: 3; position: relative; height: 16px; }
+[data-art="costura"] .eixo span {
+  position: absolute;
+  left: calc(var(--d) * 100%);
+  translate: -50% 0;
+  font-size: 11px;
+  color: var(--texto-suave);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+[data-art="costura"] .eixo span:first-child { translate: 0 0; }
+[data-art="costura"] .eixo span:last-child { translate: -100% 0; }
+[data-art="costura"] .fila-mais { margin: 0; padding: 0 24px 18px; font-size: 14px; color: var(--texto-suave); }
+[data-art="costura"] .fila-mais a { color: var(--azul-700); font-weight: 700; }
+
+/* Sem fila (vazia ou com erro) o cartão guarda a altura de uma fila curta: a
+   página não sobe quando o dado falta. */
+[data-art="costura"] .estado { margin: 0; padding: 28px 24px; font-size: 15px; color: var(--texto-suave); }
+[data-art="costura"] .fila > .estado { display: flex; align-items: center; min-height: 220px; }
+[data-art="costura"] .estado-erro { color: var(--atraso-texto); font-weight: 600; }
+[data-art="costura"] .procedencia { margin: 12px 4px 0; font-size: 12px; color: var(--texto-suave); }
+
+/* =========================================================================
+   Evidência — três blocos com metade do peso da fila
+   ========================================================================= */
+
+[data-art="costura"] .evidencias {
+  display: grid;
+  grid-template-columns: 6fr 3fr 3fr;
+  gap: 20px;
+  margin-top: 32px;
+}
+[data-art="costura"] .bloco {
+  min-width: 0;
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: var(--superficie);
+  box-shadow: var(--sombra-bloco);
+}
+[data-art="costura"] .bloco h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+[data-art="costura"] .bloco .estado { padding: 16px 0 0; }
+[data-art="costura"] .bloco .procedencia { margin: 12px 0 0; }
+[data-art="costura"] .valor { display: flex; align-items: baseline; gap: 8px; margin: 10px 0 4px; }
+[data-art="costura"] .valor b {
+  font-family: var(--display);
+  font-size: 52px;
+  font-weight: 860;
+  font-variation-settings: "wdth" 72;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--marca);
+}
+[data-art="costura"] .valor small { font-size: 16px; font-weight: 600; color: var(--texto-suave); }
+[data-art="costura"] .legenda { margin: 0; font-size: 14px; color: var(--texto-suave); }
+
+[data-art="costura"] .semanas {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  align-items: end;
+  height: 92px;
+  margin-top: 14px;
+  border-bottom: 1px solid var(--eixo);
+}
+[data-art="costura"] .semanas div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+[data-art="costura"] .semanas i {
+  display: block;
+  width: 100%;
+  height: calc(var(--n) * 64px);
+  margin-top: 4px;
+  border-radius: 4px 4px 0 0;
+  background: var(--dado);
+  transform-origin: center bottom;
+}
+/* A semana corrente: mais escura e marcada com * no eixo — parcial, não menor. */
+[data-art="costura"] .semanas .atual i { background: var(--marca); }
+[data-art="costura"] .semanas-x {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+  font-size: 11px;
+  text-align: center;
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+[data-art="costura"] .semanas-x span:last-child { font-weight: 700; color: var(--texto); }
+
+[data-art="costura"] .frentes { display: grid; gap: 12px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 14px; }
+[data-art="costura"] .frentes b { font-variant-numeric: tabular-nums; }
+/* Comprimento = total da frente; o trecho azul, os ainda em aberto. */
+[data-art="costura"] .barra {
+  display: block;
+  width: calc(var(--t) * 100%);
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--fechado);
+}
+[data-art="costura"] .barra i { display: block; width: calc(var(--a) * 100%); height: 100%; background: var(--dado); }
+[data-art="costura"] .nota { margin: 12px 0 0; font-size: 13px; color: var(--texto-suave); }
+
+[data-art="costura"] .empilha { display: flex; height: 14px; margin: 14px 0 8px; border-radius: 99px; overflow: hidden; }
+[data-art="costura"] .empilha i { flex: var(--n) 0 0; }
+[data-art="costura"] .empilha .ganho { background: var(--dado); }
+[data-art="costura"] .empilha .perdido { background: var(--fechado); }
+
+[data-art="costura"] .contexto { margin: 28px 4px 0; font-size: 14px; color: var(--texto-suave); }
+[data-art="costura"] .contexto a { color: var(--azul-700); font-weight: 700; }
+
+/* =========================================================================
+   Coreografia
+   Entrada: o vórtice assenta girando (a mesma curva e duração da home) e as
+   réguas crescem do zero até o valor, em cascata de 40ms. O número e o título
+   não animam: são o LCP. Scroll: nenhuma camada — a tela é curta e o gesto
+   longo (a migração do vórtice) fica na home, onde nasceu. Ponteiro: a linha
+   sob o cursor acende a borda com a cor da situação. Transição de rota: fica
+   para a propagação — costurar o nome até o título do lead exige tocar
+   /leads/[id], fora do raio desta tela.
+   ========================================================================= */
+
+@keyframes painel-selo-assenta { from { rotate: -28deg; opacity: 0; } }
+@keyframes painel-cresce-x { from { scale: 0 1; } }
+@keyframes painel-cresce-y { from { scale: 1 0; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-art="costura"] .selo { animation: painel-selo-assenta var(--dur-cena) var(--ease-cena) 120ms both; }
+  [data-art="costura"] .regua-ok {
+    animation: painel-cresce-x var(--dur-base) var(--ease-cena) both;
+    animation-delay: calc(200ms + var(--i) * 40ms);
+  }
+  /* O trecho além do prazo cresce do tique para a direita, depois do azul. */
+  [data-art="costura"] .regua-alem {
+    animation: painel-cresce-x var(--dur-base) var(--ease-cena) both;
+    animation-delay: calc(320ms + var(--i) * 40ms);
+  }
+  [data-art="costura"] .semanas i {
+    animation: painel-cresce-y var(--dur-base) var(--ease-cena) both;
+    animation-delay: calc(260ms + var(--i) * 40ms);
+  }
+}
+
+@media (hover: hover) {
+  [data-art="costura"] .item:hover { background: var(--realce-linha); box-shadow: inset 4px 0 0 var(--dado); }
+  [data-art="costura"] .item.atrasado:hover { box-shadow: inset 4px 0 0 var(--alem); }
+  [data-art="costura"] .item:hover .lead a { text-decoration: underline; text-underline-offset: 3px; }
+}
+
+/* =========================================================================
+   Larguras
+   ========================================================================= */
+
+@media (max-width: 899px) {
+  [data-art="costura"] .painel-largura { padding-inline: 16px; }
+  [data-art="costura"] .selo { inline-size: 380px; inset-inline-end: -150px; inset-block-start: 40px; --selo-op: 0.17; }
+  [data-art="costura"] .resposta { column-gap: 16px; padding-top: 28px; }
+  [data-art="costura"] .grande { font-size: 112px; }
+  [data-art="costura"] .resposta h1 { font-size: 30px; }
+  [data-art="costura"] .resposta .sub { grid-column: 1 / -1; font-size: 15px; }
+  [data-art="costura"] .capa { padding-bottom: 96px; }
+  [data-art="costura"] .corpo { margin-top: -72px; }
+
+  [data-art="costura"] .fila-cab { display: none; }
+  [data-art="costura"] .item {
+    /* 6.25rem cabe "12d 23h" (2.87em a 34px) em qualquer fonte: o nome não anda
+       quando a Archivo chega. ponytail: espera de 100+ dias encosta no nome. */
+    grid-template-columns: 6.25rem minmax(0, 1fr);
+    gap: 10px 16px;
+    padding: 16px;
+  }
+  [data-art="costura"] .regua { grid-column: 1 / -1; margin-top: 20px; }
+  [data-art="costura"] .situacao { grid-column: 1 / -1; }
+  [data-art="costura"] .espera b { font-size: 34px; }
+  [data-art="costura"] .fila-eixo { grid-template-columns: minmax(0, 1fr); padding-inline: 16px; }
+  [data-art="costura"] .eixo { grid-column: 1; }
+
+  [data-art="costura"] .evidencias { grid-template-columns: 1fr 1fr; }
+  [data-art="costura"] .evidencias > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  [data-art="costura"] .evidencias { grid-template-columns: 1fr; }
+  /* Marca e Sair na primeira linha, abas embaixo: sem isto o Sair caía sozinho
+     numa segunda linha. `contents` só no div sem semântica que agrupa marca e abas. */
+  [data-art="costura"] .capa .topbar { row-gap: 4px; padding-bottom: 4px; }
+  [data-art="costura"] .capa .topbar-left { display: contents; }
+  [data-art="costura"] .capa .topbar-meta { order: 1; margin-left: auto; }
+  [data-art="costura"] .capa .tabs { order: 2; flex-basis: 100%; margin-left: -14px; }
+}
+/* Com os blocos lado a lado, todos guardam a altura do bloco com dado: erro e
+   vazio não encolhem a fileira. Em coluna única cada um tem a própria altura. */
+@media (min-width: 561px) {
+  [data-art="costura"] .bloco { min-height: 300px; }
+}

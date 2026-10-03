@@ -296,73 +296,87 @@ export async function definirValor(id: number, valor: number | null): Promise<vo
   await pool().query(`UPDATE crm_leads SET valor = $2, atualizado = now() WHERE id = $1`, [id, valor]);
 }
 
-// ===== resumo (Painel) =====
+// ===== Painel =====
+// Uma consulta por bloco: o Painel chama todas com allSettled e cada bloco
+// erra sozinho, com o erro escrito no lugar dele — nunca um 0 no lugar de falha.
 
-export type ResumoPipeline = { pipeline: string; total: number; novos7d: number; emAberto: number; ganhos30d: number };
-export type ResumoEtapa = { etapa: string; total: number };
-export type LeadParado = { id: number; nome: string; pipeline: string; etapa: string; diasParado: number };
+const EM_ABERTO_SQL = `('novo','contato','proposta')`;
 
-export async function resumo(): Promise<{
-  hoje: number;
-  d7: number;
-  d30: number;
-  porPipeline: ResumoPipeline[];
-  porEtapa: ResumoEtapa[];
-}> {
+export type Espera = { id: number; nome: string; pipeline: string; etapa: string; desde: string; horas: number };
+
+/** Quem está esperando a equipe: todo lead em Novo, Contato ou Proposta, com
+ * as horas desde que entrou na etapa atual. A ordem é do Painel (lib/painel.mjs). */
+export async function filaDeEspera(): Promise<Espera[]> {
   await ensure();
-  const [janelas, pipelineR, etapaR] = await Promise.all([
-    pool().query<{ hoje: string; d7: string; d30: string }>(
-      `SELECT
-         count(*) FILTER (WHERE criado > now() - interval '1 day') AS hoje,
-         count(*) FILTER (WHERE criado > now() - interval '7 days') AS d7,
-         count(*) FILTER (WHERE criado > now() - interval '30 days') AS d30
-       FROM crm_leads`
-    ),
-    pool().query<{ pipeline: string; total: string; novos7d: string; em_aberto: string; ganhos30d: string }>(
-      `SELECT pipeline,
-         count(*) AS total,
-         count(*) FILTER (WHERE criado > now() - interval '7 days') AS novos7d,
-         count(*) FILTER (WHERE etapa NOT IN ('ganho','perdido')) AS em_aberto,
-         count(*) FILTER (WHERE etapa = 'ganho' AND atualizado > now() - interval '30 days') AS ganhos30d
-       FROM crm_leads GROUP BY pipeline ORDER BY pipeline`
-    ),
-    pool().query<{ etapa: string; total: string }>(`SELECT etapa, count(*) AS total FROM crm_leads GROUP BY etapa`),
-  ]);
-  const j = janelas.rows[0];
-  return {
-    hoje: Number(j?.hoje ?? 0),
-    d7: Number(j?.d7 ?? 0),
-    d30: Number(j?.d30 ?? 0),
-    porPipeline: pipelineR.rows.map((r) => ({
-      pipeline: r.pipeline,
-      total: Number(r.total),
-      novos7d: Number(r.novos7d),
-      emAberto: Number(r.em_aberto),
-      ganhos30d: Number(r.ganhos30d),
-    })),
-    porEtapa: etapaR.rows.map((r) => ({ etapa: r.etapa, total: Number(r.total) })),
-  };
-}
-
-/** Leads parados além do limiar da própria etapa — a seção que faz o painel valer a pena. */
-export async function leadsParados(limiarDias: Record<string, number>): Promise<LeadParado[]> {
-  await ensure();
-  const etapas = Object.keys(limiarDias);
-  if (!etapas.length) return [];
-  const condicoes = etapas.map((e, i) => `(l.etapa = $${i + 1} AND ${DESDE_EXPR} < now() - ($${etapas.length + i + 1}::text || ' days')::interval)`);
-  const valores = [...etapas, ...etapas.map((e) => String(limiarDias[e]))];
-  const r = await pool().query<LeadRow & { dias_parado: string }>(
-    `SELECT l.*, ${DESDE_SQL}, extract(day FROM now() - (${DESDE_EXPR})) AS dias_parado
-     FROM crm_leads l
-     WHERE ${condicoes.join(" OR ")}
-     ORDER BY dias_parado DESC`,
-    valores
+  const r = await pool().query<{ id: string; nome: string; pipeline: string; etapa: string; desde: Date | string; horas: string }>(
+    `SELECT l.id, l.nome, l.pipeline, l.etapa, ${DESDE_SQL},
+       extract(epoch FROM now() - ${DESDE_EXPR}) / 3600 AS horas
+     FROM crm_leads l WHERE l.etapa IN ${EM_ABERTO_SQL}`
   );
   return r.rows.map((row) => ({
     id: Number(row.id),
     nome: row.nome,
     pipeline: row.pipeline,
     etapa: row.etapa,
-    diasParado: Math.floor(Number(row.dias_parado)),
+    desde: iso(row.desde),
+    horas: Number(row.horas),
   }));
+}
+
+export type Panorama = { total: number; primeiro: string | null; porEtapa: { etapa: string; total: number }[] };
+
+/** O histórico inteiro: quantos leads, desde quando o banco grava, e onde cada um está hoje. */
+export async function panorama(): Promise<Panorama> {
+  await ensure();
+  const [t, e] = await Promise.all([
+    pool().query<{ total: string; primeiro: Date | string | null }>(`SELECT count(*) AS total, min(criado) AS primeiro FROM crm_leads`),
+    pool().query<{ etapa: string; total: string }>(`SELECT etapa, count(*) AS total FROM crm_leads GROUP BY etapa`),
+  ]);
+  const primeiro = t.rows[0]?.primeiro;
+  return {
+    total: Number(t.rows[0]?.total ?? 0),
+    primeiro: primeiro ? iso(primeiro) : null,
+    porEtapa: e.rows.map((r) => ({ etapa: r.etapa, total: Number(r.total) })),
+  };
+}
+
+/** Leads criados por semana nas últimas 8 semanas, de segunda a domingo no
+ * horário de Brasília. A última é a semana corrente, ainda parcial. Semana sem
+ * lead volta com 0 (generate_series), não some. */
+export async function entradaPorSemana(): Promise<{ semana: string; n: number }[]> {
+  await ensure();
+  const r = await pool().query<{ semana: string; n: string }>(
+    `WITH s AS (
+       SELECT generate_series(
+         date_trunc('week', now() AT TIME ZONE 'America/Sao_Paulo') - interval '7 weeks',
+         date_trunc('week', now() AT TIME ZONE 'America/Sao_Paulo'),
+         interval '1 week') AS semana)
+     SELECT to_char(s.semana, 'YYYY-MM-DD') AS semana, count(l.id) AS n
+     FROM s LEFT JOIN crm_leads l
+       ON date_trunc('week', l.criado AT TIME ZONE 'America/Sao_Paulo') = s.semana
+     GROUP BY s.semana ORDER BY s.semana`
+  );
+  return r.rows.map((row) => ({ semana: row.semana, n: Number(row.n) }));
+}
+
+/** Por frente (pipeline): quantos leads no total e quantos ainda em aberto. Só as que têm lead. */
+export async function porFrente(): Promise<{ pipeline: string; total: number; emAberto: number }[]> {
+  await ensure();
+  const r = await pool().query<{ pipeline: string; total: string; em_aberto: string }>(
+    `SELECT pipeline, count(*) AS total, count(*) FILTER (WHERE etapa IN ${EM_ABERTO_SQL}) AS em_aberto
+     FROM crm_leads GROUP BY pipeline ORDER BY em_aberto DESC, total DESC`
+  );
+  return r.rows.map((row) => ({ pipeline: row.pipeline, total: Number(row.total), emAberto: Number(row.em_aberto) }));
+}
+
+/** Leads hoje em Ganho ou Perdido que entraram nessa etapa nos últimos 30 dias.
+ * Pela data de entrada na etapa (crm_eventos), não por `atualizado` — que muda
+ * a cada edição de valor e reordenação no quadro. */
+export async function fechados30d(): Promise<{ ganhos: number; perdidos: number }> {
+  await ensure();
+  const r = await pool().query<{ ganhos: string; perdidos: string }>(
+    `SELECT count(*) FILTER (WHERE l.etapa = 'ganho') AS ganhos, count(*) FILTER (WHERE l.etapa = 'perdido') AS perdidos
+     FROM crm_leads l WHERE l.etapa IN ('ganho','perdido') AND ${DESDE_EXPR} > now() - interval '30 days'`
+  );
+  return { ganhos: Number(r.rows[0]?.ganhos ?? 0), perdidos: Number(r.rows[0]?.perdidos ?? 0) };
 }
