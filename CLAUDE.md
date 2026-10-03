@@ -50,6 +50,7 @@ endpoint:
 - valida com `parseLead()` em [src/lib/lead.mjs](src/lib/lead.mjs) — `.mjs` sem transpilar de propósito, porque `node --test` importa esse arquivo direto;
 - tem honeypot (campo `empresa`: resposta 200 mas não grava) e rate limit em `Map` no processo (por instância serverless, reseta a cada cold start — não é defesa distribuída);
 - falha fechado: sem `DATABASE_URL`, responde 503 e o formulário mostra o WhatsApp em vez de fingir que gravou.
+- avisa o dono no Telegram quando o lead é novo (`created`), pelo hub: [src/lib/aviso.mjs](src/lib/aviso.mjs) monta o texto e o roihub (spec 027) escapa e põe o link do painel. Roda em `waitUntil` do `@vercel/functions` — promise solta congela com a função — e **nunca lança**: aviso perdido é tolerado, lead perdido não. Sem `ROIHUB_CRM_SECRET` o lead grava igual e o log traz só o nome da variável.
 
 `/api/lead` grava em `crm_leads`/`crm_eventos` — de propósito o mesmo formato
 de tabela do roihub, para um futuro `/admin` em Next.js ler sem tradutor (veja

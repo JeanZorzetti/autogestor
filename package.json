@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
     "@astrojs/vercel": "^8.2.9",
+    "@vercel/functions": "^3.9.11",
     "astro": "^5.16.4",
     "pg": "^8.16.3"
   },
