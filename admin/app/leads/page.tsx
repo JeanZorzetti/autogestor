@@ -25,51 +25,53 @@ export default async function Page({
   const { leads, truncado } = on ? await listarLeads({ pipeline, q }) : { leads: [], truncado: false };
 
   return (
-    <main className="page page-largo">
-      <Tabs active="leads" nome={usuario?.nome ?? ""} />
-      <h1 className="sr-only">Leads</h1>
+    <main>
+      <Tabs active="leads" nome={usuario?.nome ?? ""} largo />
+      <div className="page page-largo">
+        <h1 className="sr-only">Leads</h1>
 
-      {!on && (
-        <div className="banner" role="alert">
-          Leads sem persistência — configure <code>DATABASE_URL</code> (Postgres) no ambiente e redeploy.
-        </div>
-      )}
-      {sp.excluido && (
-        <div className="banner ok" role="status">
-          Lead excluído.
-        </div>
-      )}
-
-      <details className="filtros-wrap">
-        <summary className="filtros-resumo">Filtros{filtrado ? " (ativos)" : ""}</summary>
-        <form method="get" className="card filtros">
-          <div className="campo">
-            <label htmlFor="pipeline">Vertical</label>
-            <select id="pipeline" name="pipeline" defaultValue={pipeline ?? ""} className="ag-in">
-              <option value="">Todas</option>
-              {PIPELINES.map((p) => (
-                <option key={p.slug} value={p.slug}>
-                  {p.nome}
-                </option>
-              ))}
-            </select>
+        {!on && (
+          <div className="banner" role="alert">
+            Leads sem persistência — configure <code>DATABASE_URL</code> (Postgres) no ambiente e redeploy.
           </div>
-          <div className="campo">
-            <label htmlFor="q">Buscar</label>
-            <input id="q" name="q" defaultValue={q ?? ""} placeholder="nome ou telefone" className="ag-in" />
+        )}
+        {sp.excluido && (
+          <div className="banner ok" role="status">
+            Lead excluído.
           </div>
-          <button className="ag-btn" type="submit">
-            Filtrar
-          </button>
-          {filtrado && (
-            <Link href="/leads" className="ag-btn secundario">
-              Limpar filtro
-            </Link>
-          )}
-        </form>
-      </details>
+        )}
 
-      <Quadro leads={leads} truncado={truncado} semResultado={filtrado && leads.length === 0} />
+        <details className="filtros-wrap">
+          <summary className="filtros-resumo">Filtros{filtrado ? " (ativos)" : ""}</summary>
+          <form method="get" className="card filtros">
+            <div className="campo">
+              <label htmlFor="pipeline">Vertical</label>
+              <select id="pipeline" name="pipeline" defaultValue={pipeline ?? ""} className="ag-in">
+                <option value="">Todas</option>
+                {PIPELINES.map((p) => (
+                  <option key={p.slug} value={p.slug}>
+                    {p.nome}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="campo">
+              <label htmlFor="q">Buscar</label>
+              <input id="q" name="q" defaultValue={q ?? ""} placeholder="nome ou telefone" className="ag-in" />
+            </div>
+            <button className="ag-btn" type="submit">
+              Filtrar
+            </button>
+            {filtrado && (
+              <Link href="/leads" className="ag-btn secundario">
+                Limpar filtro
+              </Link>
+            )}
+          </form>
+        </details>
+
+        <Quadro leads={leads} truncado={truncado} semResultado={filtrado && leads.length === 0} />
+      </div>
     </main>
   );
 }

@@ -23,93 +23,95 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const campo = (chave: string) => (typeof metadata[chave] === "string" ? (metadata[chave] as string) : null);
 
   return (
-    <main className="page">
+    <main>
       <Tabs active="leads" nome={usuario?.nome ?? ""} />
+      <div className="page">
 
-      <div className="card ag-section">
-        <h1 className="entrar-titulo" style={{ marginBottom: 4 }}>
-          {lead.nome}
-        </h1>
-        <p className="foot">
-          {nomeDoPipeline(lead.pipeline)} · etapa {lead.etapa} · origem {lead.origem}
-        </p>
-      </div>
+        <div className="card ag-section">
+          <h1 className="entrar-titulo" style={{ marginBottom: 4 }}>
+            {lead.nome}
+          </h1>
+          <p className="foot">
+            {nomeDoPipeline(lead.pipeline)} · etapa {lead.etapa} · origem {lead.origem}
+          </p>
+        </div>
 
-      <div className="detalhe-grid">
-        <section className="card ag-section">
-          <h2 className="ag-h">Dados</h2>
-          <dl className="meta-lista">
-            <dt>Telefone</dt>
-            <dd>{lead.telefone ?? "—"}</dd>
-            <dt>E-mail</dt>
-            <dd>{lead.email ?? "—"}</dd>
-            <dt>Contexto</dt>
-            <dd>{campo("contexto") ?? "—"}</dd>
-            <dt>Referer</dt>
-            <dd>{campo("referer") ?? "—"}</dd>
-            <dt>User-agent</dt>
-            <dd>{campo("ua") ?? "—"}</dd>
-            <dt>IP</dt>
-            <dd>{campo("ip") ?? "—"}</dd>
-            <dt>Criado em</dt>
-            <dd>{dataHora(lead.criado)}</dd>
-          </dl>
+        <div className="detalhe-grid">
+          <section className="card ag-section">
+            <h2 className="ag-h">Dados</h2>
+            <dl className="meta-lista">
+              <dt>Telefone</dt>
+              <dd>{lead.telefone ?? "—"}</dd>
+              <dt>E-mail</dt>
+              <dd>{lead.email ?? "—"}</dd>
+              <dt>Contexto</dt>
+              <dd>{campo("contexto") ?? "—"}</dd>
+              <dt>Referer</dt>
+              <dd>{campo("referer") ?? "—"}</dd>
+              <dt>User-agent</dt>
+              <dd>{campo("ua") ?? "—"}</dd>
+              <dt>IP</dt>
+              <dd>{campo("ip") ?? "—"}</dd>
+              <dt>Criado em</dt>
+              <dd>{dataHora(lead.criado)}</dd>
+            </dl>
 
-          <h2 className="ag-h" style={{ marginTop: 20 }}>
-            Valor
-          </h2>
-          <form action={definirValor} className="campo" style={{ flexDirection: "row", alignItems: "center" }}>
-            <input type="hidden" name="id" value={lead.id} />
-            <label htmlFor="valor">Valor</label>
-            <input
-              id="valor"
-              name="valor"
-              defaultValue={lead.valor === null ? "" : lead.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-              placeholder="ex.: 1.200,00"
-              className="ag-in"
-              inputMode="decimal"
-            />
-            <button className="ag-btn" type="submit">
-              Salvar
-            </button>
-          </form>
-          <p className="foot">Valor atual: {moeda(lead.valor)}</p>
-        </section>
-
-        <section className="card ag-section">
-          <h2 className="ag-h">Histórico</h2>
-          {eventos.length === 0 ? (
-            <p className="vazio">Sem eventos registrados ainda.</p>
-          ) : (
-            <ul className="timeline">
-              {eventos.map((e) => (
-                <li key={e.id}>
-                  <div className="mudanca">{e.de ? `${e.de} → ${e.para}` : `entrada em ${e.para}`}</div>
-                  {e.nota && <div>{e.nota}</div>}
-                  <div className="meta">
-                    {e.autor ?? "site"} · {dataHora(e.quando)}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </div>
-
-      {ehDono(usuario) && (
-        <section className="card ag-section excluir">
-          <details>
-            <summary>Excluir lead</summary>
-            <p>Apaga {lead.nome} e todo o histórico. Não dá para desfazer.</p>
-            <form action={excluir}>
+            <h2 className="ag-h" style={{ marginTop: 20 }}>
+              Valor
+            </h2>
+            <form action={definirValor} className="campo" style={{ flexDirection: "row", alignItems: "center" }}>
               <input type="hidden" name="id" value={lead.id} />
-              <button className="ag-btn perigo" type="submit">
-                Excluir {lead.nome}
+              <label htmlFor="valor">Valor</label>
+              <input
+                id="valor"
+                name="valor"
+                defaultValue={lead.valor === null ? "" : lead.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                placeholder="ex.: 1.200,00"
+                className="ag-in"
+                inputMode="decimal"
+              />
+              <button className="ag-btn" type="submit">
+                Salvar
               </button>
             </form>
-          </details>
-        </section>
-      )}
+            <p className="foot">Valor atual: {moeda(lead.valor)}</p>
+          </section>
+
+          <section className="card ag-section">
+            <h2 className="ag-h">Histórico</h2>
+            {eventos.length === 0 ? (
+              <p className="vazio">Sem eventos registrados ainda.</p>
+            ) : (
+              <ul className="timeline">
+                {eventos.map((e) => (
+                  <li key={e.id}>
+                    <div className="mudanca">{e.de ? `${e.de} → ${e.para}` : `entrada em ${e.para}`}</div>
+                    {e.nota && <div>{e.nota}</div>}
+                    <div className="meta">
+                      {e.autor ?? "site"} · {dataHora(e.quando)}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+
+        {ehDono(usuario) && (
+          <section className="card ag-section excluir">
+            <details>
+              <summary>Excluir lead</summary>
+              <p>Apaga {lead.nome} e todo o histórico. Não dá para desfazer.</p>
+              <form action={excluir}>
+                <input type="hidden" name="id" value={lead.id} />
+                <button className="ag-btn perigo" type="submit">
+                  Excluir {lead.nome}
+                </button>
+              </form>
+            </details>
+          </section>
+        )}
+      </div>
     </main>
   );
 }

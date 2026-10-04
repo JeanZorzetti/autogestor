@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { Archivo } from "next/font/google";
 import { dbOn, filaDeEspera, panorama, entradaPorSemana, porFrente, fechados30d, type Panorama } from "@/lib/db";
 import { usuarioAtual } from "@/lib/auth";
 import { nomeDoPipeline, nomeDaEtapa, ETAPAS, PIPELINES } from "@/lib/pipelines.mjs";
@@ -8,10 +7,6 @@ import { ESCALA_DIAS, formatarEspera, situacao, textoSituacao, ordenarFila, resp
 import { Tabs } from "./tabs";
 import { Selo } from "./selo";
 import "./painel.css";
-
-// A display da home (Costura): Archivo variável com o eixo de largura — é ele
-// que deixa o número da capa a 168px caber ao lado do título.
-const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--fonte-display", display: "swap" });
 
 export const dynamic = "force-dynamic";
 
@@ -63,11 +58,11 @@ export default async function Page() {
       : { numero: "", texto: "A fila não carregou", destaque: "", sub: "O banco não respondeu. Recarregue a página." };
 
   return (
-    <main data-art="costura" className={archivo.variable}>
+    <main data-tela="painel">
       <section className="capa" aria-labelledby="painel-resposta">
         <Selo />
-        <div className="painel-largura">
-          <Tabs active="painel" nome={usuario?.nome ?? ""} />
+        <Tabs active="painel" nome={usuario?.nome ?? ""} />
+        <div className="largura">
           {!on && (
             <div className="banner" role="alert">
               Painel sem persistência — configure <code>DATABASE_URL</code> (Postgres) no ambiente e redeploy.
@@ -98,7 +93,7 @@ export default async function Page() {
       </section>
 
       {on && (
-        <div className="painel-largura corpo">
+        <div className="largura corpo">
           <section className="fila" aria-labelledby="fila-titulo">
             <h2 id="fila-titulo" className="sr-only">
               Fila de espera

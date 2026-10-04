@@ -1,6 +1,38 @@
 [
   {
     "data": "2026-10-03",
+    "alvo": "admin /leads e /equipe (pele); /leads/[id] e /entrar herdam junto pelo globals.css",
+    "direcao": "costura (propagação da pele aprovada no Painel)",
+    "eixos": {
+      "materia": "luz",
+      "motor": "estado",
+      "banda": "media"
+    },
+    "estrutura": "sem estrutura nova: as telas mantêm a forma; mudam tinta, família, botão, canto, sombra e a faixa da marca no topo",
+    "elemento_costurado": "a faixa azul com grão das abas, igual em toda rota (no Painel ela é o topo da capa); o vórtice e a capa grande ficam só no Painel",
+    "orcamento": {
+      "js_kb": 0,
+      "lcp_medido": {
+        "leads": 1.02,
+        "equipe": 0.84
+      },
+      "cls_medido": 0,
+      "faixa": "trabalho",
+      "medicao": "next build + start, 390px, 4G lento + CPU 4x, servidor quente; LCP = FCP (a faixa pinta no 1º quadro)"
+    },
+    "deps": [
+      "nenhuma; a Archivo saiu do Painel para o layout e vale para todas as rotas"
+    ],
+    "desvios": [
+      "tokens promovidos de painel.css para o :root do globals.css (design-systems); painel.css ficou só com o gesto, escopado em [data-tela=painel]",
+      "painel.css mantém medidas em px da composição aprovada (168/112/52/44/40/34 nos números, 11–17 no texto do gráfico); o global usa só a escala",
+      "cartão do quadro passou a marcar parado pela mesma régua do Painel (horas contra o prazo), não por dias inteiros",
+      "consertos achados na prova e feitos junto: filtros do /leads invisíveis no desktop (details + ::details-content), tabela da Equipe escondendo status e botão no celular"
+    ],
+    "recusadas": []
+  },
+  {
+    "data": "2026-10-03",
     "alvo": "admin / (Painel) — só esta rota; Leads e Equipe seguem no globals.css herdado do roihub",
     "direcao": "costura (propagação da home ao admin)",
     "eixos": {
